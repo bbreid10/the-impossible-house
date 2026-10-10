@@ -12,15 +12,17 @@ function setup(){
 test('Room C requires two simultaneous seals; rotation and MIRRORS ARE DOORS open a real route',()=>{
  const g=setup(),act=(player,action)=>{const result=Engine.act(g,player,action);assert.ok(result.ok,`could not ${action.type}: ${result.error}`);};
  assert.equal(Engine.connection(g,'B','C').ok,false,'exit begins locked and B begins vertical');
+ act('alex',{type:'PROP',prop:'study'});
+ act('june',{type:'SAFE',code:'231'});
  act('june',{type:'LEVER'});
  act('alex',{type:'ROTATE',room:'B',dir:1});
  assert.equal(Engine.doorsAt(g,'B').includes('W'),true);
  assert.equal(Engine.connection(g,'B','C').ok,false,'exit still sealed with doors facing correctly');
  act('alex',{type:'MOVE',to:'B'});
- act('alex',{type:'INSCRIBE',rule:'mirrors'});
- act('alex',{type:'RULE',rule:'mirrors'});
- assert.equal(Engine.connection(g,'F','D').ok,false,'the mirror is not an ordinary adjacent door');
- act('june',{type:'PORTAL'});
+ act('alex',{type:'PROP',prop:'plaque'});
+ act('alex',{type:'REWRITE',rule:'mirrors'});
+ assert.equal(Engine.connection(g,'F','D').mirrored,true,'the new law creates a distant, clickable mirror door');
+ act('june',{type:'MOVE',to:'D'});
  assert.equal(g.players.find(p=>p.id==='june').room,'D','rule teleports isolated explorer to Moon Seal');
  act('alex',{type:'ROTATE',room:'B',dir:1});
  act('alex',{type:'MOVE',to:'E'});

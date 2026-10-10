@@ -12,12 +12,19 @@
 'use strict';
 function key(g){
   return [g.phase,g.players.map(p=>p.room).join(','),Object.entries(g.rotation).map(([k,v])=>`${k}${v}`).join(','),+g.leverEnabled,
-    g.shards.slice().sort().join(','),g.completedCards.slice().sort().join(','),g.activeRule||'-',+g.echoSeal,+g.heartRang,+g.exitUnlocked,g.cluesRead?.slice().sort().join(',')||'-',+g.riddleSolved,g.runeProgress||0,+g.dialSolved,...(g.dialSettings||[])].join('|');
+    g.shards.slice().sort().join(','),g.firstProps?.slice().sort().join(',')||'-',g.completedCards.slice().sort().join(','),g.activeRule||'-',+g.echoSeal,+g.heartRang,+g.exitUnlocked,g.cluesRead?.slice().sort().join(',')||'-',+g.riddleSolved,g.runeProgress||0,+g.dialSolved,...(g.dialSettings||[])].join('|');
 }
 function candidateActions(g){
   const actions=[],l=E.level(g),p0=g.players[0];
   // Find useful interactions first. For equal length solutions these appear early.
   const challenge=l.riddle||l.sequence;
+  if(l.id==='floor1'){
+    for(const p of g.players){
+      if(p.room==='A'&&!g.firstProps?.includes('study'))actions.push({playerId:p.id,action:{type:'PROP',prop:'study'}});
+      if(p.room==='F'&&g.firstProps?.includes('study')&&!g.firstProps.includes('cabinet'))actions.push({playerId:p.id,action:{type:'SAFE',code:'231'}});
+      if(p.room==='B'&&!g.firstProps?.includes('plaque')&&g.leverEnabled)actions.push({playerId:p.id,action:{type:'PROP',prop:'plaque'}});
+    }
+  }
   if(challenge){const clues=challenge.clues||{};for(const p of g.players)if(clues[p.room]&&!g.cluesRead.includes(p.room))actions.push({playerId:p.id,action:{type:'CLUE'}});}
   if(l.riddle&&!g.riddleSolved&&Object.keys(l.riddle.clues).every(r=>g.cluesRead.includes(r)))for(const p of g.players)if(p.room===l.riddle.room)actions.push({playerId:p.id,action:{type:'RIDDLE',answer:l.riddle.answer}});
   if(l.sequence&&g.runeProgress<l.sequence.rooms.length&&Object.keys(l.sequence.clues).every(r=>g.cluesRead.includes(r)))for(const p of g.players)if(p.room===l.sequence.rooms[g.runeProgress])actions.push({playerId:p.id,action:{type:'RUNE'}});
@@ -34,7 +41,7 @@ function candidateActions(g){
   for(const p of g.players){if(!g.leverEnabled&&p.room===l.lever)actions.push({playerId:p.id,action:{type:'LEVER'}});}
   if(l.required&&!g.completedCards.includes(l.required)){
     const info=E.RULES[l.required];
-    if(g.shards.includes(info.subject)&&g.shards.includes(info.predicate))actions.push({playerId:p0.id,action:{type:'INSCRIBE',rule:l.required}});
+    if(g.shards.includes(info.subject)&&g.shards.includes(info.predicate))actions.push({playerId:p0.id,action:{type:l.id==='floor1'?'REWRITE':'INSCRIBE',rule:l.required}});
   }
   for(const id of g.unlockedRules){
     if(l.id==='floor4'&&id!=='mirrors')continue;
@@ -79,6 +86,9 @@ function describe(g,step){
     case 'RIDDLE':return {title:'Solve the portraits’ question',detail:`${p.name} must stand in ${where}. Read both notes and choose the middle symbol. You can retry safely.`,target:p.room,label:'Choose a portrait',spatial:true,reasoning:true};
     case 'DIAL':return {title:'Turn the brass orrery',detail:`${p.name} is at the instrument. Read the three poetic clues and turn dial ${action.index+1} by one symbol. All players see the alignment.`,target:l.dial?.room||null,label:'Tune dial',spatial:true,reasoning:true};
     case 'RUNE':return {title:'Touch the next rune',detail:`${p.name} has reached the next rune room: ${where}. Look for the glowing Rune button. Clues reveal the proper order.`,target:p.room,label:'Touch rune',spatial:true,reasoning:true};
+    case 'PROP':return {title:action.prop==='study'?'Read the caretaker’s letter':'Read the hidden engraving',detail:action.prop==='study'?'Click the desk note in A. It shows three groups of symbols, needed for the lock in F.':'Inspect the writing behind the gear in B to find the second word.',target:p.room,label:action.prop==='study'?'Read letter':'Inspect engraving',spatial:true};
+    case 'SAFE':return {title:'Open the brass cabinet',detail:'The caretaker’s note in A shows two moons, three stars and one sun. Enter the numbers in that order on the cabinet in F.',target:'F',label:'Try the combination',spatial:true};
+    case 'REWRITE':return {title:'Make the rule true',detail:'You found both halves. In the Rulebook, write MIRRORS ARE DOORS and the actual floor plan changes.',target:null,label:'Rewrite reality',spatial:false};
     case 'LEVER':return {title:'Pull the brass mechanism',detail:`${p.name} is already in ${where}. Use the crank to power the rotating chamber.`,target:p.room,label:'Pull the crank',spatial:true};
     case 'ROTATE':return {title:`Turn the ${l.rooms[action.room].name}`,detail:'Look for the two curved arrows directly on the glowing cog room. A turn changes which doors line up.',target:action.room,label:'↻ Rotate the room',spatial:false};
     case 'MOVE':return {title:`Walk to ${l.rooms[action.to].name}`,detail:`${p.name} can walk from ${where} to the green-outlined room. Click that room on the map.`,target:action.to,label:`Walk to ${l.rooms[action.to].name} →`,spatial:true};

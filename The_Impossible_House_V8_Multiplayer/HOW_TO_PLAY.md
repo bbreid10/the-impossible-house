@@ -1,22 +1,20 @@
-# How to play · The Impossible House V8
+# How to play The Impossible House
 
-**Goal**: Two or more explorers must bring every player to the EXIT room (Room C). At the start the exit is sealed. Follow the current objective. Each chapter has a different puzzle.
+**Your goal:** Escape each floor. Room C is the exit, but it begins locked. A house rule can make an impossible route real.
 
-**At the map**: Select a portrait (offline solo) to choose which explorer you're controlling. GREEN rooms are reachable now. GOLD shows your current room. Click a GREEN room to walk there. A room with a cog can be turned using the large LEFT/RIGHT controls immediately *below* the map. The room stays in its place, but its door openings rotate 90°.
+You move by clicking a room whose outline is glowing green. A normal doorway works only when two adjoining room doors face each other. The large rotate buttons below the board turn Room B by 90 degrees, changing which rooms connect. Switching characters in solo mode changes which person you control, not which room they occupy. In online rooms each friend controls their own explorer.
 
-**Chapter 1 without spoilers**:
-1. Read the instruction **above** the six-room map. It first tells you to switch to the explorer in Room F and pull the crank.
-2. The next task directs you to rotate Room B and visit it to find a word fragment. Your starting explorer is in Room A.
-3. Open **Word Cards**, collect both words, inscribe the magic law and CAST it. The affected mirror rooms are highlighted, and the game describes the new ability on screen.
-4. Use the mirror to place one explorer on the Room D seal, and maneuver the other explorer onto Room E. Room C then unlocks.
-5. Get both explorers to Room C. If unsure, the guided route tells the current explorer their next action. A tiny guide toggle allows you to turn it off.
+## Chapter 1, naturally
 
-**Rules truly change the map**:
-- *Mirrors are doors* opens a non-neighbor portal plus a reflection investigation interaction.
-- *Rooms turn together* rotates both cog chambers and opens a walkable gear shaft.
-- *Walls become doors* turns multiple sealed walls into passable corridors.
-- Exactly one law can be active. Casting another can close an earlier passage, so plan your route before swapping.
+- Look for bright object labels. Start at the Study desk in A and **Read Letter**.
+- The letter is a clue to the three-number brass cabinet in F. Give its combination to the explorer there.
+- The cabinet contains a winding key and half a sentence. Insert the key into the crank in F, which powers Room B.
+- Rotate the hall until you can enter it from A. Read the inscription on its wheel to discover the other half.
+- Select **Rewrite the House**. `MIRRORS ARE DOORS` opens a previously nonexistent **walkable connection between Rooms F and D**. The two mirror chambers glow and become directly reachable.
+- When someone occupies the Moon seal in D while another occupies the Sun seal in E, the exit in C opens. Bring every explorer to C to finish.
 
-**Where the word search appears**: In Chapter 2 explore Room D (Gear Gallery), or in Chapter 6 Room A (Last Foyer). There is a torn page in the room. Clicking the page opens an optional 75-second shared word hunt. Find the five named words by selecting each word's first and last letters on the grid. They can be backwards or diagonal. Any teammate can contribute to the *same* grid once the puzzle starts. Timing out never ends the main game.
+The Notes drawer keeps all discovered clues. The Rules drawer displays earned statements and exactly which room connections they alter. You are never on an elimination timer in the main story; wrong cabinet answers are safe to retry.
 
-**Multiplayer**: Share the hosted HTTPS page or invite link. Host creates Private (link/code only) or Public (listed) room. Everyone joins, marks Ready, then host starts. Each person controls one explorer. In solo play you control two explorers on the same screen, which is useful for testing cooperation.
+## More chapters
+
+The later floors include linked gears, new wall passages, a three-dial deduction challenge, a portrait riddle, a cooperative rune sequence, and optional shared timed word hunts in Chapters 2 and 6. Players may discover words simultaneously: finds update for everybody in the room.

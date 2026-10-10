@@ -13,7 +13,7 @@ test('Guide can solve all six chapters using only legal actions',()=>{
  assert.equal(g.results.length,6);
 });
 test('Guide recovers after rotating the wrong way, without a restart',()=>{
- const g=fresh();assert.equal(E.act(g,'b',{type:'LEVER'}).ok,true);
+ const g=fresh();assert.ok(E.act(g,'a',{type:'PROP',prop:'study'}).ok);assert.ok(E.act(g,'b',{type:'SAFE',code:'231'}).ok);assert.equal(E.act(g,'b',{type:'LEVER'}).ok,true);
  for(let n=0;n<3;n++)E.act(g,'a',{type:'ROTATE',room:'B',dir:1});
  const path=G.solve(g,{limit:10000});assert.ok(path&&!path.unsolved);assert.ok(path.steps.length>3);
  path.steps.forEach(step=>assert.equal(E.act(g,step.playerId,step.action).ok,true));
@@ -21,7 +21,7 @@ test('Guide recovers after rotating the wrong way, without a restart',()=>{
 });
 test('Hidden keepsakes require exploring their specific room and can be collected only once',()=>{
  const g=fresh();assert.ok(E.act(g,'a',{type:'SEARCH'}).error);
- E.act(g,'b',{type:'LEVER'});E.act(g,'a',{type:'ROTATE',room:'B'});E.act(g,'a',{type:'MOVE',to:'B'});E.act(g,'a',{type:'ROTATE',room:'B'});E.act(g,'a',{type:'MOVE',to:'E'});
+ E.act(g,'a',{type:'PROP',prop:'study'});E.act(g,'b',{type:'SAFE',code:'231'});E.act(g,'b',{type:'LEVER'});E.act(g,'a',{type:'ROTATE',room:'B'});E.act(g,'a',{type:'MOVE',to:'B'});E.act(g,'a',{type:'ROTATE',room:'B'});E.act(g,'a',{type:'MOVE',to:'E'});
  assert.equal(E.act(g,'a',{type:'SEARCH'}).ok,true);assert.equal(g.foundSecrets.length,1);
  assert.equal(g.foundSecrets[0].id,'moon-key');assert.ok(E.act(g,'a',{type:'SEARCH'}).error);
  const path=G.solve(g);assert.ok(path&&!path.unsolved);path.steps.forEach(s=>assert.equal(E.act(g,s.playerId,s.action).ok,true));

@@ -57,6 +57,8 @@ test('Private and public room creation, visibility, joining, and synchronized li
   res=await req('/api/action',{code,token:host.token,action:{type:'START'}});
   assert.equal(res.status,200);
   assert.equal(res.body.state.phase,'playing');
+  await req('/api/action',{code,token:host.token,action:{type:'PROP',prop:'study'}});
+  await req('/api/action',{code,token:guest.token,action:{type:'SAFE',code:'231'}});
   await req('/api/action',{code,token:guest.token,action:{type:'LEVER'}});
   const push=await Promise.race([listen.ready,new Promise((_,reject)=>setTimeout(()=>reject(Error('No live SSE state arrived')),5000))]);
   assert.equal(push.leverEnabled,true,'Guest should see host-and-guest synchronized state');

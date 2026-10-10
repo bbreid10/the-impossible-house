@@ -1,28 +1,23 @@
-# The Impossible House · V8 Archive Edition
+# The Impossible House · V12
 
-A **six-chapter, 2–4-player cooperative online escape-room game**, plus a true offline solo playtest (where you control two explorers). Players physically rotate rooms, discover clues, and write laws that alter the map. The same authoritative Node engine powers both solo and the server.
+An atmospheric, browser-based cooperative escape-room mystery. Play with 2–4 explorers, or test alone by switching between two characters. No account or install is needed. Each room contains clues, puzzles, or mechanisms that can change the geography of the house.
 
-## Play immediately
+## Play
 
-- Open `PLAY_SOLO_OFFLINE.html` in Chrome or Edge. Start **Begin the story**. Choose each explorer by clicking their portraits. The guide starts **ON** in Chapter 1 and gives one move at a time, with a clear route to Room C.
-- To test multiplayer locally, run `npm start` and open `http://localhost:4173` in separate browsers. Create a public or private lobby and join with another device or tab.
-- To publish for other people, follow `DEPLOY_ON_RENDER.md`. Downloading the ZIP is not the same thing as publishing a public game.
+Public game: https://the-impossible-house-playtest.onrender.com
 
-## What's new in V8
+Start with **Begin the Story**. Read the letter on the desk in A, use its symbols to unlock the cabinet in F, wind the crank, rotate Room B and read the hidden inscription. Make `MIRRORS ARE DOORS` true, walk through the newly opened F ↔ D passage, activate both seals, and escape through Room C.
 
-**Real rewrites:**
-- `MIRRORS ARE DOORS` lets you teleport between the two mirror rooms AND remotely examine the other mirror's room to read its description or clue.
-- `ROOMS TURN TOGETHER` rotates linked gears in opposite directions AND creates a walkable shaft between the two cog rooms even when regular doors are misaligned.
-- `WALLS BECOME DOORS` opens multiple previously sealed wall passages in Chapters 3 and 6.
+## Run locally
 
-Only one law is in force at a time. The affected rooms are outlined in brass, newly opened passages appear on the floor plan, and a **REALITY REWRITTEN** banner confirms the exact changed rooms.
+Requires Node 20 or higher. Run `npm start` and visit http://localhost:4173. For automated tests run `npm test`.
 
-**Clear Chapter 1:** Five story steps, each with a current instruction and a progress indicator. Room C is labeled EXIT SEALED until both explorers activate the D and E seals. Rotating controls are directly under the six rooms. Beginners can use the Guide one move at a time without needing to read a solution document.
+## Deploy
 
-**Varied puzzles:** physical room routing, clue deduction, portraits, brass symbol dials, ordered runes, multiple law swaps, and two *optional* timed shared word hunts. There is no word-search shortcut on the home menu. A torn page is found naturally in Room D during Chapter 2 or Room A during Chapter 6. The explorer who discovers it starts the timed hunt; everyone can submit answers simultaneously, with one synchronized timer and found-word list.
+A Render Node Web Service already runs from this repository. Build: `npm install`. Start: `npm start` from the `The_Impossible_House_V8_Multiplayer` folder. Auto-deploys from `main` should preserve the existing Render free service and URL.
 
-**New art:** chapter-specific line-drawn architectural room illustrations, a dark cinematic house-diorama cover, brushed-ink textures, muted parchment, and minimal brass. Character customization still includes diverse skin tones, natural hairstyles, hair colors, adult outfits, and accessories.
+## Technology
 
-## Reliability and limits
+Pure Node.js server, server-validated actions, shared state broadcasts through SSE, procedural SVG characters, CSS-based gameplay UI, illustration atlas, no third-party runtime dependencies. All rooms and rules use the same engine in solo and online sessions.
 
-Run `npm test` to execute 29 automated tests, including a full six-chapter escape and a real two-client HTTP word hunt. Test with real devices once deployed too. User profiles and solo saves use local browser storage. Online room state is currently in Node process memory; sleeping/restarts clear active rooms. The chat has basic filtering and session-only reports, not professional moderation. Use trusted playtesters first.
+Read [V12_RELEASE_NOTES.md](V12_RELEASE_NOTES.md) for the newest puzzle and visual changes. Online rooms are transient in-memory sessions, which may reset on free-hosting sleep or deployment.

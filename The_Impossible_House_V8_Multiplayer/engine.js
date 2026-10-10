@@ -17,6 +17,13 @@ const RULES={
   linked:{id:'linked',title:'ROOMS TURN TOGETHER',subject:'ROOMS',predicate:'TURN TOGETHER',short:'Move two rooms as one. Open a living gear passage.',desc:'Turning one cog room turns the other in reverse and opens a gear passage between them.',accent:'#d8ba7e',symbol:'↻'},
   borrowed:{id:'borrowed',title:'WALLS BECOME DOORS',subject:'WALLS',predicate:'BECOME DOORS',short:'Turn sealed masonry into multiple walkable passages.',desc:'Every wall marked with the missing-door symbol opens a real passage.',accent:'#ba9bd5',symbol:'✦'}
 };
+// Physical evidence found by interacting with real props in Chapter 1.
+const FIRST_ROOM_PROPS={
+ study:{room:'A',name:'Caretaker’s letter',description:'In the Study, somebody left a letter beside a drawn lock. It explains why the house can be rewritten.'},
+ cabinet:{room:'F',name:'Brass cabinet',description:'The winding key and one half of a sentence are sealed behind three number wheels.'},
+ plaque:{room:'B',name:'The turning inscription',description:'Words etched behind the rotating brass wheel.'}
+};
+const FIRST_SAFE_CODE='231'; // Clue on Study letter: two moons, three stars, one sun.
 const SECRETS={
   floor1:{room:'E',id:'moon-key',name:'The Moon’s Spare Key',detail:'A silver key no longer opens anything. The House keeps it anyway.'},
   floor2:{room:'D',id:'clockwork-bird',name:'A Clockwork Sparrow',detail:'It chirps each time someone makes a brave decision.'},
@@ -39,17 +46,17 @@ function cleanAvatar(obj){const o=obj&&typeof obj==='object'?obj:{};const pick=(
 const r=(id,name,row,col,doors,detail='',rotatable=false)=>({id,name,short:name,row,col,doors,description:detail,rotatable});
 const LEVELS=[
  {
-  id:'floor1',number:1,title:'The House Has Opinions',subtitle:'The Turning Hall',epigraph:'Nothing is quite where it belongs.',intro:'A crank wakes the hall. Two halves of a sentence wake the mirrors.',required:'mirrors',spawn:['A','F'],
+  id:'floor1',number:1,title:'The House Has Opinions',subtitle:'The Turning Hall',epigraph:'Nothing is quite where it belongs.',intro:'Investigate the Study and locked cabinet, discover a hidden sentence, and use it to reunite at the exit.',required:'mirrors',spawn:['A','F'],
   rooms:{
-   A:r('A','The Study',0,0,['E','S'],'A candlelit entryway. The portrait appears to be judging you.'),
-   B:r('B','Turning Hall',0,1,['N','S'],'This room has two doors. Spin it to change the passage.',true),
+   A:r('A','The Study',0,0,['E','S'],'A caretaker’s letter waits on the desk. Count the symbols to decode the brass cabinet.'),
+   B:r('B','Turning Hall',0,1,['N','S'],'An engraving is hidden behind the great turning wheel. Rotate the hall to enter and inspect it.',true),
    C:r('C','The Staircase',0,2,['W'],'The exit is sealed by two ancient symbols.'),
    D:r('D','Mirror Gallery',1,0,['N'],'A silver mirror. A moon plate glimmers underfoot.'),
    E:r('E','Sun Chamber',1,1,['N'],'A golden sun plate hums whenever somebody stands here.'),
-   F:r('F','East Mirror',1,2,[],'A brass crank. A mysterious fragment: ARE DOORS.')
+   F:r('F','East Mirror',1,2,[],'A locked cabinet contains the winding key. The ancient mirror reflects a room far away.')
   },rotators:['B'],lever:'F',shards:{F:'ARE DOORS',B:'MIRRORS'},plates:['D','E'],exit:'C',mirrors:['D','F'],
-  story:['The House: “Guests! I had almost given up on being an inconvenience.”','The House: “Mirrors? Doors? Same sort of problem, really.”'],
-  hints:['Pull the crank in the isolated East Mirror room.','Rotate the Turning Hall sideways to enter it from the Study.','Combine your two word fragments, then cast MIRRORS ARE DOORS.','Send one explorer through the mirror to the Moon Plate. The other should reach the Sun Plate.','Rotate the hall to connect the staircase. Bring both explorers to the exit.']
+  story:['The House: “The caretaker left a note on the Study desk. One guest seems to have been stranded beside my mirror.”','The House: “You changed my words. I suppose I must change my walls.”'],
+  hints:['Find and read the letter on the desk in A. Count its moons, stars and suns: 2-3-1.','Enter the cabinet code in F. The key inside powers the crank.','Rotate the hall to face left/right, enter B and inspect the hidden inscription.','Use both words to rewrite the rule MIRRORS ARE DOORS. This physically opens a doorway between D and F.','Put different explorers on the Moon and Sun seals, then bring both into exit C.']
  },
  {
   id:'floor2',number:2,title:'The Clockwork Gallery',subtitle:'The House is Ticklish',epigraph:'A room never turns alone.',intro:'The two cog rooms share a secret connection. Discover their sentence.',required:'linked',spawn:['A','F'],
@@ -170,6 +177,10 @@ function rooms(state){return level(state).rooms;}
 function rotateDir(dir,turns){return DIRECTION[(DIRECTION.indexOf(dir)+turns%4+4)%4];}
 function doorsAt(state,id){const room=rooms(state)[id];return room?room.doors.map(dir=>rotateDir(dir,state.rotation[id]||0)):[];}
 function adjacentSide(a,b){if(!a||!b)return null;if(a.row===b.row&&a.col+1===b.col)return 'E';if(a.row===b.row&&a.col-1===b.col)return 'W';if(a.col===b.col&&a.row+1===b.row)return 'S';if(a.col===b.col&&a.row-1===b.row)return 'N';return null;}
+function mirrorEdge(state,from,to){
+ const m=level(state).mirrors||[];
+ return state.activeRule==='mirrors'&&m.length>1&&from!==to&&m.includes(from)&&m.includes(to);
+}
 function borrowedEdge(state,from,to){return state.activeRule==='borrowed' && (level(state).borrowed||[]).some(([a,b])=>a===from&&b===to || b===from&&a===to);}
 // A CAST of ROOMS TURN TOGETHER creates a *walkable* gear-shaft passage as
 // well as linking rotations. This is real world geometry, not a text bonus.
@@ -180,7 +191,7 @@ function gearEdge(state,from,to){
 // both use these exact affected rooms. Clients never validate movement.
 function ruleEffect(state,rule){
  const l=level(state);
- if(rule==='mirrors')return l.mirrors.length>1?{rooms:[...l.mirrors],ways:[`${l.mirrors.join(' ↔ ')} mirror tunnel`],changes:['Instant travel between distant mirrors','Read a room through its reflection without walking there'],color:'#bdc8cd'}:{rooms:[],ways:[],changes:['No paired mirrors on this floor. Try another rule.'],color:'#bdc8cd'};
+ if(rule==='mirrors')return l.mirrors.length>1?{rooms:[...l.mirrors],ways:[`${l.mirrors.join(' ↔ ')} mirror tunnel`],changes:['A real, clickable passage appears between the two distant mirror rooms','Stranded explorers can walk through glass to reunite','Reflections also reveal hidden clues'],color:'#bdc8cd'}:{rooms:[],ways:[],changes:['No paired mirrors on this floor. Try another rule.'],color:'#bdc8cd'};
  if(rule==='linked')return l.paired?.length===2?{rooms:[...l.paired],ways:[`${l.paired.join(' ↔ ')} gear shaft`],changes:['Both cog rooms rotate in opposite directions','An open shaft connects their floors, even with misaligned doors'],color:'#d7b488'}:{rooms:[],ways:[],changes:['No paired gears on this floor. Try another rule.'],color:'#d7b488'};
  if(rule==='borrowed'){const edges=l.borrowed||[];return {rooms:[...new Set(edges.flat())],ways:edges.map(([a,b])=>`${a} ↔ ${b} missing doorway`),changes:[`${edges.length} wall passage${edges.length===1?'':'s'} become real`,'Blocked routes reopen when you cast this rule'],color:'#c5ab91'};}
  return {rooms:[],ways:[],changes:[],color:'#d7b488'};
@@ -188,7 +199,11 @@ function ruleEffect(state,rule){
 function connection(state,from,to){
  const all=rooms(state),a=all[from],b=all[to];
  if(!a||!b)return {ok:false,why:'That room does not exist.'};
- const side=adjacentSide(a,b);if(!side)return {ok:false,why:'Those rooms are not neighbors. Move one room at a time.'};
+ const side=adjacentSide(a,b);
+ // When the player REWRITES reality, a new non-adjacent exit truly exists.
+ // This is ordinary validated movement, not only a secret teleport button.
+ if(!side && mirrorEdge(state,from,to))return {ok:true,mirrored:true,dir:'PORTAL'};
+ if(!side)return {ok:false,why:'Those rooms are not connected. Look for an illuminated passage or rewrite a law of the House.'};
  // Borrowed doors appear on BOTH marked adjoining walls, irrespective of ordinary doors.
  const aligned=doorsAt(state,from).includes(side)&&doorsAt(state,to).includes(OPPOSITE[side]);
  if(!aligned&&!borrowedEdge(state,from,to)&&!gearEdge(state,from,to))return {ok:false,why:'Those doors are not connected. Try rotating a cog room or changing the House Rule.'};
@@ -198,7 +213,7 @@ function connection(state,from,to){
 function note(state,text,kind='system'){state.log.push({text,kind,at:Date.now()});if(state.log.length>12)state.log.shift();}
 function newGame({code='SOLO00',visibility='private',solo=false}={}){
  const g={code,visibility,solo,hostId:null,players:[],phase:'lobby',levelId:'floor1',levelIndex:0,
-  rotation:{},leverEnabled:false,shards:[],completedCards:[],unlockedRules:[],activeRule:null,lastRewrite:null,exitUnlocked:false,heartRang:false,echoSeal:false,
+  rotation:{},leverEnabled:false,firstProps:[],safeAttempts:0,shards:[],completedCards:[],unlockedRules:[],activeRule:null,lastRewrite:null,exitUnlocked:false,heartRang:false,echoSeal:false,
   cluesRead:[],riddleSolved:false,runeProgress:0,puzzleMistakes:0,dialSettings:[0,0,0],dialSolved:false,
   hunt:{status:'idle',found:[],expiresAt:0,attempts:0},insightTokens:0,
   moves:0,rotations:0,ruleChanges:0,hintsUsed:0,totalHints:0,startedAt:null,finishedAt:null,results:[],journal:[],version:0,ping:null,
@@ -208,7 +223,7 @@ function newGame({code='SOLO00',visibility='private',solo=false}={}){
 function resetFloor(state,index,hasStarted=true){
  const l=LEVELS[index];if(!l)throw Error('Unknown level index');
  state.levelId=l.id;state.levelIndex=index;state.rotation={};for(const room of Object.values(l.rooms))if(room.rotatable)state.rotation[room.id]=0;
- state.leverEnabled=!l.lever;state.shards=[];state.completedCards=[];state.activeRule=null;state.lastRewrite=null;state.exitUnlocked=false;state.heartRang=false;state.echoSeal=false;
+ state.leverEnabled=!l.lever;state.firstProps=[];state.safeAttempts=0;state.shards=[];state.completedCards=[];state.activeRule=null;state.lastRewrite=null;state.exitUnlocked=false;state.heartRang=false;state.echoSeal=false;
  state.cluesRead=[];state.riddleSolved=false;state.runeProgress=0;state.puzzleMistakes=0;state.dialSettings=[0,0,0];state.dialSolved=false;
  state.hunt={status:'idle',found:[],expiresAt:0,attempts:0};
  state.moves=0;state.rotations=0;state.ruleChanges=0;state.hintsUsed=0;state.startedAt=hasStarted?Date.now():null;state.finishedAt=null;
@@ -283,7 +298,7 @@ function act(state,playerId,action){
  if(t==='MOVE'){
   if(p.room===action.to)return {error:'You are already there.'};
   const c=connection(state,p.room,action.to);if(!c.ok)return {error:c.why};
-  p.room=action.to;state.moves++;findShard(state,action.to);return success(state);
+  p.room=action.to;state.moves++;if(l.id!=='floor1')findShard(state,action.to);return success(state, c.mirrored?`${p.name} walks THROUGH the mirror into ${all[action.to].name}. The new law has changed the floor plan!`:'');
  }
  if(t==='PORTAL'){
   if(state.activeRule!=='mirrors')return {error:'Activate MIRRORS ARE DOORS first.'};
@@ -305,7 +320,47 @@ function act(state,playerId,action){
  if(t==='LEVER'){
   if(p.room!==l.lever)return {error:'The switch is in another room.'};
   if(state.leverEnabled)return {error:'The mechanism is already active.'};
-  state.leverEnabled=true;findShard(state,p.room);return success(state,'CLUNK! A mechanical lock releases. You may rotate the glowing room.','discovery');
+  if(l.id==='floor1'&&!state.firstProps?.includes('cabinet'))return {error:'The crank has no winding key. Open the brass cabinet first by using the clue in the Study.'};
+  state.leverEnabled=true;if(l.id!=='floor1')findShard(state,p.room);
+  return success(state,'CLUNK! The winding key powers the hall. You can now rotate the giant mechanism in Room B.','discovery');
+ }
+ // A small, physical escape-room interaction: read a note, crack a cabinet,
+ // and inspect a hidden engraving. The server checks who is in which room.
+ if(t==='PROP' && l.id==='floor1'){
+   const prop=action.prop;
+   if(!['study','plaque'].includes(prop))return {error:'That object cannot be inspected that way.'};
+   if(p.room!==FIRST_ROOM_PROPS[prop].room)return {error:`Move to Room ${FIRST_ROOM_PROPS[prop].room} to inspect that object.`};
+   if(state.firstProps.includes(prop))return {error:'Your team already examined that evidence. Open Notes to read it again.'};
+   if(prop==='plaque'&&!state.leverEnabled)return {error:'The brass wheel must turn before you can read the engraving.'};
+   state.firstProps.push(prop);
+   if(prop==='study'){
+     state.journal.push({key:'floor1-letter',title:'Caretaker’s letter · Study',description:'“To wake the house, count the marks in order: moons, stars, suns. ☾☾ / ★★★ / ☼. Behind the three brass wheels waits a winding key. The HOUSE obeys what you WRITE.”'});
+     return success(state,'You found a real clue! The letter shows ☾☾ / ★★★ / ☼. Count each group for the code on the brass cabinet in Room F.','discovery');
+   }
+   findShard(state,'B');
+   state.journal.push({key:'floor1-inscription',title:'Engraving · Turning Hall',description:'Behind the rotating wheel: “MIRRORS”. This word belongs to the sentence found in the brass cabinet. What if the sentence could be made true?'});
+   return success(state,'You read the hidden inscription: MIRRORS. The team now has a second word fragment.','discovery');
+ }
+ if(t==='SAFE' && l.id==='floor1'){
+   if(p.room!=='F')return {error:'The combination cabinet is in Room F.'};
+   if(state.firstProps.includes('cabinet'))return {error:'The cabinet is already open. Use the winding key to pull the crank.'};
+   if(typeof action.code!=='string'|| !/^\d{3}$/.test(action.code))return {error:'Enter the three-number combination found in the caretaker’s letter.'};
+   if(!state.firstProps.includes('study'))return {error:'Find the caretaker’s letter in the Study first. It explains the lock.'};
+   if(action.code!==FIRST_SAFE_CODE){state.safeAttempts++;return success(state,'The cabinet rattles, but stays shut. The letter shows three groups: moons, stars, suns. Count each group.','house');}
+   state.firstProps.push('cabinet');findShard(state,'F');
+   state.journal.push({key:'floor1-cabinet',title:'Inside the brass cabinet',description:'A winding key, and the word fragment “ARE DOORS”. Another half of the sentence must be hidden near the turning wheel in Room B.'});
+   return success(state,'CLICK! The cabinet opens. You recover a winding key and a paper fragment: ARE DOORS. The wheel in B may hide the other half.','discovery');
+ }
+ if(t==='REWRITE'){
+   const rule=action.rule||l.required,info=RULES[rule];
+   if(!info||rule!==l.required)return {error:'That sentence is not on this floor.'};
+   if(!state.shards.includes(info.subject)||!state.shards.includes(info.predicate))return {error:'Find both word fragments first.'};
+   if(state.activeRule===rule)return {error:'The new law is already in effect.'};
+   if(!state.completedCards.includes(rule)){state.completedCards.push(rule);state.unlockedRules.push(rule);}
+   const old=state.activeRule;state.activeRule=rule;state.ruleChanges++;
+   const effect=ruleEffect(state,rule);
+   state.lastRewrite={rule,old,rooms:effect.rooms,ways:effect.ways,changes:effect.changes,serial:state.ruleChanges,at:Date.now()};
+   return success(state,`THE HOUSE CHANGES: ${info.title}! A new ${effect.ways.join(' · ')} opens. Click a glowing mirror room to walk through it.`,'magic');
  }
  if(t==='ROTATE')return turnRoom(state,action.room,action.dir);
  if(t==='INSCRIBE'){
@@ -431,6 +486,16 @@ function objective(state,p){
  if(state.phase==='intermission')return {title:'Floor escaped!',detail:'The house has moved the staircase. Continue when everyone is ready.',action:'NEXT',label:'Enter next floor',target:null};
  if(state.phase==='complete')return {title:'You escaped the Impossible House!',detail:'The front door opens. The house seems disappointed.',action:null};
  const l=level(state),rule=l.required;
+ if(l.id==='floor1'){
+  const props=state.firstProps||[];
+  if(!props.includes('study'))return {title:'Read the caretaker’s letter',detail:'A letter lies on the desk in the Study (Room A). Click Read Letter to discover your first clue.',target:'A',action:'PROP',prop:'study'};
+  if(!props.includes('cabinet'))return {title:'Open the locked brass cabinet',detail:'Room F has a three-number lock. In the Study letter, count the moons, stars and suns. Work with your teammate to enter the code.',target:'F',action:'SAFE'};
+  if(!state.leverEnabled)return {title:'Use the key to power the hall',detail:'The cabinet contained a winding key. Pull the crank in Room F to activate Room B.',target:'F',action:'LEVER'};
+  if(!props.includes('plaque'))return {title:'Find the inscription inside Room B',detail:'Rotate Room B sideways to align it with Room A. Enter the hall and inspect the brass engraving.',target:'B',action:'PROP',prop:'plaque'};
+  if(state.activeRule!=='mirrors')return {title:'Rewrite reality with your clues',detail:'You found MIRRORS + ARE DOORS. Put them together and make the statement TRUE. This creates a new passage between D and F.',target:null,action:'REWRITE',rule:'mirrors'};
+  if(!state.echoSeal)return {title:'Light the Moon and Sun seals',detail:'The mirror rule opened a passage between Rooms F and D. Use it to reach the Moon seal while another explorer reaches the Sun seal in E.',target:'D',action:null};
+  return {title:'Escape through the unsealed Staircase',detail:'Both seals have opened C. Rotate B so its doors face left/right, then bring every explorer into C.',target:'C',action:null};
+ }
  if(l.riddle && !state.riddleSolved){
   const unread=Object.keys(l.riddle.clues).find(room=>!state.cluesRead.includes(room));
   if(unread)return {title:'Compare the two portrait clues',detail:`Read the note in ${l.rooms[unread].name}. Each explorer begins beside one clue.`,target:unread,action:'CLUE'};
@@ -463,7 +528,9 @@ function objective(state,p){
 }
 function hint(state,p){
  const l=level(state);if(state.phase!=='playing')return ['Enjoy your victory.'];
- const o=objective(state,p);const generic={
+ const o=objective(state,p);
+ if(l.id==='floor1')return [o.detail,'Click the glowing object in the room where the clue is found. The Notes drawer keeps your evidence.','MIRRORS ARE DOORS turns two distant mirror chambers into a real new doorway.'];
+ const generic={
   'Wake up the house':`Look for the brass mechanism in ${l.rooms[l.lever].name}. Switch explorers in solo mode if needed.`,
   'Find the missing words':`A glowing word fragment is waiting in ${l.rooms[o.target]?.name||'another room'}. Green room borders show where you can walk.`,
   'Write the magic sentence':'Both fragments are in the Word Cards panel. Write the finished sentence to unlock its power.',
@@ -477,7 +544,13 @@ function hint(state,p){
  };
  return [generic[o.title]||l.hints[Math.min(4,state.hintsUsed%5)],...l.hints];
 }
-function progress(state){const l=level(state);if(l.dial)return [
+function progress(state){const l=level(state);
+ if(l.id==='floor1')return [
+  {label:'Investigate',done:(state.firstProps||[]).includes('study')},
+  {label:'Unlock cabinet',done:(state.firstProps||[]).includes('cabinet')},
+  {label:'Rewrite',done:state.activeRule==='mirrors'},
+  {label:'Escape',done:['intermission','complete'].includes(state.phase)}];
+ if(l.dial)return [
  {label:'Find words',done:state.completedCards.includes(l.required)},
  {label:'Brass dials',done:state.dialSolved},
  {label:'Two seals',done:state.echoSeal},
@@ -497,6 +570,6 @@ function progress(state){const l=level(state);if(l.dial)return [
  {label:'Escape',done:['intermission','complete'].includes(state.phase)}
 ];}
 function rating(state,phase=state.phase){if(!['intermission','complete'].includes(phase))return 0;if(state.hintsUsed===0&&state.rotations<=5)return 3;if(state.hintsUsed<=2&&state.rotations<=9)return 2;return 1;}
-return {LEVELS,LEVEL_BY_ID,RULES,SECRETS,HUNTS,selectedWord,SKINS,HAIRS,HAIR_COLORS,OUTFITS,ACCESSORIES,CLOTHES,EXPRESSIONS,SPARKS,avatarFallback,
+return {LEVELS,LEVEL_BY_ID,RULES,SECRETS,FIRST_ROOM_PROPS,HUNTS,selectedWord,SKINS,HAIRS,HAIR_COLORS,OUTFITS,ACCESSORIES,CLOTHES,EXPRESSIONS,SPARKS,avatarFallback,
  newGame,addPlayer,act,rooms,level,doorsAt,connection,ruleEffect,progress,objective,hint,rating,cleanAvatar,cleanName};
 });

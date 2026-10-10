@@ -3,7 +3,25 @@ const test=require('node:test'),assert=require('node:assert/strict'),E=require('
 function setup(count=2){const g=E.newGame();for(let i=0;i<count;i++)E.addPlayer(g,{id:`p${i}`,name:`Explorer ${i+1}`});for(let i=1;i<count;i++)E.act(g,`p${i}`,{type:'READY',ready:true});ok(g,'p0',{type:'START'});return g;}
 function ok(g,p,a){const res=E.act(g,p,a);assert.equal(res.ok,true,`Expected ${JSON.stringify(a)} to work on ${g.levelId}, got ${res.error}`);return g;}
 function bad(g,p,a){const before=JSON.stringify(g);const r=E.act(g,p,a);assert.ok(r.error,`Expected ${JSON.stringify(a)} to be rejected`);assert.equal(JSON.stringify(g),before,'Rejected action must not change state');}
-function finish1(g){ok(g,'p1',{type:'LEVER'});ok(g,'p0',{type:'ROTATE',room:'B'});ok(g,'p0',{type:'MOVE',to:'B'});ok(g,'p0',{type:'INSCRIBE',rule:'mirrors'});ok(g,'p0',{type:'RULE',rule:'mirrors'});ok(g,'p1',{type:'PORTAL'});ok(g,'p0',{type:'ROTATE',room:'B'});ok(g,'p0',{type:'MOVE',to:'E'});assert.equal(g.exitUnlocked,true);ok(g,'p0',{type:'MOVE',to:'B'});ok(g,'p0',{type:'ROTATE',room:'B'});ok(g,'p0',{type:'MOVE',to:'C'});ok(g,'p1',{type:'MOVE',to:'A'});ok(g,'p1',{type:'MOVE',to:'B'});ok(g,'p1',{type:'MOVE',to:'C'});return g;}
+function prepareEvidence(g,p0='p0',p1='p1'){
+ ok(g,p0,{type:'PROP',prop:'study'});
+ ok(g,p1,{type:'SAFE',code:'231'});
+ ok(g,p1,{type:'LEVER'});
+}
+function discoverLaw(g,p0='p0'){
+ ok(g,p0,{type:'ROTATE',room:'B'});
+ ok(g,p0,{type:'MOVE',to:'B'});
+ ok(g,p0,{type:'PROP',prop:'plaque'});
+ ok(g,p0,{type:'REWRITE',rule:'mirrors'});
+ assert.equal(E.connection(g,'F','D').mirrored,true,'new mirror rule creates a real clickable door');
+}
+function finish1(g){
+ prepareEvidence(g);discoverLaw(g);
+ ok(g,'p1',{type:'MOVE',to:'D'});
+ ok(g,'p0',{type:'ROTATE',room:'B'});ok(g,'p0',{type:'MOVE',to:'E'});
+ assert.equal(g.exitUnlocked,true);ok(g,'p0',{type:'MOVE',to:'B'});ok(g,'p0',{type:'ROTATE',room:'B'});
+ ok(g,'p0',{type:'MOVE',to:'C'});ok(g,'p1',{type:'MOVE',to:'A'});ok(g,'p1',{type:'MOVE',to:'B'});ok(g,'p1',{type:'MOVE',to:'C'});return g;
+}
 function finish2(g){ok(g,'p1',{type:'LEVER'});ok(g,'p0',{type:'MOVE',to:'D'});ok(g,'p0',{type:'INSCRIBE',rule:'linked'});ok(g,'p0',{type:'RULE',rule:'linked'});ok(g,'p0',{type:'ROTATE',room:'B'});assert.equal(g.rotation.E,3,'paired room must turn counterclockwise');ok(g,'p0',{type:'MOVE',to:'A'});ok(g,'p0',{type:'MOVE',to:'B'});ok(g,'p1',{type:'MOVE',to:'E'});ok(g,'p0',{type:'MOVE',to:'C'});ok(g,'p1',{type:'MOVE',to:'D'});ok(g,'p1',{type:'MOVE',to:'A'});ok(g,'p1',{type:'MOVE',to:'B'});ok(g,'p1',{type:'MOVE',to:'C'});return g;}
 function finish3(g){ok(g,'p1',{type:'LEVER'});ok(g,'p0',{type:'MOVE',to:'D'});ok(g,'p0',{type:'INSCRIBE',rule:'borrowed'});ok(g,'p0',{type:'RULE',rule:'borrowed'});assert.equal(E.connection(g,'F','E').ok,true,'borrowed wall should be a door');ok(g,'p1',{type:'MOVE',to:'E'});ok(g,'p1',{type:'MOVE',to:'B'});ok(g,'p0',{type:'MOVE',to:'A'});ok(g,'p0',{type:'ROTATE',room:'B'});ok(g,'p0',{type:'MOVE',to:'B'});ok(g,'p0',{type:'DIAL',index:0,delta:1});ok(g,'p0',{type:'DIAL',index:0,delta:1});ok(g,'p0',{type:'DIAL',index:1,delta:-1});assert.equal(g.dialSolved,true);ok(g,'p0',{type:'MOVE',to:'C'});ok(g,'p1',{type:'MOVE',to:'C'});return g;}
 function finishFinal(g){ok(g,'p0',{type:'RULE',rule:'mirrors'});ok(g,'p1',{type:'PORTAL'});ok(g,'p0',{type:'ROTATE',room:'B'});ok(g,'p0',{type:'MOVE',to:'B'});ok(g,'p0',{type:'ROTATE',room:'B'});ok(g,'p0',{type:'MOVE',to:'E'});assert.equal(g.echoSeal,true);assert.equal(g.exitUnlocked,false);ok(g,'p0',{type:'RULE',rule:'linked'});ok(g,'p0',{type:'ROTATE',room:'B'});assert.equal(g.heartRang,true);ok(g,'p0',{type:'ROTATE',room:'B'});ok(g,'p0',{type:'MOVE',to:'B'});ok(g,'p0',{type:'ROTATE',room:'B'});ok(g,'p0',{type:'RULE',rule:'borrowed'});assert.equal(E.connection(g,'B','C').ok,true);ok(g,'p0',{type:'MOVE',to:'C'});ok(g,'p1',{type:'MOVE',to:'A'});ok(g,'p1',{type:'MOVE',to:'B'});ok(g,'p1',{type:'MOVE',to:'C'});return g;}
@@ -11,7 +29,7 @@ function finishFinal(g){ok(g,'p0',{type:'RULE',rule:'mirrors'});ok(g,'p1',{type:
 test('Doors only connect when orientations match, and rules are earned',()=>{
  const g=setup();assert.equal(E.connection(g,'A','D').ok,true);assert.equal(E.connection(g,'A','B').ok,false);
  bad(g,'p0',{type:'MOVE',to:'B'});bad(g,'p0',{type:'ROTATE',room:'B'});bad(g,'p1',{type:'PORTAL'});bad(g,'p0',{type:'RULE',rule:'linked'});bad(g,'p1',{type:'INSCRIBE',rule:'mirrors'});
- ok(g,'p1',{type:'LEVER'});ok(g,'p0',{type:'ROTATE',room:'B'});assert.equal(E.connection(g,'A','B').ok,true);
+ bad(g,'p1',{type:'LEVER'});prepareEvidence(g);ok(g,'p0',{type:'ROTATE',room:'B'});assert.equal(E.connection(g,'A','B').ok,true);
 });
 test('First chapter cooperatively reveals cards, opens seals, and moves both explorers out',()=>{
  const g=setup();finish1(g);assert.equal(g.phase,'intermission');assert.deepEqual(g.unlockedRules,['mirrors']);assert.equal(g.results.length,1);assert.equal(g.results[0].stars,3);
@@ -38,12 +56,12 @@ test('Logic clues must be found, and a wrong answer never ends a run',()=>{
  ok(g,'p0',{type:'RIDDLE',answer:'moon'});assert.equal(g.riddleSolved,true);
 });
 test('Pressure plates need distinct explorers and every explorer must reach the exit',()=>{
- const g=setup(3);ok(g,'p1',{type:'LEVER'});ok(g,'p0',{type:'ROTATE',room:'B'});ok(g,'p0',{type:'MOVE',to:'B'});ok(g,'p0',{type:'INSCRIBE',rule:'mirrors'});ok(g,'p0',{type:'RULE',rule:'mirrors'});ok(g,'p1',{type:'PORTAL'});ok(g,'p0',{type:'ROTATE',room:'B'});ok(g,'p0',{type:'MOVE',to:'E'});assert.equal(g.exitUnlocked,true);
+ const g=setup(3);prepareEvidence(g);discoverLaw(g);ok(g,'p1',{type:'MOVE',to:'D'});ok(g,'p0',{type:'ROTATE',room:'B'});ok(g,'p0',{type:'MOVE',to:'E'});assert.equal(g.exitUnlocked,true);
  ok(g,'p0',{type:'MOVE',to:'B'});ok(g,'p0',{type:'ROTATE',room:'B'});ok(g,'p0',{type:'MOVE',to:'C'});ok(g,'p1',{type:'MOVE',to:'A'});ok(g,'p1',{type:'MOVE',to:'B'});ok(g,'p1',{type:'MOVE',to:'C'});
  assert.equal(g.phase,'playing','third explorer still needs to reach exit');ok(g,'p2',{type:'MOVE',to:'B'});ok(g,'p2',{type:'MOVE',to:'C'});assert.equal(g.phase,'intermission');
 });
 test('A reset restores the stage and cannot be executed by guests',()=>{
- const g=setup();ok(g,'p1',{type:'LEVER'});ok(g,'p0',{type:'ROTATE',room:'B'});bad(g,'p1',{type:'RESET'});ok(g,'p0',{type:'RESET'});assert.equal(g.leverEnabled,false);assert.equal(g.rotation.B,0);assert.equal(g.players[1].room,'F');
+ const g=setup();prepareEvidence(g);ok(g,'p0',{type:'ROTATE',room:'B'});bad(g,'p1',{type:'RESET'});ok(g,'p0',{type:'RESET'});assert.equal(g.leverEnabled,false);assert.equal(g.rotation.B,0);assert.equal(g.players[1].room,'F');
 });
 test('Names and character choices are sanitized and limits are enforced',()=>{
  const a=E.cleanAvatar({hair:'dinosaur',skin:'#111111',outfit:'#FFFFFF',accessory:'star pin',clothes:'dress'});

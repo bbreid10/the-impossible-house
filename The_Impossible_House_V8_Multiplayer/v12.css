@@ -1,0 +1,64 @@
+/* V12 · The House of Evidence: crisp physical props and actual rewritten passages. */
+:root{--paper:#e8d8bb;--ink:#1c2524;--brass:#cca775;--mint:#a5eed3}
+.home-page .hero-art-stage{border-radius:5px!important;border:1px solid #8f714fbb;transform:none;box-shadow:0 28px 55px #0009,0 0 0 7px #261d18;aspect-ratio:1.05;max-height:680px;background:#0b1721}
+.home-page .hero-art-stage img{filter:none!important;object-fit:cover;object-position:center 57%}
+.home-page .hero-art-stage:before{background:linear-gradient(0deg,#081219db,transparent 31%),linear-gradient(90deg,#0002,transparent 45%)}
+.home-page .hero-art-stage:after{border:5px solid #9277545e!important}
+.home-page .hero-seal{bottom:12px;right:14px;background:#112129eb;border:1px solid #cfa9759c}
+.home-page .hero-title{font-size:clamp(52px,5.7vw,92px);line-height:1.01;letter-spacing:-.045em}
+.home-page .hero-sub{max-width:51ch;line-height:1.7;font-size:15px;color:#d4d6cc}
+.home-page .hero-sub b{color:#f0d7aa}
+.home-page .home-proof{opacity:.82}
+.v10-header small{letter-spacing:.11em}
+.v10-mission{background:linear-gradient(100deg,#2a2927,#142129 63%,#102027);border-color:#9a76517a;border-left-width:4px;padding:12px 15px!important}
+.v10-mission h2{font-size:clamp(19px,2vw,24px)}
+.v10-mission p{font-size:12px;line-height:1.5;color:#e0ddcb}
+.v10-mission-actions .btn{min-height:40px}
+.v11-house-shell .v11-scene:before{filter:brightness(1.08) saturate(.91)}
+.v11-house-shell .room-tile:before{background:linear-gradient(0deg,#040807c4 0%,transparent 37%);opacity:.65}
+.v11-house-shell .room-tile:after{background:linear-gradient(90deg,#0006,transparent 11%,transparent 88%,#0006)}
+.v11-house-shell .room-tile.reachable .v11-scene:after{border-color:#c0edc9!important;box-shadow:inset 0 0 18px #8eeaba36,0 0 24px #9feec15c}
+.v11-house-shell .room-shell.coach-target .object-tag{background:#e0c28f!important;color:#172327!important;border-color:#f4e6cc!important;box-shadow:0 0 14px #e7ba77a8}
+.v11-house-shell .object-tag.word{background:#e1bc86;color:#162123;font-weight:900;font-size:10px;letter-spacing:.025em}
+.v11-house-shell .room-tile.my-room .v11-scene:after{border:3px solid #ffdea4}
+.v11-house-shell .v12-prop{max-width:calc(100% - 18px);font-weight:900;font-size:clamp(9px,.9vw,12px)!important;letter-spacing:.03em!important;padding:8px 10px!important;border-radius:3px;bottom:42px!important;left:10px;line-height:1.1;box-shadow:0 0 17px #0009,0 0 24px #eed6ac3e;animation:v12-glint 2s ease-in-out infinite alternate}
+.v11-house-shell .v12-prop:hover{background:#ffdfa2!important;transform:translateY(-1px)}
+.v12-find-panel{max-width:1150px;margin:10px auto 0;color:#eee8d9;background:linear-gradient(109deg,#1b2830,#233232 40%,#14242b);border:1px solid #8e785f88;box-shadow:0 10px 22px #0006;overflow:hidden}
+.v12-find-head{padding:10px 16px;display:flex;align-items:center;justify-content:space-between;gap:10px;background:#0c1519ad;border-bottom:1px solid #b69b6454;font-size:10px;letter-spacing:.11em;color:#ecd3aa;font-weight:800}
+.v12-evidence-progress{display:flex;gap:8px;letter-spacing:0;font-size:10px;color:#a5aaa2;font-weight:500}
+.v12-evidence-progress span{padding:3px 6px;border-radius:18px;border:1px solid #86766066}
+.v12-evidence-progress span.collected{color:#c4f2d4;background:#20463e;border-color:#688d7c}
+.v12-find-body{padding:13px 18px 15px;display:flex;align-items:center;justify-content:space-between;gap:15px;min-height:87px}
+.v12-find-body>div:first-child{flex:1;min-width:0}
+.v12-find-body h2{font:500 clamp(19px,2vw,26px)/1.15 Georgia,serif;color:#f4deb8;letter-spacing:-.018em;margin:0 0 6px}
+.v12-find-body p{font-size:13px;line-height:1.5;color:#d8dfd6;margin:3px 0;max-width:72ch}
+.v12-find-body .btn{white-space:normal;background:#dfbe8d!important;color:#102026!important;min-width:175px;min-height:43px;font-weight:800;border-color:#f7dfaf!important}
+.v12-find-body .btn:hover{background:#f7d4a0!important}
+.v12-letter{margin:6px 0 1px;background:linear-gradient(#eee0c5,#daccad);border:1px solid #bd9868;color:#2d271e;padding:12px 15px;box-shadow:0 5px 13px #0006;max-width:730px}
+.v12-letter small{color:#6b5136;font-size:9px;letter-spacing:.16em;font-weight:900}
+.v12-letter p{color:#38332a!important;font:500 14px/1.5 Georgia,serif!important}
+.v12-cipher{display:flex;flex-wrap:wrap;gap:15px;align-items:center;margin:9px 0}
+.v12-cipher span{font:700 clamp(24px,3vw,34px)/1.2 Georgia,serif;letter-spacing:.11em;color:#765b3c;padding:3px 7px;border-bottom:1px solid #a98a60}
+#v12-cabinet-form{margin:11px 0 6px}#v12-cabinet-form label{display:block;color:#ebd5ac;font-size:10px;letter-spacing:.05em;margin-bottom:5px}
+.v12-cabinet-input{display:flex;align-items:stretch;gap:8px}
+.v12-cabinet-input input{width:119px;min-height:46px;text-align:center;letter-spacing:.25em;color:#242922;font-size:25px;font-weight:900;background:#f5e4ca;border:2px solid #b48c53;border-radius:3px}
+.v12-cabinet-input input:disabled{opacity:.45}
+.v12-cabinet-input button{background:#d3ac73;color:#172323;border:1px solid #f5d7a3;font-weight:900;padding:8px 16px;cursor:pointer;border-radius:3px}
+.v12-cabinet-input button:disabled{opacity:.42;cursor:not-allowed}
+.v12-await{color:#e7b990!important}
+.v12-mirror-bridge{position:absolute;left:14%;right:14%;bottom:17%;height:5px;border-radius:6px;pointer-events:none;z-index:26;background:linear-gradient(90deg,#e2f4ff,#9bf5dd,#b3faf8,#f2fcff);box-shadow:0 0 7px #a7f9ff,0 0 23px #bdfde4,0 0 50px #70ffe88f;transform:translateY(-6px);animation:v12-bridge 1.8s ease-in-out infinite alternate}
+.v12-mirror-bridge:before,.v12-mirror-bridge:after{content:'';position:absolute;top:-12px;width:25px;height:25px;border-radius:100%;background:#b5f8ec;box-shadow:0 0 18px #bffff0;opacity:.9}
+.v12-mirror-bridge:before{left:-7px}.v12-mirror-bridge:after{right:-7px}
+.v12-mirror-bridge i{display:block;position:absolute;left:50%;top:-23px;transform:translateX(-50%);white-space:nowrap;padding:3px 12px;border-radius:22px;background:#102f36eb;border:1px solid #9ad9b8;color:#d5fff4;font:700 9px/1.25 system-ui, sans-serif;letter-spacing:.1em;font-style:normal}
+.v10-drawer .wordbook{color:#202622}
+.v10-drawer .wordbook .rulebook-intro h3{color:#282722}
+.v10-drawer .wordbook .rulebook-intro p{line-height:1.5}
+@keyframes v12-glint{0%{box-shadow:0 0 11px #0008,0 0 6px #e8c78d46}100%{box-shadow:0 0 17px #0008,0 0 22px #edd49d7c}}
+@keyframes v12-bridge{0%{opacity:.58;filter:brightness(.85)}100%{opacity:1;filter:brightness(1.1)}}
+@media(min-width:1000px) and (max-height:900px){.v11-house-shell .room-tile{aspect-ratio:2.3!important}.v11-house-shell .v11-dollhouse{padding-top:44px}.v10-context{padding-bottom:5px}}
+@media(max-width:800px){.v12-find-head{flex-wrap:wrap;gap:7px}.v12-find-body{padding:12px;flex-wrap:wrap}.v12-find-body .btn{min-width:100%}.v12-evidence-progress{gap:4px}.v12-evidence-progress span{font-size:9px}.v11-house-shell .v12-prop{font-size:8px!important;min-width:0!important;padding:4px!important;left:3px;bottom:29px!important;white-space:normal;line-height:1.05}.v12-mirror-bridge{bottom:15%;height:3px}.v12-mirror-bridge i{font-size:7px;top:-20px}}
+@media(max-width:480px){.home-page .hero-art-stage{height:min(41vh,335px)}.home-page .hero-art-stage img{object-position:center 44%}.v12-find-panel{margin:6px auto 0}.v12-find-body h2{font-size:19px}.v12-find-body p{font-size:12px}.v12-cipher span{font-size:22px}.v11-house-shell .v12-prop{font-size:6px!important;max-width:calc(100% - 3px);padding:3px 4px!important;bottom:24px!important}.v12-mirror-bridge i{display:none}}
+@media(prefers-reduced-motion:reduce){.v11-house-shell .v12-prop,.v12-mirror-bridge{animation:none!important}}
+/* Keep hotspots physically on the object they describe rather than floating outside the room. */
+.v11-house-shell .v12-prop{left:9px!important;right:auto!important;transform:none!important;position:absolute!important}
+.v11-house-shell .v12-prop:hover{transform:translateY(-2px)!important}
