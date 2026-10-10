@@ -9,9 +9,9 @@ const E=window.ImpossibleEngine, Art=window.ImpossibleArt, Guide=window.Impossib
 if(!E||!Art){mount.textContent='The house lost its rulebook. Please reload.';return;}
 const escape=(text)=>String(text??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const symbol={house:'⌂',arrow:'→',back:'←',star:'✦',lock:'♢',globe:'◎',users:'♧',spark:'✧',book:'▤',chat:'☏',eye:'◉',rotate:'↻',link:'⛓',moon:'☾',sun:'☼',mirror:'◇',check:'✓',clock:'◷',cup:'♔',menu:'☰',pin:'⌖'};
-const profileKey='impossible-house-profile-v3',sessionKey='impossible-house-session-v8',soloKey='impossible-house-solo-v12';
+const profileKey='impossible-house-profile-v3',sessionKey='impossible-house-session-v8',soloKey='impossible-house-solo-v13';
 const ui={screen:'home',online:false,checking:true,game:null,solo:false,selectedPlayer:null,playerId:null,token:null,stream:null,
- guided:false,practiceTurn:0,practiceComplete:false,blockedReason:'',soundOn:false,guideCache:null,huntFrom:null,lastExpiredHuntStamp:0,
+ scenePanel:null,mapOpen:false,flashlight:false,look:0,viewNote:'',eventNotice:'',eventPulse:false,lastEventAt:null,lastPlayerRooms:null,guided:false,practiceTurn:0,practiceComplete:false,blockedReason:'',soundOn:false,guideCache:null,huntFrom:null,lastExpiredHuntStamp:0,
  name:'Explorer',avatar:{...E.avatarFallback},avatarTab:'hair',drawerOpen:null,lobbyType:'private',code:'',invited:false,publicRooms:[],
  error:'',toast:'',tab:'rules',showGuide:false,helpPage:0,selectedRoom:null,chatDraft:'',muted:new Set(),connection:'offline',working:false,returnTo:'home'};
 try{const data=JSON.parse(localStorage.getItem(profileKey)||'{}');if(data.name)ui.name=E.cleanName(data.name);if(data.avatar)ui.avatar=E.cleanAvatar(data.avatar);}catch{}
@@ -47,7 +47,7 @@ function toast(message){ui.toast=message;render();}
 function topbar(){return `<header class="topbar"><button class="brand" data-action="home" aria-label="Return to game menu"><span class="brand-mark">⌂</span><span>THE IMPOSSIBLE<br><b>HOUSE</b></span></button><span class="header-label">AN UNLIKELY ESCAPE</span><button class="profile-chip" data-action="creator">${avatar(ui.avatar)}<span>${escape(ui.name)}<small>YOUR EXPLORER</small></span></button></header>`;}
 function layout(content,kind=''){return `<div class="app-shell">${topbar()}<main class="page ${kind}">${content}</main><footer class="bottomline"><span>✧ AN ESCAPE-ROOM MYSTERY WHERE WORDS CHANGE THE FLOORPLAN</span><span>${ui.online?'● FRIEND ROOMS AVAILABLE':'○ SOLO PLAY AVAILABLE'}</span></footer></div>${ui.toast?`<div class="toast" role="status">${escape(ui.toast)}</div>`:''}${ui.showGuide?`<div class="modal-shade"><div class="modal-content v4-help"><button class="modal-close" data-action="close-help" aria-label="Close guide">×</button><span class="eyebrow">THE HOUSE FIELD GUIDE</span><h2>How to escape</h2><div class="help-steps"><p><strong>1 · INVESTIGATE</strong> Look for bright object labels. Read the letter on the Study desk. Each clue points to a physical puzzle.</p><p><strong>2 · SOLVE</strong> Open the brass cabinet using the symbols on the note. The key inside powers the turning hall.</p><p><strong>3 · DISCOVER THE RULE</strong> Search the turning mechanism for the second half of a sentence. Open the Rulebook and rewrite the house.</p><p><strong>4 · WALK THROUGH THE NEW DOOR</strong> MIRRORS ARE DOORS adds a new, clickable passage between Rooms F and D. Reunite at the two seals, then move everyone into the exit in C.</p></div><p class="help-extra">Need exact instructions? Turn on <b>Guide me</b> above the map. It can show you the next legal move.</p>${button('Back to the house →','close-help','primary wide')}</div></div>`:''}`;}
 
-function home(){return layout(`<div class="home-grid"><section class="home-copy"><p class="eyebrow">A CO-OP MYSTERY · CLICK, INVESTIGATE, REWRITE</p><h1 class="hero-title">Find the clues.<br><i>Rewrite the house.</i></h1><p class="hero-sub">You’re trapped inside a living escape room. <b>Examine the desk. Crack the locked cabinet. Find the hidden words.</b> Write a new law to open an impossible doorway, then reunite at the exit. Play solo or investigate together online.</p><div class="home-ctas">${button('Begin the story <span>→</span>','solo','primary huge')}${button('Enter with friends <span>→</span>','match','secondary huge')}${isSoloSaved()?button('Continue previous escape ↗','continue-solo','light'):''}</div><div class="home-mini-actions">${button('Customize your explorer','creator','light')}${button('How the house works','help','light')}${button('Select chapter (playtesting)','chapters','text')}${button('Try controls (60 sec)','practice','text')}</div><div class="home-proof"><span>01 / EXPLORE</span><span>02 / REWRITE REALITY</span><span>03 / ESCAPE TOGETHER</span></div>${!ui.online?'<p class="warning-note">Solo play is available. Hosted multiplayer rooms become available when the server is online.</p>':''}</section><section class="hero-art"><div class="hero-art-stage"><img src="assets/v12-cover.webp" alt="A mysterious illustrated mansion with lit rooms, shifting passages and a sealed exit"/><span class="hero-seal">SIX ROOMS<br><strong>ONE EXIT</strong></span></div><div class="house-quote"><b>RULE NO. 1</b><span>The house must obey what you write.</span></div></section></div>`,'home-page');}
+function home(){return layout(`<div class="v13-home"><div class="v13-home-wash"></div><section class="v13-home-contents"><div class="v13-home-kicker">THE IMPOSSIBLE HOUSE · CHAPTER ONE AWAITS</div><h1>Nothing stays<br><em>where it belongs.</em></h1><p class="v13-home-tagline">An escape room where a sentence can change a doorway.</p><p class="v13-home-desc">Inspect strange objects. Solve the house's puzzles. Rotate the rooms themselves, then <strong>rewrite the rules</strong> to make a way out. Play alone or solve it together, from different rooms.</p><div class="v13-home-actions">${button('Enter the house →','solo','primary huge')}${button('Play with friends ↗','match','secondary huge')}${isSoloSaved()?button('Continue solo escape','continue-solo','light'):''}</div><div class="v13-home-links">${button('Customize explorer','creator','text')}${button('How to play','help','text')}${button('Chapter playtest','chapters','text')}</div><div class="v13-home-footer"><span>FIRST PERSON · EXPLORE</span><span>REWRITE REALITY · CO-OP</span><span>6 CHAPTERS</span></div></section><div class="v13-home-visual" role="img" aria-label="A shadowy Victorian mansion staircase illuminated by golden lanterns"><span class="v13-home-visual-label">YOU ARE INVITED</span><span class="v13-home-visual-title">THE DOOR<br>IS WAITING.</span></div></div>`,'v13-home-page');}
 function chapters(){
  const titles=['Learn to open Room C (no word search yet)','🔎 TEAM WORD SEARCH + linked gears','Open walls + brass orrery','Deduce the portrait order','Solve a three-rune sequence','Combine rules + final Word Hunt'];
  return layout(`<section class="chapter-page"><p class="eyebrow">SOLO PLAYTEST · CHOOSE WHERE TO START</p><h1>Every room is a<br><i>different puzzle.</i></h1><p>Start anywhere to test puzzles without replaying the story. Different chapters have different puzzles, including an optional shared word hunt hidden in the story. Earlier magic cards will already be unlocked.</p><div class="chapter-cards">${E.LEVELS.map((l,i)=>`<button class="chapter-pick" data-action="pick-chapter" data-index="${i}"><span>CHAPTER ${i+1} / ${E.LEVELS.length}</span><b>${escape(l.title)}</b><small>${escape(titles[i])}</small><em>Play →</em></button>`).join('')}</div>${button('← Back','home','light')}</section>`,'wide-page');
@@ -293,25 +293,102 @@ function v10Drawer(g){
  const content=which==='rules'?wordbook(g):which==='chat'?ui.solo?'<div class="solo-chat-msg">In solo mode you control both explorers. With friends, everyone has their own character and shared chat.</div>':chatContent():`<div class="journal"><h3>Explorer notebook</h3><p>Objects and messages you have discovered.</p>${g.journal.length?g.journal.map(n=>`<div class="journal-note"><b>${escape(n.title)}</b><p>${escape(n.description)}</p></div>`).join(''):'<div class="empty-rules">No notes yet. Examine a room to start collecting clues.</div>'}</div>`;
  return `<button class="v10-drawer-backdrop" data-action="drawer-close" aria-label="Close notebook"></button><aside class="v10-drawer" aria-label="${label}"><div class="v10-drawer-head"><div><small>THE IMPOSSIBLE HOUSE / VOLUME I</small><h2>${label}</h2></div><button data-action="drawer-close" aria-label="Close drawer">×</button></div><div class="sidebook"><div class="side-tabs"><button data-action="tab" data-value="rules" class="${which==='rules'?'active':''}">✎ RULES</button><button data-action="tab" data-value="journal" class="${which==='journal'?'active':''}">▤ NOTES</button><button data-action="tab" data-value="chat" class="${which==='chat'?'active':''}">☏ CHAT</button></div>${content}</div></aside>`;
 }
-function game(){
- const g=ui.game,me=current(),l=E.level(g),o=E.objective(g,me),coach=ui.guided?coachStep(g):null;
- const active=g.activeRule?E.RULES[g.activeRule]:null;
- const fx=active?E.ruleEffect(g,g.activeRule):null;
- return layout(`<section class="game-page v10-game">
- <header class="v10-header"><div class="v10-header-title"><span class="v10-chapter-number">${g.levelIndex+1}</span><div><small>CHAPTER ${g.levelIndex+1} OF ${E.LEVELS.length} · ${ui.solo?'SOLO STORY':'LIVE CO-OP'}</small><h1>${escape(l.title)}</h1></div></div><div class="v10-tools">${button('✎ Rules','drawer-rules','light small')}${button('▤ Notes','drawer-journal','light small')}${!ui.solo?button('☏ Chat','drawer-chat','light small'):''}${button('? Help','help-during','light small')}${button('⌂ Leave','leave-room','light small')}</div></header>
- ${v10Mission(g,me,o)}<div class="v10-context">${teamStrip(g)}<button class="law-indicator ${active?'active':''}" data-action="drawer-rules"><span>✧</span>${active?`<span><b>${escape(active.title)}</b><br>${escape(fx?.ways?.[0]||'Reality has changed')}</span>`:'<span><b>No rule active</b><br>Find fragments to rewrite the house</span>'}</button></div>
- <section class="v10-house-shell v11-house-shell v11-chapter-${l.id}" aria-label="Interactive six-room house"><div class="v10-board-head"><b>THE HOUSE / CUTAWAY</b><span>Select an illuminated chamber to travel</span><span class="v10-legend">● Gold: you · Sage: open passage</span></div><div class="v11-dollhouse"><div class="v11-roof" aria-hidden="true"><span class="v11-attic-window"></span></div><div class="rooms-grid">${Object.keys(l.rooms).map(id=>roomTile(g,id,me,o,coach)).join('')}${g.activeRule==='mirrors'&&l.mirrors.length>=2?'<span class="v12-mirror-bridge" aria-hidden="true"><i>THE MIRRORS NOW CONNECT</i></span>':''}</div><div class="v11-plinth" aria-hidden="true"><span></span><span>THE IMPOSSIBLE HOUSE</span><span></span></div></div><div class="v10-house-foot"><span>EXPLORE EACH ROOM FOR <b>CLUES & MECHANISMS</b></span><span>SOME RULES ARE MEANT TO BE BROKEN</span></div>${g.activeRule?`<div class="v10-rule-flash" aria-live="polite"><span>✧ THE HOUSE OBEYS</span><b>${escape(active.title)}</b></div>`:''}</section>
- <div class="v10-controls">${firstFloorPuzzle(g,me)}${rotationDock(g,me)}${l.id==='floor1'?'':actionButtons(g,me,o)}</div>
- ${ui.blockedReason?`<div class="v10-hint" role="alert">↳ ${escape(ui.blockedReason)} ${button('Open help','help-during','light small')}</div>`:''}
- <details class="v10-lore"><summary>▤ See full chapter steps, story and rule effects</summary>${roomCSteps(g,me)}${guideBox(g,me,coach)}${realityBanner(g)}${realityExplainer(g)}<div class="house-says"><span>THE HOUSE WHISPERS</span><p>“${escape(activeLog(g).replace(/^The House:?\s*[“”]?/, '').replace(/[“”]$/,''))}”</p></div>${button('↻ Restart this chapter','reset','light small')}</details>
- <div class="v10-below" id="v10-puzzles">${thinkingPanel(g,me)}${dialPanel(g,me)}${huntPanel(g)}</div>
- ${ui.drawerOpen?v10Drawer(g):''}<div class="v10-mobile-tip">Tap a highlighted room to walk. Tap Rules to change the house.</div>
- </section>`,'game-page-shell');
+
+// V13 first-person client. Mechanics, puzzles, word hunts and team sessions remain
+// fully server-authoritative; this view only changes how people explore them.
+function v13Hotspot(label,action,left,top,attrs='',cls=''){
+ return `<button type="button" class="v13-hotspot ${cls}" style="--hs-x:${left}%;--hs-y:${top}%" data-action="${action}" ${attrs}><span class="v13-hotspot-dot">✦</span><span>${escape(label)}</span></button>`;
 }
+function v13Interactables(g,me){
+ const l=E.level(g),id=me.room,props=g.firstProps||[],spots=[];
+ if(l.id==='floor1'){
+   if(id==='A')spots.push(v13Hotspot(props.includes('study')?'Review the letter':'Read the caretaker’s letter',props.includes('study')?'v13-inspect':'inspect-prop',31,68,props.includes('study')?'':'data-id="study"','v13-primary-hotspot'));
+   if(id==='F'){
+     if(!props.includes('cabinet'))spots.push(v13Hotspot('The locked cabinet','v13-inspect',72,68,'','v13-primary-hotspot'));
+     else if(!g.leverEnabled)spots.push(v13Hotspot('Wind the brass crank','lever',64,46,'','v13-primary-hotspot'));
+     else spots.push(v13Hotspot('The powered mechanism','v13-rotate-toggle',64,46));
+   }
+   if(id==='B'){
+     if(!g.leverEnabled)spots.push(v13Hotspot('The dormant turning wheel','v13-rotate-toggle',52,50));
+     else if(!props.includes('plaque'))spots.push(v13Hotspot(ui.flashlight?'Read the hidden engraving':'Reveal the engraving','v13-engraving',53,50,'','v13-primary-hotspot'));
+     else spots.push(v13Hotspot('Review the engraving','v13-inspect',54,51));
+   }
+   if(id==='D'||id==='E')spots.push(v13Hotspot(id==='D'?'The moon seal':'The sun seal','v13-inspect',49,80,'','v13-primary-hotspot'));
+   if(id==='C')spots.push(v13Hotspot(g.exitUnlocked?'The exit has opened':'The sealed front door','v13-inspect',53,57,'','v13-primary-hotspot'));
+ }
+ if(l.id!=='floor1'){
+   if(l.lever===id&&!g.leverEnabled)spots.push(v13Hotspot('Activate the mechanism','lever',49,64,'','v13-primary-hotspot'));
+   if((l.riddle?.clues||l.sequence?.clues||{})[id]&&!g.cluesRead.includes(id))spots.push(v13Hotspot('Read the clue','clue-read',40,68,'','v13-primary-hotspot'));
+   if(l.riddle?.room===id&&!g.riddleSolved)spots.push(v13Hotspot('Study the portraits','v13-puzzles',53,52,'','v13-primary-hotspot'));
+   if(l.dial?.room===id&&!g.dialSolved)spots.push(v13Hotspot('Set the brass instrument','v13-puzzles',55,53,'','v13-primary-hotspot'));
+   if(l.sequence?.rooms.includes(id)&&g.runeProgress<l.sequence.rooms.length)spots.push(v13Hotspot('Inspect the rune','v13-puzzles',50,61,'','v13-primary-hotspot'));
+   if(l.shards[id]&&g.shards.includes(l.shards[id]))spots.push(v13Hotspot('Word fragment found','v13-rules',42,74));
+   if(id===l.exit)spots.push(v13Hotspot(g.exitUnlocked?'The exit is unlocked':'A sealed door','v13-inspect',53,54));
+ }
+ const hunt=E.HUNTS[l.id];if(hunt?.room===id&&g.hunt?.status!=='complete')spots.push(v13Hotspot('The torn word-search page','v13-puzzles',29,78,'','v13-primary-hotspot'));
+ if(g.activeRule==='mirrors'&&l.mirrors.includes(id)&&l.mirrors.length>1){const other=l.mirrors.find(x=>x!==id);spots.push(v13Hotspot(`Step through the mirror to Room ${other}`,'portal',53,39,'','v13-magic-hotspot'));}
+ if(!spots.length)spots.push(v13Hotspot('Look for details','v13-inspect',51,65));
+ return spots.join('');
+}
+function v13Routes(g,me){
+ const l=E.level(g),here=l.rooms[me.room];
+ const exits=Object.values(l.rooms).filter(r=>r.id!==me.room&&E.connection(g,me.room,r.id).ok);
+ const blocked=Object.values(l.rooms).filter(r=>r.id!==me.room&&!exits.includes(r)&& (Math.abs(r.row-here.row)+Math.abs(r.col-here.col)===1));
+ const div=exits.map(r=>{
+   const magic=g.activeRule==='mirrors'&&l.mirrors.includes(r.id)&&l.mirrors.includes(me.room);
+   return `<button data-action="room" data-room="${r.id}" class="v13-route ${magic?'v13-magic-route':''}"><span>${magic?'◇':'⇢'}</span><span><b>${escape(r.name)}</b><small>${magic?'THROUGH THE MIRROR':`ROOM ${r.id} · OPEN PASSAGE`}</small></span></button>`;
+ }).join('');
+ const note=blocked.length?`<small>${blocked.length} nearby passage${blocked.length===1?' is':'s are'} blocked. Try the turning mechanism or rewriting a rule.</small>`:'<small>Every lit door is a passage you can use.</small>';
+ return `<div class="v13-routes"><span class="v13-routes-label">WHERE CAN I GO?</span><div class="v13-route-list">${div||'<span class="v13-no-route">No open door from here yet. Try switching explorers, rotating a room, or rewriting a rule.</span>'}</div>${note}</div>`;
+}
+function v13Map(g,me){const l=E.level(g);return `<div class="v13-map"><p class="v13-map-intro">This sketch is a reference. Find doors in the room to travel. The Turning Hall changes which doors connect.</p><div class="v13-map-grid">${Object.values(l.rooms).map(r=>{const walk=E.connection(g,me.room,r.id).ok;return `<div class="v13-map-room ${me.room===r.id?'you':''} ${walk?'available':''}"><b>ROOM ${r.id}</b><span>${escape(r.name)}</span><small>${me.room===r.id?'YOU ARE HERE':walk?'OPEN PATH':r.id===l.exit&&!g.exitUnlocked?'SEALED':'NOT CONNECTED'}</small></div>`;}).join('')}</div><p class="v13-map-footer">Connected passages update after rotation and House Rules. No map is required to finish a chapter.</p></div>`;}
+function v13Modal(g,me){
+ const which=ui.scenePanel;if(!which)return '';
+ const l=E.level(g),label={rules:'The Book of Laws',notes:'Your case notes',chat:'Team chat',inspect:'Examine the room',puzzles:'The puzzle table',map:'Sketch of the house'}[which]||'The House';
+ let content='';
+ if(which==='rules')content=wordbook(g);
+ if(which==='notes')content=`<div class="journal v13-journal"><p>Everything discovered by your team appears here.</p>${g.journal.length?g.journal.map(n=>`<article class="journal-note"><b>${escape(n.title)}</b><p>${escape(n.description)}</p></article>`).join(''):'<p>Nothing recorded yet. Look for letters, inscriptions and hidden objects.</p>'}</div>`;
+ if(which==='chat')content=ui.solo?'<p>You control both explorers in solo mode. Online, the chat and world state update for every real player.</p>':chatContent();
+ if(which==='inspect')content=l.id==='floor1'?firstFloorPuzzle(g,me):`${actionButtons(g,me,{})}<p>Click objects in the scene to investigate or use them. Some clues only appear after a rule changes the room.</p>`;
+ if(which==='puzzles'){
+   content=(l.id==='floor1'?firstFloorPuzzle(g,me):thinkingPanel(g,me)+dialPanel(g,me))+huntPanel(g);
+   if(!content.trim())content='<p>Keep exploring. Interactive puzzles appear here when you find one in the world.</p>';
+ }
+ if(which==='map')content=v13Map(g,me);
+ return `<div class="v13-modal-backdrop"><button data-action="v13-close-panel" class="v13-modal-blank" aria-label="Close panel"></button><aside class="v13-panel" role="dialog" aria-label="${escape(label)}"><header class="v13-panel-head"><div><small>THE IMPOSSIBLE HOUSE · ${escape(l.rooms[me.room].name)}</small><h2>${escape(label)}</h2></div><button data-action="v13-close-panel" aria-label="Close panel">×</button></header><div class="v13-panel-content">${content}</div></aside></div>`;
+}
+function v13Game(){
+ const g=ui.game,me=current(),l=E.level(g),o=E.objective(g,me),n=g.players.length,
+   latest=(g.log||[]).slice(-3).reverse(),rule=g.activeRule?E.RULES[g.activeRule]:null,
+   rotator=l.rotators[0],orientation=rotator?(E.doorsAt(g,rotator).includes('E')?'EAST / WEST':'NORTH / SOUTH'):'';
+ const other=ui.solo?g.players.find(p=>p.id!==me.id):null;
+ const team=g.players.map(p=>`${escape(p.name)}: ${escape(l.rooms[p.room]?.name||'Waiting')}`).join(' · ');
+ return layout(`<div class="v13-play"><header class="v13-play-head"><div class="v13-play-heading"><span class="v13-chapter-label">CHAPTER ${g.levelIndex+1} / ${E.LEVELS.length} · ${ui.solo?'SOLO':'LIVE CO-OP'}</span><h1>${escape(l.title)}</h1></div><div class="v13-play-tools"><button data-action="v13-map" title="Sketch map">⌖ Map</button><button data-action="v13-rules" title="Rewrite the rules">✧ Rules${g.activeRule?' ●':''}</button><button data-action="v13-notes">▤ Notes</button>${!ui.solo?'<button data-action="v13-chat">☏ Chat</button>':''}<button data-action="sound-toggle">${ui.soundOn?'♫ Sound':'♪ Sound off'}</button><button data-action="help-during">? Help</button><button data-action="leave-room">Exit game</button></div></header>
+ <div class="v13-objective"><span class="v13-objective-icon">✦</span><div><small>CURRENT LEAD · ${me.name.toUpperCase()}</small><strong>${escape(o.title)}</strong><p>${escape(o.detail)}</p></div><div class="v13-party">${ui.solo?`<button data-action="switch" data-id="${escape(other.id)}">⇄ Switch to ${escape(other.name)}<small>Currently: ${escape(l.rooms[other.room]?.name||'Waiting')}</small></button>`:`<span>● ${n} PLAYERS ONLINE</span><small>${team}</small>`}</div></div>
+ <div class="v13-stage ${rule?'v13-law-active':''} ${ui.flashlight?'v13-flashlight-on':''} ${ui.eventPulse?'v13-eventful':''}" style="--v13-pan:${ui.look*6}px" data-room="${me.room}" aria-label="First-person view of ${escape(l.rooms[me.room].name)}"><div class="v13-room-image" style="background-image:url('assets/v13-room-${me.room}.webp')"></div><div class="v13-room-vignette"></div><div class="v13-light-layer"></div><div class="v13-floor-mist"></div><div class="v13-stage-head"><span><i>ROOM ${me.room}</i>${escape(l.rooms[me.room].name)}</span><span class="v13-stage-sub">${rule?`✧ ${escape(rule.title)} IS ACTIVE`:'THE HOUSE IS WATCHING'}</span></div><div class="v13-hotspot-layer">${v13Interactables(g,me)}</div>${rule?`<div class="v13-rule-world">✦ ${escape(rule.title)}<small>${escape(E.ruleEffect(g,rule.id).ways.join(' · ')||'THE HOUSE HAS CHANGED')}</small></div>`:''}${ui.eventPulse&&ui.eventNotice?`<div class="v13-world-event" role="status"><span>✧ THE HOUSE RESPONDS</span><b>${escape(ui.eventNotice)}</b></div>`:''}<div class="v13-scene-bar"><span>POINT & CLICK TO INVESTIGATE</span><span>THE FLASHLIGHT REVEALS HIDDEN MARKS</span></div></div>
+ <section class="v13-bottom-controls"><div class="v13-explore"><div class="v13-look-controls"><button data-action="v13-look" data-delta="-1" aria-label="Look left">‹</button><button data-action="v13-look" data-delta="1" aria-label="Look right">›</button></div><button data-action="v13-flashlight" class="v13-flashlight-button ${ui.flashlight?'on':''}" aria-pressed="${ui.flashlight}">◉ ${ui.flashlight?'Flashlight on':'Use flashlight'} <small>F</small></button><button data-action="v13-inspect">◉ Examine room</button>${E.HUNTS[l.id]&&g.hunt?.status==='active'?'<button data-action="v13-puzzles" class="v13-live-hunt">✦ Team word hunt LIVE</button>':''}</div>${v13Routes(g,me)}</section>
+ ${rotator?`<div class="v13-turn-dock"><div><small>THE HOUSE CAN TURN</small><b>${escape(l.rooms[rotator].name)}</b><span>${g.leverEnabled?`Its doors face ${orientation}. Rotate to change the passages.`:'Find and activate the mechanism to unlock room rotation.'}</span></div><div class="v13-turn-actions"><button data-action="rotate-left" data-room="${rotator}" ${g.leverEnabled?'':'disabled'}>↶ <span>TURN LEFT</span></button><button data-action="rotate-right" data-room="${rotator}" ${g.leverEnabled?'':'disabled'}>↷ <span>TURN RIGHT</span></button></div></div>`:''}
+ <div class="v13-status-line"><div class="v13-current-law"><span class="v13-green-dot">${rule?'✦':'○'}</span> ${rule?escape(rule.title):'NO HOUSE RULE YET'} <button data-action="v13-rules">${rule?'CHANGE':'WRITE A RULE'} →</button></div><div class="v13-activity"><span>RECENT HOUSE ACTIVITY</span>${latest.length?latest.map(entry=>`<small>✦ ${escape(entry.text)}</small>`).join(''):'<small>The house is quiet... for now.</small>'}</div>${!ui.solo?button('☏ Message team','v13-chat','light small'):''}</div>
+ ${ui.blockedReason?`<div class="v13-blocked" role="alert">${escape(ui.blockedReason)} ${button('Need help?','hint','light small')}</div>`:''}
+ ${v13Modal(g,me)}
+ <div class="v13-footer-line">ESCAPE / DISCOVER / REWRITE / REPEAT <span>${escape(team)}</span></div></div>`,'v13-play-host');
+}
+function game(){return v13Game();}
 function intermission(){const g=ui.game,l=E.level(g),res=g.results[g.results.length-1];return layout(`<section class="ending-card"><p class="eyebrow">CHAPTER ${g.levelIndex+1} COMPLETE</p><div class="finish-spark">✦</div><h1>You outsmarted<br><i>the house.</i></h1><div class="stars">${'★'.repeat(res.stars)}${'☆'.repeat(3-res.stars)}</div><p class="finish-sub">${escape(l.title)} · The staircase shifts again.</p><div class="scoreline"><span><b>${res.rotations}</b><small>ROTATIONS</small></span><span><b>${res.moves}</b><small>MOVES</small></span><span><b>${res.hints}</b><small>HINTS</small></span></div><p class="finish-quote">“I suppose you have become inconveniently good at this.”</p><p class="secret-result">✦ ${(g.foundSecrets||[]).length} / ${E.LEVELS.length} mysterious keepsakes discovered</p>${ui.solo||g.hostId===ui.playerId?button('Enter the next chapter →','next','primary huge'):badge('Waiting for host to open the next floor')}${button('↻ Replay this floor','reset','light')}</section>`,'ending-page');}
 function victory(){const g=ui.game,total=g.results.reduce((n,x)=>n+x.stars,0);return layout(`<section class="ending-card victory"><p class="eyebrow">THE IMPOSSIBLE HOUSE · THE END</p><div class="finish-spark">✺</div><h1>You're free.<br><i>For now.</i></h1><p class="finish-sub">The door swings open. The House waves, very reluctantly.</p><div class="stars">${total} / ${E.LEVELS.length*3} STARS</div><div class="result-table">${g.results.map((x,i)=>`<div><span>${i+1}. ${escape(x.title)}</span><b>${'★'.repeat(x.stars)}${'☆'.repeat(3-x.stars)}</b></div>`).join('')}</div><p class="finish-quote">“You could visit again. Not that I care.”</p><p class="secret-result">✦ ${(g.foundSecrets||[]).length} / ${E.LEVELS.length} keepsakes found ${g.foundSecrets?.length===E.LEVELS.length?'· The house remembers you forever.':''}</p>${button('⌂ Back to menu','home','primary huge')}${button('↻ Replay the final floor','reset','light')}</section>`,'ending-page');}
 function inviteURL(){const u=new URL(location.href);u.searchParams.set('room',ui.game?.code||'');u.hash='';return u.toString();}
 function render(){const active=document.activeElement?.id==='chat-input';const caret=active?document.activeElement.selectionStart:null;
+ if(ui.game?.phase==='playing'){
+  const latest=ui.game.log?.at(-1),was=ui.lastPlayerRooms;
+  let event='';
+  if(was&&was.level===ui.game.levelId){
+    for(const p of ui.game.players){const prev=was.positions[p.id];if(prev&&prev!==p.room){event=`${p.name} entered ${E.rooms(ui.game)[p.room]?.name||'another room'}`;break;}}
+  }
+  if(latest?.at&&latest.at!==ui.lastEventAt){event=latest.kind==='house'&&!was?'':latest.text;ui.lastEventAt=latest.at;}
+  ui.eventNotice=event;ui.eventPulse=!!event;
+  ui.lastPlayerRooms={level:ui.game.levelId,positions:Object.fromEntries(ui.game.players.map(p=>[p.id,p.room]))};
+ }else{ui.eventPulse=false;ui.lastPlayerRooms=null;}
+
  let out;if(ui.game&&['intermission','complete'].includes(ui.game.phase)){out=ui.game.phase==='complete'?victory():intermission();}
  else if(ui.game&&ui.game.phase==='playing')out=game();
  else if(ui.game&&ui.game.phase==='lobby'&&ui.screen==='lobby')out=lobby();
@@ -324,6 +401,10 @@ function render(){const active=document.activeElement?.id==='chat-input';const c
    if(previous.rule!==scene.rule)document.querySelector('.v11-house-shell')?.classList.add('v11-law-awakens');
    for(const [id,angle] of Object.entries(scene.rotation))if(previous.rotation[id]!==angle)
      document.querySelector(`.v11-room-${id}`)?.classList.add('v11-mechanism-turn');
+ }
+ if(scene&&previous&&previous.level===scene.level){
+   if(previous.rule!==scene.rule)mount.querySelector('.v13-stage')?.classList.add('v13-law-awakens');
+   for(const [id,rotation] of Object.entries(scene.rotation))if(previous.rotation[id]!==rotation)mount.querySelector('.v13-stage')?.classList.add('v13-hall-turns');
  }
  ui.lastVisualState=scene;
  if(active){const n=document.getElementById('chat-input');if(n){n.focus();if(caret!==null)n.setSelectionRange(caret,caret);}}
@@ -338,7 +419,7 @@ function listen(){endStream();if(!ui.token||!ui.game)return;
  s.addEventListener('removed',()=>{endStream();ui.game=null;ui.token=null;ui.screen='home';notify('The host removed you from the waiting room.');});
  s.addEventListener('error',()=>{if(s!==ui.stream)return;ui.connection='reconnecting';const marker=document.querySelector('.stage-meta span');if(marker)marker.textContent='○ RECONNECTING';});
 }
-async function enterRoom(result){ui.game=result.state;ui.playerId=result.playerId;ui.selectedPlayer=ui.playerId;ui.token=result.token;ui.solo=false;ui.guided=true;ui.drawerOpen=null;ui.guideCache=null;ui.screen='lobby';ui.invited=false;ui.tab='rules';ui.connection='connected';saveProfile();saveSession();render();listen();}
+async function enterRoom(result){ui.game=result.state;ui.playerId=result.playerId;ui.selectedPlayer=ui.playerId;ui.token=result.token;ui.solo=false;ui.guided=true;ui.drawerOpen=null;ui.scenePanel=null;ui.guideCache=null;ui.screen='lobby';ui.invited=false;ui.tab='rules';ui.connection='connected';saveProfile();saveSession();render();listen();}
 async function requestAction(action){if(ui.working||!ui.game)return;ui.working=true;
  const priorMistakes=ui.game.safeAttempts||0;
  try{if(ui.solo){const actingId=['NEXT','RESET','START'].includes(action.type)?ui.game.hostId:ui.selectedPlayer;const result=E.act(ui.game,actingId,action);if(result.error)throw Error(result.error);saveSolo();}
@@ -346,7 +427,7 @@ async function requestAction(action){if(ui.working||!ui.game)return;ui.working=t
  ui.screen=ui.game.phase==='lobby'?'lobby':'game';ui.blockedReason='';ui.guideCache=null;playSound(action.type);render();
  if(action.type==='SAFE')notify(ui.game.firstProps?.includes('cabinet')?'The cabinet opens! You found the winding key and ARE DOORS.':ui.game.safeAttempts>priorMistakes?'The numbers did not unlock it. Look at the symbol groups on the caretaker’s letter.':'Inspect the caretaker’s letter in the Study first.');
  if(action.type==='REWRITE')notify('THE HOUSE OBEYS! Rooms D and F now share a doorway. Click the glowing mirror room to walk through.');}catch(e){notify(e.message);}finally{ui.working=false;}}
-function startSolo(continuePrevious=false){endStream();ui.solo=true;ui.guided=true;ui.drawerOpen=null;ui.guideCache=null;ui.blockedReason='';ui.huntFrom=null;ui.screen='game';ui.tab='rules';ui.game=null;ui.playerId='solo-one';ui.selectedPlayer='solo-one';ui.token=null;
+function startSolo(continuePrevious=false){endStream();ui.solo=true;ui.guided=true;ui.drawerOpen=null;ui.scenePanel=null;ui.look=0;ui.guideCache=null;ui.blockedReason='';ui.huntFrom=null;ui.screen='game';ui.tab='rules';ui.game=null;ui.playerId='solo-one';ui.selectedPlayer='solo-one';ui.token=null;
  if(continuePrevious){try{const old=JSON.parse(localStorage.getItem(soloKey)||'null');if(old?.game?.players?.length===2){ui.game=old.game;ui.selectedPlayer=old.selectedPlayer;}}catch{}}
  if(!ui.game){ui.game=E.newGame({solo:true});E.addPlayer(ui.game,{id:'solo-one',name:ui.name,avatar:ui.avatar});E.addPlayer(ui.game,{id:'solo-two',name:'Juniper',avatar:{skin:E.SKINS[4],hair:'coils',hairColor:E.HAIR_COLORS[0],outfit:E.OUTFITS[3],accessory:'round glasses',clothes:'waistcoat',expression:'curious',spark:'mint'}});
  E.act(ui.game,'solo-two',{type:'READY',ready:true});E.act(ui.game,'solo-one',{type:'START'});}
@@ -360,7 +441,7 @@ async function resumeOnline(){let saved;try{saved=JSON.parse(localStorage.getIte
  const res=await fetch('/api/state?code='+encodeURIComponent(saved.code),{headers:{Authorization:'Bearer '+saved.token}}),value=await res.json();if(!res.ok)throw Error(value.error||'Session unavailable.');ui.game=value.state;ui.token=saved.token;ui.playerId=value.playerId;ui.selectedPlayer=ui.playerId;ui.solo=false;ui.screen=ui.game.phase==='lobby'?'lobby':'game';listen();render();
  }catch(e){notify(e.message);}}
 async function leave(){if(ui.game&&!ui.solo&&ui.token){try{await api('leave',{code:ui.game.code,token:ui.token});}catch{}}
- endStream();ui.game=null;ui.token=null;ui.solo=false;ui.screen='home';ui.drawerOpen=null;ui.selectedRoom=null;ui.guideCache=null;render();}
+ endStream();ui.game=null;ui.token=null;ui.solo=false;ui.screen='home';ui.drawerOpen=null;ui.scenePanel=null;ui.selectedRoom=null;ui.guideCache=null;render();}
 async function copyText(value,name){try{await navigator.clipboard.writeText(value);notify(name+' copied! Send it to your friends.');}catch{notify('Clipboard not available. Select and copy the code shown above.');}}
 async function roomClick(id){const g=ui.game,me=current(),l=E.level(g);if(!g||g.phase!=='playing')return;ui.selectedRoom=id;
  if(id===l.exit&&!g.exitUnlocked){const objective=E.objective(g,me);ui.blockedReason=`Room ${id} is the EXIT, and it is still sealed. Your current task is: ${objective.title}. ${objective.detail} After completing the chapter objectives, rotate Room B toward Room C and walk through B to reach it.`;render();return;}
@@ -372,6 +453,17 @@ async function roomClick(id){const g=ui.game,me=current(),l=E.level(g);if(!g||g.
 async function sendChat(text=ui.chatDraft){if(ui.solo)return;const value=String(text||'').trim();if(!value)return;ui.chatDraft='';await requestAction({type:'CHAT',text:value});}
 async function clickAction(btn){const a=btn.dataset.action;if(!a)return;
  switch(a){
+  case 'v13-flashlight':ui.flashlight=!ui.flashlight;render();break;
+  case 'v13-look':ui.look=Math.max(-3,Math.min(3,ui.look+Number(btn.dataset.delta)));render();break;
+  case 'v13-inspect':ui.scenePanel='inspect';render();break;
+  case 'v13-engraving':if(!ui.flashlight){ui.flashlight=true;notify('Your flashlight catches letters behind the moving wheel. Click the engraving again to read them.');}else await requestAction({type:'PROP',prop:'plaque'});break;
+  case 'v13-rotate-toggle':if(!ui.game?.leverEnabled){notify('The Turning Hall has no power. Find the winding key in the brass cabinet first.');}else{ui.scenePanel='map';render();}break;
+  case 'v13-rules':ui.scenePanel='rules';render();break;
+  case 'v13-notes':ui.scenePanel='notes';render();break;
+  case 'v13-chat':ui.scenePanel='chat';render();break;
+  case 'v13-map':ui.scenePanel='map';render();break;
+  case 'v13-puzzles':ui.scenePanel='puzzles';render();break;
+  case 'v13-close-panel':ui.scenePanel=null;render();break;
   case 'home':await leave();break;
   case 'solo':startSolo();break;
   case 'solo-guided':startSolo();ui.guided=true;render();break;
@@ -413,18 +505,18 @@ async function clickAction(btn){const a=btn.dataset.action;if(!a)return;
   case 'start':await requestAction({type:'START'});break;
   case 'set-room-visibility':await requestAction({type:'VISIBILITY',visibility:btn.dataset.value});break;
   case 'kick':if(confirm('Remove this explorer from the lobby?'))await requestAction({type:'REMOVE',playerId:btn.dataset.id});break;
-  case 'switch':if(ui.solo){ui.selectedPlayer=btn.dataset.id;saveSolo();render();}else notify('In a live game, each friend controls their own explorer.');break;
-  case 'room':await roomClick(btn.dataset.room);break;
-  case 'inspect-prop':ui.drawerOpen=null;await requestAction({type:'PROP',prop:btn.dataset.id});break;
-  case 'focus-investigation':document.getElementById('v12-investigate')?.scrollIntoView({behavior:'smooth',block:'center'});document.getElementById('v12-code')?.focus({preventScroll:true});break;
-  case 'rewrite':ui.drawerOpen=null;await requestAction({type:'REWRITE',rule:E.level(ui.game).required});break;
+  case 'switch':if(ui.solo){ui.selectedPlayer=btn.dataset.id;ui.look=0;ui.scenePanel=null;saveSolo();render();}else notify('In a live game, each friend controls their own explorer.');break;
+  case 'room':ui.look=0;ui.scenePanel=null;await roomClick(btn.dataset.room);break;
+  case 'inspect-prop':ui.scenePanel='inspect';ui.drawerOpen=null;await requestAction({type:'PROP',prop:btn.dataset.id});break;
+  case 'focus-investigation':ui.scenePanel='inspect';render();document.getElementById('v12-code')?.focus({preventScroll:true});break;
+  case 'rewrite':ui.scenePanel=null;ui.drawerOpen=null;await requestAction({type:'REWRITE',rule:E.level(ui.game).required});break;
   case 'lever':await requestAction({type:'LEVER'});break;
-  case 'clue-read':ui.tab='journal';ui.drawerOpen='journal';await requestAction({type:'CLUE'});break;
+  case 'clue-read':ui.scenePanel='notes';await requestAction({type:'CLUE'});break;
   case 'riddle-answer':await requestAction({type:'RIDDLE',answer:btn.dataset.answer});break;
   case 'rune-touch':await requestAction({type:'RUNE'});break;
   case 'dial-turn':await requestAction({type:'DIAL',index:Number(btn.dataset.index),delta:Number(btn.dataset.delta)});break;
-  case 'hunt-open':document.getElementById('word-hunt-panel')?.scrollIntoView({behavior:'smooth',block:'start'});break;
-  case 'hunt-start':ui.huntFrom=null;await requestAction({type:'HUNT_START'});document.getElementById('word-hunt-panel')?.scrollIntoView({behavior:'smooth',block:'start'});break;
+  case 'hunt-open':ui.scenePanel='puzzles';render();break;
+  case 'hunt-start':ui.huntFrom=null;ui.scenePanel='puzzles';await requestAction({type:'HUNT_START'});break;
   case 'hunt-cell':{const index=Number(btn.dataset.index),board=E.HUNTS[ui.game?.levelId],h=ui.game?.hunt;
    if(!board||!h||h.status!=='active'||Date.now()>=h.expiresAt)break;
    if(ui.huntFrom===null){ui.huntFrom=index;render();break;}
@@ -434,18 +526,18 @@ async function clickAction(btn){const a=btn.dataset.action;if(!a)return;
   case 'rotate-right':await requestAction({type:'ROTATE',room:btn.dataset.room||'B',dir:1});break;
   case 'portal':await requestAction({type:'PORTAL'});break;
   case 'reflect':ui.tab='journal';ui.drawerOpen='journal';await requestAction({type:'REFLECT'});break;
-  case 'inscribe':ui.tab='rules';ui.drawerOpen='rules';await requestAction({type:'INSCRIBE',rule:E.level(ui.game).required});break;
+  case 'inscribe':ui.scenePanel='rules';ui.tab='rules';ui.drawerOpen='rules';await requestAction({type:'INSCRIBE',rule:E.level(ui.game).required});break;
   case 'search':ui.tab='journal';ui.drawerOpen='journal';await requestAction({type:'SEARCH'});break;
-  case 'cast':ui.tab='rules';ui.drawerOpen='rules';await requestAction({type:'RULE',rule:btn.dataset.id});break;
+  case 'cast':ui.scenePanel=null;ui.tab='rules';ui.drawerOpen='rules';await requestAction({type:'RULE',rule:btn.dataset.id});break;
   case 'inspect':ui.tab='journal';ui.drawerOpen='journal';await requestAction({type:'INSPECT',room:current().room});break;
   case 'hint':await requestAction({type:'HINT'});break;
   case 'ping':await requestAction({type:'PING',room:ui.selectedRoom||current().room});notify('Room marked for your teammates.');break;
   case 'tab':ui.tab=btn.dataset.value;ui.drawerOpen=ui.tab;render();break;
-  case 'drawer-rules':ui.drawerOpen='rules';ui.tab='rules';render();break;
-  case 'drawer-journal':ui.drawerOpen='journal';ui.tab='journal';render();break;
-  case 'drawer-chat':ui.drawerOpen='chat';ui.tab='chat';render();break;
-  case 'drawer-close':ui.drawerOpen=null;render();break;
-  case 'scroll-puzzles':document.getElementById('v10-puzzles')?.scrollIntoView({behavior:'smooth',block:'start'});break;
+  case 'drawer-rules':ui.scenePanel='rules';ui.drawerOpen='rules';ui.tab='rules';render();break;
+  case 'drawer-journal':ui.scenePanel='notes';ui.drawerOpen='journal';ui.tab='journal';render();break;
+  case 'drawer-chat':ui.scenePanel='chat';ui.drawerOpen='chat';ui.tab='chat';render();break;
+  case 'drawer-close':ui.scenePanel=null;ui.drawerOpen=null;render();break;
+  case 'scroll-puzzles':ui.scenePanel='puzzles';render();break;
   case 'quick-chat':await sendChat(btn.dataset.message);break;
   case 'mute':ui.muted.add(btn.dataset.id);render();break;
   case 'report':await requestAction({type:'REPORT',messageId:btn.dataset.id});notify('Report recorded in this room session.');break;
@@ -455,6 +547,7 @@ async function clickAction(btn){const a=btn.dataset.action;if(!a)return;
  }
 }
 mount.addEventListener('click',e=>{const btn=e.target.closest('[data-action]');if(btn&&!btn.disabled)clickAction(btn);});
+mount.addEventListener('pointermove',e=>{const stage=e.target.closest('.v13-stage');if(!stage)return;const rect=stage.getBoundingClientRect();stage.style.setProperty('--beam-x',((e.clientX-rect.left)/rect.width*100).toFixed(2)+'%');stage.style.setProperty('--beam-y',((e.clientY-rect.top)/rect.height*100).toFixed(2)+'%');});
 mount.addEventListener('input',e=>{const model=e.target.dataset.model;if(model==='name')ui.name=E.cleanName(e.target.value);if(model==='code')ui.code=e.target.value.toUpperCase().replace(/[^A-F0-9]/g,'').slice(0,6);if(model==='chat')ui.chatDraft=e.target.value;});
 mount.addEventListener('submit',e=>{
  if(e.target.id==='chat-form'){e.preventDefault();sendChat();}
@@ -472,6 +565,9 @@ setInterval(()=>{const el=mount.querySelector('.hunt-clock[data-expires]');if(!e
 },400);
 document.addEventListener('keydown',e=>{if(e.target.closest('input,textarea,button')||!ui.game||ui.game.phase!=='playing')return;
  if(ui.solo&&['1','2','3','4'].includes(e.key)){const p=ui.game.players[Number(e.key)-1];if(p){ui.selectedPlayer=p.id;saveSolo();render();}return;}
+ if(e.key.toLowerCase()==='f'){e.preventDefault();ui.flashlight=!ui.flashlight;render();return;}
+ if(e.key.toLowerCase()==='m'){e.preventDefault();ui.scenePanel=ui.scenePanel==='map'?null:'map';render();return;}
+ if(e.key==='Escape'&&ui.scenePanel){e.preventDefault();ui.scenePanel=null;render();return;}
  if(e.key.toLowerCase()==='r'){e.preventDefault();requestAction({type:'ROTATE',room:'B',dir:1});}
  if(e.key.toLowerCase()==='h'){e.preventDefault();requestAction({type:'HINT'});}
  const d={ArrowUp:'N',ArrowRight:'E',ArrowDown:'S',ArrowLeft:'W'}[e.key];if(d){e.preventDefault();const r=E.rooms(ui.game)[current().room],dst=Object.values(E.rooms(ui.game)).find(x=>x.row===r.row+(d==='S'?1:d==='N'?-1:0)&&x.col===r.col+(d==='E'?1:d==='W'?-1:0));if(dst)roomClick(dst.id);}
