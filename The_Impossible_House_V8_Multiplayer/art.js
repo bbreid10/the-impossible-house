@@ -166,19 +166,48 @@ function roomObject(type,gold,glass){
  return '';
 }
 function room(id,chapter='floor1'){
- const tone=THEMES[chapter]||THEMES.floor1,type=(ROOM_TYPES[chapter]||ROOM_TYPES.floor1)[id]||'wall';
- const [night,stone,gold,glass]=tone;
- return `<svg class="room-art" viewBox="0 0 320 255" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><defs><linearGradient id="wall-${chapter}-${id}" x2="0" y2="1"><stop stop-color="${stone}"/><stop offset="1" stop-color="${night}"/></linearGradient><pattern id="paper-${chapter}-${id}" width="18" height="18" patternUnits="userSpaceOnUse"><path d="M2 6h2m9 9h1" stroke="#e1c6a1" stroke-opacity=".14" stroke-width="1"/></pattern><radialGradient id="light-${chapter}-${id}"><stop stop-color="#dfc9a5" stop-opacity=".16"/><stop offset="1" stop-color="#dfc9a5" stop-opacity="0"/></radialGradient></defs>
- <rect width="320" height="255" fill="${night}"/><path d="M0 0H320V196L255 227H65L0 196Z" fill="url(#wall-${chapter}-${id})"/>
- <path d="M0 192L65 222H255L320 192V255H0Z" fill="#221f1d" stroke="${gold}" stroke-opacity=".35" stroke-width="2"/><path d="M20 20H300V190L253 215H67L20 190Z" fill="none" stroke="${gold}" stroke-opacity=".35" stroke-width="3"/>
- <path d="M0 192L67 216M320 192L254 216M67 216l-29 39M253 216l29 39" stroke="#96836c" stroke-opacity=".29" stroke-width="2"/>
- ${[70,105,140,175,210,245].map(x=>`<path d="M${x} 215l${(x-160)*.22} 40" stroke="${gold}" stroke-opacity=".16"/>`).join('')}
- <path d="M43 20v165m234 -165v165" stroke="#1b1f20" stroke-width="6"/><path d="M33 20v170m254 -170v170" stroke="${gold}" stroke-opacity=".43" stroke-width="2"/>
- <ellipse cx="160" cy="111" rx="165" ry="120" fill="url(#light-${chapter}-${id})"/>
- <g transform="translate(0 -6)">${roomObject(type,gold,glass)}</g>
- <rect x="0" y="0" width="320" height="255" fill="url(#paper-${chapter}-${id})" opacity=".76"/>
- <path d="M12 14h296M12 14v224m296 -224v224M12 238h296" stroke="${gold}" stroke-opacity=".45" stroke-width="2" fill="none"/>
- <path d="M12 240H308" stroke="#131b1b" stroke-width="7"/><g fill="${gold}" opacity=".65"><circle cx="15" cy="17" r="3"/><circle cx="305" cy="17" r="3"/><circle cx="15" cy="238" r="3"/><circle cx="305" cy="238" r="3"/></g></svg>`;
+ // V10: perspective architectural cutaway. All shapes are deliberately authored
+ // from a small geometric vocabulary rather than AI-rendered room pictures.
+ const palette=THEMES[chapter]||THEMES.floor1;
+ const [night,stone,gold,glass]=palette;
+ const kind=(ROOM_TYPES[chapter]||ROOM_TYPES.floor1)[id]||'wall';
+ const uid=`v10-${chapter}-${id}`;
+ const boards=Array.from({length:10},(_,i)=>{
+  const x=16+i*34;
+  return `<path d="M180 158L${x} 224" stroke="#c7a575" stroke-opacity=".14" stroke-width="1.3"/>`;
+ }).join('');
+ const brick=Array.from({length:5},(_,row)=>Array.from({length:5},(_,col)=>
+  `<path d="M${70+col*47+(row%2?24:0)} ${24+row*25}v${11}" stroke="#d4bd94" stroke-opacity=".075" stroke-width="2"/>`
+ ).join('')).join('');
+ return `<svg class="room-art v10-room-art" viewBox="0 10 360 184" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+ <defs>
+  <linearGradient id="back-${uid}" x1="0" y1="0" x2=".76" y2="1"><stop stop-color="${stone}"/><stop offset=".65" stop-color="${night}"/><stop offset="1" stop-color="#0c1516"/></linearGradient>
+  <linearGradient id="left-${uid}" x2="1" y2=".8"><stop stop-color="#0b1416"/><stop offset="1" stop-color="${stone}"/></linearGradient>
+  <linearGradient id="floor-${uid}" x2=".2" y2="1"><stop stop-color="#554737"/><stop offset="1" stop-color="#191b1b"/></linearGradient>
+  <radialGradient id="lamp-${uid}"><stop stop-color="#efc58c" stop-opacity=".33"/><stop offset="1" stop-color="#efc58c" stop-opacity="0"/></radialGradient>
+  <pattern id="grain-${uid}" width="19" height="19" patternUnits="userSpaceOnUse"><path d="M2 6h2M11 16h1" stroke="#dcc098" stroke-opacity=".09" stroke-width=".8"/></pattern>
+ </defs>
+ <rect width="360" height="220" fill="#0c1314"/>
+ <!-- Top and side walls frame the room like a physical model. -->
+ <path d="M0 18L51 5H309L360 18L310 33H51Z" fill="#3c3025" stroke="${gold}" stroke-width="1.4" stroke-opacity=".54"/>
+ <path d="M51 7H309V158H51Z" fill="url(#back-${uid})"/>
+ <path d="M0 18L51 7V158L0 189Z" fill="url(#left-${uid})" stroke="#6e5840" stroke-width="2"/>
+ <path d="M309 7L360 18V189L309 158Z" fill="#172022" stroke="#66503a" stroke-width="2"/>
+ <path d="M0 189L51 158H309L360 189V220H0Z" fill="url(#floor-${uid})" stroke="#b9976b" stroke-opacity=".55" stroke-width="2"/>
+ <path d="M50 158H310M0 188H360" stroke="${gold}" stroke-opacity=".42" stroke-width="2"/>
+ ${boards}${brick}
+ <!-- Pilasters, crown moulding and light shafts convey depth. -->
+ <path d="M57 10v150M303 10v150" fill="none" stroke="#080f11" stroke-width="9"/>
+ <path d="M58 18H303M57 149H303" stroke="${gold}" stroke-opacity=".48" stroke-width="2"/>
+ <path d="M11 31v138m338 -138v138" stroke="#8f7050" stroke-opacity=".38" stroke-width="2"/>
+ <ellipse cx="177" cy="75" rx="135" ry="104" fill="url(#lamp-${uid})"/>
+ <!-- The furnishing is a distinct miniature scene in every named room. -->
+ <g transform="translate(56 6) scale(.78 .73)">${roomObject(kind,gold,glass)}</g>
+ <path d="M48 151L15 189M310 151l33 38" stroke="#edc28b" stroke-opacity=".25" stroke-width="2"/>
+ <path d="M0 19L51 8M309 8l51 11M0 216H360" stroke="${gold}" stroke-opacity=".64" stroke-width="2"/>
+ <rect width="360" height="220" fill="url(#grain-${uid})" opacity=".85"/>
+ <rect width="360" height="220" fill="url(#lamp-${uid})" opacity=".18"/>
+ </svg>`;
 }
 root.ImpossibleArt={avatar,housePoster,room};
 })(typeof globalThis !== 'undefined'?globalThis:this);
