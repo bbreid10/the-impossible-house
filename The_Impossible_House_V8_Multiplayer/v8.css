@@ -1,0 +1,233 @@
+/* V8 Archive Edition. Intentional print illustration and practical puzzle UI.
+   No neon, chrome, glossy cards, floating game badges or decorative gradients. */
+:root{
+ --night:#111517;--pine:#202c30;--pine2:#293337;--teal:#43575a;
+ --gold:#cda97b;--gold2:#a58763;--paper:#eee5d4;--paper2:#d8c9b2;
+ --white:#efe7d8;--ink:#252b2a;--muted:#7f817a;--border:#aa9272;
+ --sage:#a2aba0;--serif:Georgia,'Times New Roman',serif;
+}
+*{scroll-behavior:smooth}
+body,.app-shell{background:#101416;color:var(--white)}
+.app-shell{background-image:radial-gradient(ellipse at 15% 4%,#3343412e 0%,transparent 54%),linear-gradient(155deg,#151b1d,#0e1315 75%)}
+.topbar{background:#0f1516;border-bottom:1px solid #86735b57;min-height:77px;height:auto;padding-top:14px;padding-bottom:14px}
+.brand{gap:14px;color:#f2e7d5}.brand-mark{height:39px;width:39px;border:1px solid #c8ab76;color:#c9ae84;background:#2a3031;border-radius:1px;transform:none;font-size:27px}.brand b{letter-spacing:1.6px;color:#eed8b7}
+.header-label{font-weight:500;letter-spacing:3.2px;color:#aa9c87}
+.profile-chip{background:#242c2c;border:1px solid #766852;border-radius:3px}.profile-chip .avatar-art{border-radius:1px;background:#463e34}.profile-chip small{color:#a89e8c}
+.bottomline{border-color:#4c4640;letter-spacing:2px;color:#918b80}
+.page{max-width:1540px;padding-left:clamp(16px,3vw,55px);padding-right:clamp(16px,3vw,55px)}
+.btn{border-radius:2px;letter-spacing:.06em;font-size:13px;font-weight:700;text-transform:none;box-shadow:none!important;min-height:44px}
+.btn:not(:disabled):hover{transform:translateY(-1px);filter:brightness(1.09)}
+.btn.primary,.btn.gold-action{background:#ceb18a;color:#181e1e;border:1px solid #e8cda7}
+.btn.secondary{background:#252f30;border:1px solid #b39b79;color:#eadfcd}
+.btn.light{background:#282e30;border:1px solid #82715b;color:#eee1ca}
+.btn.text{color:#cbb38f;font-size:12px}
+.btn.huge{font-family:Georgia,serif;font-size:19px;min-height:67px;padding:18px 22px;text-align:left}
+.eyebrow,.mini-label{font-size:10px;font-weight:650;letter-spacing:2.2px;color:#bea27b}
+h1,h2,h3{font-weight:500;letter-spacing:-.028em}
+/* First screen: editorial mystery poster with one concrete choice. */
+.home-page{min-height:calc(100vh - 142px);padding-top:30px;padding-bottom:30px}
+.home-grid{grid-template-columns:minmax(390px,.97fr) minmax(450px,1.03fr);gap:clamp(36px,6vw,112px);align-items:center;min-height:660px}
+.home-copy{max-width:665px;padding:30px 0}
+.home-copy .eyebrow{color:#a9a18e}
+.hero-title{font-size:clamp(57px,6.3vw,101px);color:#f0e7d8;letter-spacing:-.068em;margin:23px 0 30px;line-height:.96}
+.hero-title i{font-weight:400;color:#cca67b}
+.hero-sub{color:#bdc1b7;font:17px/1.7 system-ui,sans-serif;max-width:500px}
+.hero-sub b{color:#e3d0af;font-weight:600}
+.home-ctas{max-width:470px;gap:11px;margin:38px 0 22px}
+.home-mini-actions{max-width:520px;gap:5px 16px}
+.home-mini-actions .btn{background:transparent;color:#cdbfa7;border:0;border-bottom:1px solid #7c766d7a;border-radius:0;min-height:38px;padding:8px 0;font-size:12px;letter-spacing:.02em}
+.home-mini-actions .btn:hover{background:#252e2c}
+.home-proof{font-weight:600;letter-spacing:1.7px;color:#ad9a82;margin-top:40px;gap:22px;font-size:10px}
+.warning-note{color:#a8b9ae;margin-top:17px}
+.hero-art{max-width:620px;width:100%;justify-self:end}
+.hero-art-stage{border:1px solid #95836a;border-radius:2px;background:#111719;box-shadow:14px 14px 0 #080d0e,0 0 0 7px #85775e24;transform:none;overflow:hidden;aspect-ratio:.90;max-height:690px}
+.hero-art-stage img{display:block;width:100%;height:100%;object-fit:cover;object-position:center 52%;filter:brightness(.9) saturate(.73) contrast(1.1)}
+.hero-art-stage:after{content:'';position:absolute;inset:0;pointer-events:none;border:16px solid #090e102b;box-shadow:inset 0 0 95px #070b0b88}
+.hero-seal{position:absolute;top:auto;right:17px;bottom:19px;width:115px;height:63px;border:1px solid #d1b588;background:#181d1bd9;color:#eedab4;border-radius:1px;transform:none;font-family:Georgia,serif;font-size:10px;line-height:1.25;z-index:2;letter-spacing:1.1px}
+.hero-seal strong{font:500 16px Georgia,serif}
+.house-quote{margin-top:21px;padding:0 3px;border-left:2px solid #937550;padding-left:13px}
+.house-quote b{color:#b89a74;font-weight:600}
+.house-quote span{font:italic 17px/1.4 Georgia,serif;color:#eee0c5}
+/* Chapters and customization remain functional, but match the adult mystery mood. */
+.chapter-page,.browse-page,.match-page{color:#eae1d1}
+.creator-left h1,.section-heading h1,.chapter-page h1{color:#f0e3d2}
+.creator-left>p:nth-of-type(2),.match-page p,.chapter-page p{color:#b7b5a9}
+.creator-right,.sheet,.chapter-pick{border-radius:2px!important;border-color:#a79579!important;box-shadow:none!important}
+.creator-left .character-stage,.stage-arch{border-radius:2px!important}
+.stage-spark{opacity:.3}.creator-right h2{color:#292d2b}
+/* Main game: front-load objective, map, and law changes. */
+.game-page-shell{padding-top:22px}
+.game-header{align-items:center;padding-bottom:7px;border-bottom:1px solid #655d50}
+.stage-status h1{font-size:clamp(31px,3.1vw,47px);letter-spacing:-.05em;color:#eadfc9}
+.stage-status p{color:#c2b39b}.stage-meta{font-size:10px;color:#a9afa4;letter-spacing:.07em}
+.game-top-buttons .btn{font-size:11px}
+.mission-ribbon{background:#1c2527;border:1px solid #8d7c65;color:#d9cbb4;padding:12px 16px;border-radius:1px}
+.mission-ribbon span{color:#bd9e6c}.mission-ribbon strong{font-weight:500}
+.party-strip{background:#1d2828;border:1px solid #716853;border-radius:2px;color:#d5c6af;padding:10px 16px}
+.party-member{background:#263034;color:#e1d7c4;border:1px solid #626c66;border-radius:1px}
+.party-member.selected{background:#cfb48d;border-color:#f6d6a2;color:#242825}
+.solo-tip{color:#cbb495}
+.guide-box{background:#e4dac8;border:1px solid #9e8765;padding:15px 18px;box-shadow:none;margin-top:12px;border-radius:1px}
+.guide-icon{background:#343b39;color:#dbc297;border-radius:0;width:42px;height:42px;font-size:27px}
+.guide-main h2{color:#283130;font-weight:500;font-size:clamp(23px,2.4vw,32px)}
+.guide-main p{color:#535c54;font-size:13px;line-height:1.55}
+.guide-buttons .btn{font-size:11px}
+.guide-box .mini-label{color:#816b50}
+.stage-progress{margin:11px 0}.stage-progress span{border-radius:0;background:#25302f;border:1px solid #475851;color:#b8bdb1;letter-spacing:.06em}
+.stage-progress span.done{background:#253d38;color:#cde4d1}.stage-progress span.current{background:#b99b71;color:#172527}
+.rewrite-banner{border:1px solid #d5ad76;background:#292621;color:#edddbb;display:flex;align-items:center;gap:17px;padding:11px 16px;margin:10px 0 13px;box-shadow:inset 4px 0 0 #d9b684}
+.rewrite-banner .rewrite-symbol{font:43px Georgia,serif;color:#deb87f;line-height:.9}
+.rewrite-banner div{display:grid;gap:2px}
+.rewrite-banner small{font-size:10px;letter-spacing:2px;color:#b69a73}
+.rewrite-banner b{font:500 24px Georgia,serif}
+.rewrite-banner span:last-child{font-size:12px;color:#c9d3c7}
+.game-grid{grid-template-columns:minmax(0,1fr) minmax(290px,350px);gap:14px}
+.board-frame{padding:15px;background:#171e20;color:#ece4d6;border:1px solid #786d59;box-shadow:none;border-radius:2px;min-width:0}
+.board-title{color:#b6a389;font-weight:600;letter-spacing:1.1px;font-size:10px;margin:0 0 14px}
+.board-title .legend{color:#bdcfbf;font-size:11px}
+.room-c-guide{background:#e7dece;border:1px solid #af9a7c;padding:18px 20px;color:#29302e;margin-bottom:18px}
+.room-c-head{align-items:start;border-bottom:1px solid #b8a992;padding-bottom:11px;margin-bottom:13px}
+.room-c-head h2{font:500 26px/1.08 Georgia,serif;color:#222b2b;max-width:580px}
+.room-c-guide .mini-label{color:#886f4c}
+.room-c-status{background:#573b38;color:#f2dbbc;border:1px solid #966f61;border-radius:0;font-size:9px;font-weight:700;white-space:nowrap}
+.room-c-status.open{background:#284b3e;color:#d9efcb;border-color:#709f83}
+.room-c-current{display:flex;align-items:start;gap:18px;margin-bottom:17px;background:#f4eee3;border:1px solid #b9a381;padding:14px 15px}
+.room-c-current .step-numeral{font:500 36px Georgia,serif;color:#896d4c;min-width:44px}
+.room-c-current b{display:block;color:#262f2c;font:500 22px Georgia,serif;margin-bottom:7px}
+.room-c-current p{font:13px/1.52 system-ui,sans-serif;color:#3b4b43;margin:0 0 6px}
+.step-small{font-size:11px;color:#79786a}
+.room-c-steps{grid-template-columns:repeat(5,minmax(0,1fr));gap:5px;margin-bottom:5px}
+.room-c-step{padding:7px;gap:6px;min-height:48px;border:1px solid #c2b29b;background:#e3daca;opacity:.6}
+.room-c-step.done{background:#cad6ca;border-color:#93aa94;opacity:.82}
+.room-c-step.now{opacity:1;background:#f0e6d4;border-color:#927045;box-shadow:inset 0 0 0 1px #ab8557}
+.room-c-step span{font-size:9px;height:20px;width:20px;background:#af9472;color:#1e2927;border-radius:0}
+.room-c-step b{font-size:10px;font-weight:650;line-height:1.35}
+.room-c-route{background:#e0dfcf;border:1px solid #839480;padding:10px;margin-top:14px}
+.room-c-route b{color:#355341;font-size:11px}
+.room-c-route p{font-size:12px;color:#334d42;margin:5px 0 0}
+.rooms-grid{gap:12px}
+.room-shell{padding-bottom:20px}
+.room-tile{aspect-ratio:1.30;border-radius:1px;border:1px solid #80705a;background:#252a29;box-shadow:none}
+.room-tile.reachable{outline:3px solid #84b49a;box-shadow:0 0 0 5px #6196782a}
+.room-tile.my-room{outline:3px solid #d8b48a}
+.room-tile.locked{opacity:.89}
+.room-tile:hover{transform:translateY(-2px)}
+.room-shell.reality-affected .room-tile{border-color:#ebc58a;box-shadow:inset 0 0 0 2px #dfae79,0 0 18px #bb885333}
+.room-shell.reality-affected .room-topline:after{content:'LAW ACTIVE';position:absolute;top:30px;left:0;background:#322c26d9;padding:3px 5px;color:#e0be85;letter-spacing:1px;font-size:7px;border:1px solid #a28559}
+.scene-illustration{border-radius:0}.scene-illustration svg{filter:contrast(1.1) brightness(.97)}
+.room-topline{top:7px;left:7px;right:7px;gap:4px}
+.room-index{border:1px solid #c9a77b;background:#1b2120;color:#efd5a9;font-size:12px;border-radius:0;padding:4px 8px;font-weight:600;font-family:Georgia,serif}
+.object-tag{border:1px solid #a28e68;background:#292d29;color:#e5cda5;letter-spacing:1px;border-radius:0;font-weight:650;font-size:8px;padding:5px}
+.object-tag.lock{background:#5e3d38;color:#f3d8be}
+.object-tag.mirror{background:#2f4649;color:#d1e5e1}
+.room-footer{background:#141a19ed;min-height:44px;padding:8px 10px;border-top:1px solid #5c5346}
+.room-footer b{font:500 clamp(11px,1.2vw,16px) Georgia,serif;color:#efdfc8}
+.room-footer small{font-size:8px;letter-spacing:.1em;color:#a0ccae}
+.room-characters{bottom:51px}.mini-person{border:2px solid #cdb591;border-radius:2px;background:#4c4740;width:32px;height:38px;box-shadow:none}.mini-person.self{border-color:#dfc491;outline:1px solid #6f8f7b}
+.plate-sign,.exit-sign,.magic-sign{border-radius:0!important;font-size:8px!important;letter-spacing:.06em}
+.next-room-ribbon{background:#d0aa71;color:#1e2725;border-radius:0}
+.rotate-here-label{background:transparent;color:#cbb493;font-size:9px;letter-spacing:.09em;padding-top:2px}
+.rotate-dock{background:#292d2c;border:1px solid #c0a078;padding:17px 17px 14px;color:#eee4d1;box-shadow:none;margin-top:27px}
+.rotate-dock::before{background:#bd9a70;border:1px solid #caa97e;color:#1f2422}
+.rotate-dock h2{font:500 25px Georgia,serif;color:#ead9bd}
+.rotate-dock p{color:#b8bdb4;font-size:12px}
+.rotate-index{color:#d0ac76}
+.orientation-badge{background:#151c1e;color:#e3d5c4;border:1px solid #706550;border-radius:0}
+.rotate-control-row .rotate-primary,.rotate-primary{background:#ceb082!important;color:#15201e!important;border:1px solid #e5c593!important;border-radius:1px!important;box-shadow:none!important}
+.rotate-primary:disabled{filter:grayscale(.6)}
+.rotate-control-row .rotation-preview,.rotation-preview{background:#ece5d8;border:1px solid #bba181;color:#2b332f;border-radius:0}
+.rotate-locked{color:#b9b2a3;background:#212624;border:1px solid #766045}
+.rotate-linked{background:#2b4441;color:#d6e4cd;border:1px solid #6d9788}
+.actions-tray{background:#252e2d;color:#e7dccb;border:1px solid #7f765f;border-radius:0}
+.actions-tray h3{color:#f2dfc3}.all-clear{color:#c5c5b3}
+/* The notebook is an actual rule-changing instrument, never a passive tooltip. */
+.side-column{gap:12px}.sidebook{background:#e9e0d1;border:1px solid #98836b;border-radius:0;box-shadow:none}
+.side-tabs{background:#d4c7b4}.side-tabs button{color:#655d51;font-weight:650;letter-spacing:.07em;font-size:10px}
+.side-tabs button.active{color:#253232;background:#ede5d6;border-bottom-color:#9b744e}
+.wordbook{padding:17px}
+.rulebook-intro h3{font:500 26px/1.1 Georgia,serif;color:#30332f}
+.rulebook-intro p:last-child{color:#5f655c;font-size:12px;line-height:1.58}
+.fragment{border-radius:1px;font-size:12px;padding:12px 6px}
+.fragment.found{background:#e5d4b6;color:#463a2d;border-color:#b59967}
+.rule-card{border:1px solid #b5a284;border-radius:1px;background:#f0e8da;color:#26342f;padding:11px 8px;gap:7px}
+.rule-card.active{border:2px solid #8e734f;background:#ded1bb}.rule-card:disabled{opacity:1;cursor:default}
+.rule-card b{font-size:11px;font-weight:700}.rule-card small{font-size:10px;color:#586a63;line-height:1.35}
+.rule-icon{background:#3a4340;color:#ddbd87;border:1px solid #8e7857;border-radius:1px;font-size:22px}
+.cast-status{color:#766347;font-size:9px;letter-spacing:.05em}
+.rule-tip{border-top:1px solid #bca88b;color:#505d53;font-size:11px;letter-spacing:0;font-weight:500}
+.rule-tip b{color:#303a31}.rule-tip ul{margin:9px 0 11px;padding-left:17px}.rule-tip li{margin-bottom:6px;font-size:11px;line-height:1.44}
+.rule-tip small{color:#5e665d}.empty-rules{background:#ddd2bf;color:#52574f;border-radius:0}
+.reality-explainer{background:#1d2928;color:#d7dbc9;border:1px solid #9d8667;border-radius:0}
+.reality-eyebrow{color:#c7a176;letter-spacing:1.4px}
+.reality-row h3{color:#ebdbc1;font-size:23px}
+.reality-row p{color:#c4c6b8}
+.reality-mark{background:#c5a274;color:#212522;border-radius:0}
+.reality-mark.dimmed{background:#6c7770;color:#ece8da}
+.reality-effects{display:flex;flex-wrap:wrap;gap:7px;margin:10px 0}
+.reality-effects>span{border:1px solid #738a79;background:#2b3a36;color:#d5e7d2;padding:6px 9px;font-size:11px;line-height:1.35}
+.effect-doors{margin-top:10px;font-size:11px;color:#ead1a6!important}
+.reality-foot{color:#a7b5a7;border-color:#746f5c}
+.house-says{background:#242d2b;color:#eadac2;border-radius:0;border:1px solid #695d4c}
+.house-says>span{color:#c2a378}.house-says p{font:italic 16px/1.52 Georgia,serif}
+.board-mini-help{color:#aba99c}
+.blocked-explainer{border-radius:0;border-color:#ad8b76;background:#e8d3bb;color:#302826}
+/* Puzzle atmosphere: credible tabletop and case-file feeling. */
+.puzzle-atelier,.thinking-panel{border-radius:0!important;border:1px solid #9c8e75!important;box-shadow:none!important}
+.atelier-header,.thinking-heading{letter-spacing:.05em}
+.hunt-panel .hunt-grid{touch-action:manipulation}
+.hunt-cell{border-radius:0!important}
+/* Clear keyboard focus and reduced motion for a public playtest. */
+button:focus-visible,input:focus-visible{outline:3px solid #d9ae72!important;outline-offset:2px!important}
+@media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;animation:none!important;transition:none!important}}
+@media(max-width:1100px){
+ .home-grid{grid-template-columns:minmax(0,.92fr) minmax(0,1fr);gap:32px;min-height:560px}
+ .hero-title{font-size:clamp(53px,6vw,78px)}.hero-art-stage{max-height:575px}
+ .room-c-steps{grid-template-columns:repeat(3,minmax(0,1fr))}.room-c-step{min-height:42px}
+}
+@media(max-width:920px){
+ .game-grid{grid-template-columns:1fr}.side-column{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,.9fr)}
+ .sidebook{grid-row:span 2}.house-says{grid-column:2;grid-row:1}.play-tools{grid-column:2}.board-mini-help{grid-column:2}
+}
+@media(max-width:680px){
+ .topbar{min-height:65px;height:auto}.page{padding-left:14px;padding-right:14px}
+ .home-page{padding-top:22px}.home-grid{grid-template-columns:1fr;gap:23px;min-height:0}
+ .home-copy{padding:0;order:2}.hero-art{order:1;width:100%;max-width:520px}
+ .hero-art-stage{height:230px;max-height:230px;aspect-ratio:auto;border-width:1px;box-shadow:none}
+ .hero-art-stage img{width:100%;height:100%;object-fit:cover;object-position:center 45%}
+ .hero-seal{bottom:9px;right:8px;font-size:8px;width:90px;height:45px}.hero-seal strong{font-size:12px}
+ .hero-title{font-size:clamp(52px,11.8vw,77px);margin:12px 0 18px}
+ .hero-sub{font-size:15px}.home-ctas{margin:19px 0 11px}.home-proof{margin-top:25px;gap:12px}
+ .game-page-shell{padding:12px 9px}.game-header{gap:6px}
+ .stage-status h1{font-size:29px}.stage-meta{font-size:8px}
+ .mission-ribbon{padding:10px 11px}.guide-box{padding:10px;gap:9px;margin-top:8px}
+ .guide-buttons{flex-wrap:wrap}.guide-buttons .btn{font-size:10px}
+ .board-frame{border:1px solid #827362;padding:7px}
+ .board-title{font-size:8px;letter-spacing:.2px;align-items:start}
+ .board-title .legend{font-size:8px}
+ .room-c-guide{padding:10px 9px;margin:5px 0 12px}
+ .room-c-head h2{font-size:21px}.room-c-current{padding:9px;gap:8px;margin-bottom:9px}
+ .room-c-current .step-numeral{font-size:24px;min-width:30px}
+ .room-c-current b{font-size:18px}.room-c-current p{font-size:11px}.step-small{font-size:10px}
+ .room-c-steps{grid-template-columns:repeat(2,minmax(0,1fr));gap:5px}
+ .room-c-step{min-height:36px;padding:6px;gap:5px}
+ .room-c-step b{font-size:9px}
+ .rooms-grid{gap:6px}
+ .room-shell{padding-bottom:15px}.room-tile{aspect-ratio:.98}
+ .room-index{font-size:10px;padding:3px 5px}.object-tag{font-size:6px;padding:2px 3px;max-width:63px}
+ .room-footer{min-height:33px;padding:3px 4px}.room-footer b{font-size:10px}.room-footer small{font-size:7px}
+ .room-characters{bottom:36px;right:5px}.mini-person{height:23px;width:22px;border-width:1px}
+ .exit-sign,.plate-sign,.magic-sign{font-size:6px!important;letter-spacing:0}
+ .rotate-here-label{font-size:6px}
+ .rotate-dock{padding:12px 8px;margin:24px 0 13px}
+ .rotate-dock h2{font-size:19px}.rotate-dock p{font-size:11px}
+ .rotate-primary{font-size:12px}.rotate-primary .rotate-symbol{font-size:25px}
+ .side-column{display:block}.sidebook{margin-top:10px}.house-says{margin-top:10px}
+ .rewrite-banner{padding:8px;gap:10px}.rewrite-banner b{font-size:17px}.rewrite-banner span:last-child{font-size:10px}
+ .rule-card{gap:10px}
+}
+/* Find the optional word hunt by exploring the chapter, never from the home menu. */
+.hunt-teaser{margin-top:20px;padding:22px;background:#2d2924;color:#e8d9c4;border:1px solid #987a5e;display:grid;gap:9px}
+.hunt-teaser h2{font:500 29px Georgia,serif;color:#e9d5ad}
+.hunt-teaser p{font-size:13px;line-height:1.65;color:#c9c4b4;max-width:640px}
+.hunt-teaser>span:last-child{font-size:10px;color:#c0a884;letter-spacing:.05em}
+@media(max-width:680px){.hunt-teaser{padding:14px}.hunt-teaser h2{font-size:23px}}
