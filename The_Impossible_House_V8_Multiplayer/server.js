@@ -34,7 +34,7 @@ function publishChat(room,playerId,text){
   room.game.chat=room.game.chat.slice(-45);room.game.version++;broadcast(room);return {ok:true};
 }
 
-const files={'/':'index.html','/index.html':'index.html','/app.js':'app.js','/engine.js':'engine.js','/art.js':'art.js','/guide.js':'guide.js','/styles.css':'styles.css','/v4.css':'v4.css','/v6.css':'v6.css','/v8.css':'v8.css','/v9.css':'v9.css','/v10.css':'v10.css','/assets/house-diorama.webp':'assets/house-diorama.webp','/assets/foyer-architectural.webp':'assets/foyer-architectural.webp'};
+const files={'/':'index.html','/index.html':'index.html','/app.js':'app.js','/engine.js':'engine.js','/art.js':'art.js','/guide.js':'guide.js','/styles.css':'styles.css','/v4.css':'v4.css','/v6.css':'v6.css','/v8.css':'v8.css','/v9.css':'v9.css','/v10.css':'v10.css','/v11.css':'v11.css','/assets/house-diorama.webp':'assets/house-diorama.webp','/assets/foyer-architectural.webp':'assets/foyer-architectural.webp','/assets/v11-interiors.webp':'assets/v11-interiors.webp'};
 const mime={'.js':'text/javascript; charset=utf-8','.css':'text/css; charset=utf-8','.html':'text/html; charset=utf-8','.webp':'image/webp'};
 function out(res,status,body){res.writeHead(status,{'Content-Type':'application/json; charset=utf-8','Cache-Control':'no-store','Access-Control-Allow-Origin':'same-origin'});res.end(JSON.stringify(body));}
 function fail(res,message,status=400){out(res,status,{error:message});}

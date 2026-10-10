@@ -209,5 +209,6 @@ function room(id,chapter='floor1'){
  <rect width="360" height="220" fill="url(#lamp-${uid})" opacity=".18"/>
  </svg>`;
 }
-root.ImpossibleArt={avatar,housePoster,room};
+function sceneType(id,chapter='floor1'){return ((ROOM_TYPES[chapter]||ROOM_TYPES.floor1)[id]||'wall');}
+root.ImpossibleArt={avatar,housePoster,room,sceneType};
 })(typeof globalThis !== 'undefined'?globalThis:this);

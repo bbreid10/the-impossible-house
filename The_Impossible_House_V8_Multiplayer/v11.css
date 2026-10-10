@@ -1,0 +1,116 @@
+/* THE IMPOSSIBLE HOUSE V11 · The House, Reimagined
+ * Painterly game-room atlas with interactive HTML overlays. Layout, accessibility,
+ * game state, hit targets and multiplayer logic remain browser-native.
+ */
+:root{--v11-brass:#bda17a;--v11-bright:#efd4a6;--v11-mist:#b7d8cb;--v11-ink:#0a1115;--v11-wood:#2d211a}
+html{background:#090f15}body{background:#090f15;color:#f2e9db}
+.app-shell{background:radial-gradient(ellipse at 57% 35%,#22303a 0%,#0a151c 56%,#090c11 100%);min-height:100vh}
+.topbar{background:#0a1218e8;border-bottom:1px solid #977c533b;box-shadow:0 6px 30px #0006}
+.page.game-page-shell{padding-top:12px;padding-bottom:32px;max-width:1450px}
+.v10-header{border-bottom:0;padding:3px 0 8px;gap:22px}
+.v10-header h1{font-size:clamp(23px,2.15vw,30px);font-weight:500;color:#f4e5ce}
+.v10-header small{color:#bfa87c}
+.v10-chapter-number{border:1px solid #957a538c;background:#211e1a;color:#ead0a2;font-size:21px}
+.v10-tools .btn{background:#121d24cc;border:1px solid #6c66606a;color:#d6cbbb;min-height:35px;padding:6px 12px;border-radius:3px}
+.v10-tools .btn:hover,.v10-tools .btn:focus-visible{border-color:#c5a16e;color:#f8e7cf;background:#26302e}
+.v10-mission{max-width:none;border:1px solid #7e765c5a;border-left:3px solid #c7a16d;background:linear-gradient(92deg,#222c31 0%,#142028 70%,#132029 100%);box-shadow:0 7px 25px #0004;min-height:66px;margin:8px 0 9px;padding:11px 15px}
+.v10-mission h2{font:500 clamp(18px,1.8vw,23px)/1.08 Georgia,serif;color:#f1dec0}
+.v10-mission p{color:#b6c1ba;font-size:12px}
+.v10-mission small{color:#bda17a;font-size:9px}
+.v10-mission-actions .btn{background:#c3a477;border:1px solid #edcb9c;color:#1b2226;font-weight:650}
+.v10-mission-actions .btn.light{background:transparent;border-color:#70736b;color:#eadfd0}
+.v10-context{min-height:38px;padding:0 0 9px}
+.v10-context .party-member{min-height:34px;background:#172028;border-color:#4b5a55;padding:2px 7px 2px 2px}
+.v10-context .party-member.selected{background:#433b30;border-color:#bba176;box-shadow:0 0 0 1px #ae8a533b}
+.v10-context .party-avatar{width:30px;height:30px}
+.v10-context .law-indicator{border:0;background:#111a22b8;color:#a4ada6;max-width:42%;font-size:10px;min-height:38px}
+.v10-context .law-indicator.active{background:#253933;border:1px solid #90b9a27d;color:#e4e7d8}
+/* Night exterior surrounds a physical six-room architectural cutaway, not 6 UI cards. */
+.v11-house-shell{--wood:#4b3524;max-width:1230px!important;margin:7px auto 0!important;background:radial-gradient(ellipse 75% 78% at 50% 46%,#22323b 0%,#101e27 54%,#091119 100%);border:0;border-radius:3px;box-shadow:0 20px 45px #0007,inset 0 1px 0 #d9be8c20;overflow:hidden;padding:10px clamp(8px,2vw,25px) 12px!important;isolation:isolate}
+.v11-house-shell:before{display:none}.v11-house-shell:after{display:none}
+.v11-house-shell .v10-board-head{margin:0 0 6px;color:#c4b6a0;display:flex;gap:12px;min-height:25px;align-items:center;font-size:10px;letter-spacing:.02em}
+.v11-house-shell .v10-board-head b{font:600 11px Georgia,serif;color:#dfc395;letter-spacing:.13em}
+.v11-house-shell .v10-legend{color:#b5bcb4;font-size:10px}
+.v11-dollhouse{position:relative;margin:0 auto 0;max-width:1130px;padding:60px 10px 5px;filter:drop-shadow(0 22px 24px #0009);isolation:isolate}
+/* A genuinely shared roofline and framework make the grid read as one miniature set. */
+.v11-roof{position:absolute;top:0;left:0;right:0;height:78px;z-index:4;pointer-events:none;background:repeating-linear-gradient(177deg,transparent 0 5px,#c8b08a0b 6px 7px,transparent 8px 17px),repeating-linear-gradient(11deg,#172029 0px,#1a252c 5px,#26303a 7px,#111b23 11px);clip-path:polygon(0 94%,4% 72%,16% 38%,28% 60%,45% 2%,55% 2%,72% 60%,84% 39%,96% 72%,100% 94%,100% 100%,0 100%);border-bottom:5px solid #86613d;filter:drop-shadow(0 3px 3px #000b)}
+.v11-roof:after{content:'';position:absolute;left:0;right:0;bottom:0;height:6px;background:linear-gradient(90deg,#483323,#b79763 20%,#524332 42%,#bea177 50%,#3e2c1e 77%,#9a7b54);box-shadow:0 5px 6px #000e}
+.v11-attic-window{position:absolute;left:calc(50% - 18px);top:30px;width:36px;height:31px;border:4px solid #8b6c4c;background:radial-gradient(#efc98a,#9a7044 56%,#221914 96%);box-shadow:0 0 30px #dca35b30;border-radius:30px 30px 2px 2px}
+.v11-house-shell .rooms-grid{position:relative;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:0;padding:0;border:8px solid #3f3028;background:#241b17;box-shadow:inset 0 0 0 2px #a58a66,0 0 0 2px #141516,0 11px 15px #000a;overflow:visible}
+.v11-house-shell .rooms-grid:before{content:'';position:absolute;left:-7px;right:-7px;top:calc(50% - 7px);height:14px;background:linear-gradient(#917450 0%,#59412d 19%,#231d18 62%,#a1835c 100%);border-top:1px solid #c5a67d7d;box-shadow:0 6px 10px #0009;z-index:18;pointer-events:none}
+.v11-house-shell .rooms-grid:after{content:'';position:absolute;inset:0;z-index:20;pointer-events:none;box-shadow:inset 0 0 24px #050609ca,inset 0 0 0 2px #a28c655e}
+.v11-house-shell .room-shell{background:#120f0e;position:relative;box-shadow:none!important;padding:0;min-width:0}
+.v11-house-shell .room-shell:not(:nth-child(3n)):after{content:'';position:absolute;top:0;bottom:0;right:-7px;width:11px;z-index:19;pointer-events:none;background:linear-gradient(90deg,#3b2c25,#8b7454 44%,#27201a 77%);box-shadow:2px 0 5px #0007,-2px 0 6px #0008}
+.v11-house-shell .room-tile{display:block;position:relative;overflow:hidden;border:0!important;border-radius:0!important;background:#171b1b;aspect-ratio:1.87!important;width:100%;min-height:0;box-shadow:none!important;outline:0!important;isolation:isolate;transform:none!important;transition:filter .25s ease}
+.v11-house-shell .room-tile:before{content:'';position:absolute;inset:0;z-index:2;background:linear-gradient(0deg,#0b0c0cc7 0%,transparent 32%),radial-gradient(ellipse at 49% 5%,transparent 36%,#0008 105%);pointer-events:none}
+.v11-house-shell .room-tile:after{content:'';position:absolute;inset:0;z-index:3;background:linear-gradient(90deg,#07070783 0%,transparent 9%,transparent 91%,#05060780 100%);pointer-events:none}
+.v11-house-shell .room-tile:hover .v11-scene:before,.v11-house-shell .room-tile:focus-visible .v11-scene:before{filter:brightness(1.17) saturate(1.08);transform:scale(1.035)}
+.v11-house-shell .room-tile:focus-visible{outline:3px solid #f2d6a4!important;outline-offset:-5px!important;z-index:15}
+.v11-house-shell .room-tile.reachable .v11-scene:after{border:2px solid #a2dbbba9;box-shadow:inset 0 0 35px #81be9c28,0 0 15px #9dd9b652}
+.v11-house-shell .room-tile.reachable:before{background:linear-gradient(0deg,#061611ab,transparent 39%),radial-gradient(ellipse at 50% 25%,transparent 30%,#12322521)}
+.v11-house-shell .room-tile.my-room .v11-scene:after{border:2px solid #f1cf9499;box-shadow:inset 0 0 36px #dcad5329,0 0 17px #e0af4d44}
+.v11-house-shell .room-tile.locked{filter:brightness(.78) saturate(.75)}
+.v11-house-shell .room-tile.locked:hover{filter:brightness(.87) saturate(.8)}
+.v11-scene{position:absolute;inset:0;z-index:0;display:block;overflow:hidden;background:#171b19}
+.v11-scene>svg{position:absolute;inset:0;width:100%;height:100%}
+.v11-scene:before{content:'';position:absolute;inset:-1px;z-index:1;background-image:url('assets/v11-interiors.webp');background-size:300% 200%;background-repeat:no-repeat;transition:filter .3s ease,transform .45s ease;will-change:filter}
+.v11-scene:after{content:'';position:absolute;inset:0;z-index:2;pointer-events:none;box-shadow:inset 0 0 24px #0203068a;border:1px solid #d3b98921}
+.v11-scene.art-library:before,.v11-scene.art-portrait:before{background-position:0% 0%}
+.v11-scene.art-mechanism:before,.v11-scene.art-orrery:before,.v11-scene.art-clock:before,.v11-scene.art-heart:before{background-position:50% 0%}
+.v11-scene.art-exit:before{background-position:100% 0%}
+.v11-scene.art-mirror:before,.v11-scene.art-moon:before{background-position:0% 100%}
+.v11-scene.art-sun:before,.v11-scene.art-garden:before{background-position:50% 100%}
+.v11-scene.art-crank:before,.v11-scene.art-wall:before{background-position:100% 100%}
+.v11-chapter-floor2 .v11-scene:before{filter:hue-rotate(-8deg) saturate(.8)}
+.v11-chapter-floor3 .v11-scene:before{filter:hue-rotate(10deg) saturate(.75)}
+.v11-chapter-floor4 .v11-scene:before{filter:hue-rotate(-14deg) saturate(.8)}
+.v11-chapter-floor5 .v11-scene:before{filter:hue-rotate(21deg) saturate(.66)}
+.v11-chapter-finale .v11-scene:before{filter:hue-rotate(-12deg) saturate(.7) contrast(1.11)}
+/* Legible, restrained diegetic markers. The objects themselves are the visual affordances. */
+.v11-house-shell .room-topline{z-index:7;left:9px;right:8px;top:8px;align-items:start}
+.v11-house-shell .room-index{font:600 16px/1 Georgia,serif;color:#f1dbb3;min-width:26px;min-height:27px;padding:5px 7px;text-shadow:0 2px 4px #000;background:#111921d9;border:1px solid #99764c84;box-shadow:0 3px 8px #0006}
+.v11-house-shell .object-tag{color:#ecd7b5;font:700 9px/1.2 var(--sans);letter-spacing:.055em;background:#142025d7;border:1px solid #ac986c8f;border-radius:2px;padding:5px 7px;text-shadow:0 1px 2px #000}
+.v11-house-shell .object-tag.lock{color:#ffd6c0;background:#41221edc;border-color:#a27369}
+.v11-house-shell .room-footer{position:absolute;left:0;right:0;bottom:0;min-height:35px;height:35px;z-index:10;display:flex;align-items:center;justify-content:space-between;gap:5px;padding:5px 10px 6px;background:linear-gradient(0deg,#080e12f7,#0e1619c9 80%,#10191a0a);border-top:0;color:#f3e8d6}
+.v11-house-shell .room-footer b{font:500 clamp(12px,1.27vw,16px) Georgia,serif;letter-spacing:.005em;color:#faebcf;text-shadow:0 2px 3px #000}
+.v11-house-shell .room-footer small{font-size:8px;letter-spacing:.02em;font-weight:650;color:#b8eacb}
+.v11-house-shell .room-characters{z-index:13;right:11px;bottom:38px;gap:4px}
+.v11-house-shell .mini-person{width:32px;height:32px;border:2px solid #ecd3a0;background:#dbc7ad;border-radius:50%;box-shadow:0 0 0 2px #090e17d9,0 3px 12px #000a}
+.v11-house-shell .mini-person.self{box-shadow:0 0 0 3px #dec08a,0 0 22px #f5c98c84}
+.v11-house-shell .exit-sign,.v11-house-shell .plate-sign,.v11-house-shell .magic-sign{z-index:13;left:8px;bottom:38px;border:1px solid #a99579a9;background:#251c1ad9;box-shadow:0 2px 8px #0006;padding:4px 6px;color:#e5ceb4;font-size:8px!important}
+.v11-house-shell .plate-sign.lit{color:#dbf6e7;background:#254539e8;border-color:#9ad1a8}
+.v11-house-shell .magic-sign{top:38px;right:8px;left:auto;bottom:auto;background:#1d4142ed;border-color:#8bb3a5;color:#d4ebda}
+.v11-house-shell .room-shell.reality-affected .room-tile:after{background:radial-gradient(ellipse,#9fddc92b,transparent 67%);box-shadow:inset 0 0 32px #9fd9bf6a}
+.v11-house-shell .room-shell.reality-affected .v11-scene:after{border:2px solid #b7f5d1a6;box-shadow:inset 0 0 36px #78c1bc4c}
+.v11-house-shell .door.open{background:#c3efd0!important;box-shadow:0 0 18px #b8f2d3,0 0 8px #fff!important;z-index:17}
+.v11-house-shell .target-spark{z-index:15;right:14px;top:42px;color:#f7e1b7;font-size:23px;filter:drop-shadow(0 0 7px #eac16c)}
+.v11-house-shell .tile-interact,.v11-house-shell .v10-turn-hotspot{z-index:16;background:#d9bc8d;border:1px solid #f3d8a7;color:#17221f;box-shadow:0 3px 12px #000a;padding:7px 9px;font-size:10px;letter-spacing:.04em;bottom:39px}
+.v11-house-shell .v10-turn-hotspot{left:9px}
+.v11-plinth{height:21px;margin:0 3px;border-top:2px solid #bca1777d;background:linear-gradient(180deg,#55402d,#211b17 65%,#0b1114);box-shadow:0 8px 15px #0009;display:flex;align-items:center;justify-content:center;gap:18px;color:#9d815c;font:600 8px var(--serif);letter-spacing:.25em}
+.v11-plinth span:first-child,.v11-plinth span:last-child{display:block;height:1px;width:13%;background:linear-gradient(90deg,transparent,#bda0787a,transparent)}
+.v11-house-shell .v10-house-foot{display:none}
+/* Controls should feel carved into the board's workbench, not like a dashboard. */
+.v10-controls{max-width:1150px!important;margin:9px auto 0!important}
+.v10-controls .rotate-dock{border:1px solid #8e755a68;background:linear-gradient(90deg,#142029,#202b2d,#142029);padding:11px 13px;margin:12px auto 8px;box-shadow:0 8px 18px #0004}
+.v10-controls .rotate-dock h2{color:#f2e2c5;font-size:17px}
+.v10-controls .rotate-primary{min-height:45px;background:linear-gradient(#d3b88f,#b89764);color:#171d1e;border:1px solid #e5d0a9;font-weight:700;box-shadow:inset 0 1px 0 #fff5,0 3px 9px #0007!important}
+.v10-controls .rotate-primary:hover{filter:brightness(1.12)}
+.v10-controls .rotation-preview{background:#111c21;border:1px solid #7a695067}
+.v10-controls .actions-tray{border:1px solid #746c5655;background:#18242d;color:#e9dcca}
+.v10-controls .actions-tray .btn{background:#263735;border-color:#978566}
+.v10-drawer{background:linear-gradient(90deg,#d8c3a1,#f0e1c5);box-shadow:-15px 0 48px #000b;border-left:2px solid #b58c55}
+.v10-drawer-head{background:#202b30}.v10-drawer .side-tabs{background:#d8c5a6}
+/* One-shot local and remote visual confirmation from real game changes. */
+.v11-mechanism-turn .v11-scene:before{animation:v11-mechanical-shift .78s cubic-bezier(.24,.73,.24,1) both}
+.v11-mechanism-turn .room-tile{animation:v11-shake .68s ease-out both}
+.v11-law-awakens .rooms-grid{animation:v11-house-awaken 1.05s ease both}
+.v11-law-awakens .room-shell.reality-affected .v11-scene:after{animation:v11-rewrite 1.25s ease both}
+@keyframes v11-mechanical-shift{0%{transform:scale(1.02) rotate(-1.5deg);filter:brightness(1.5)}38%{transform:scale(1.06) rotate(1.3deg);filter:brightness(1.3)}100%{transform:scale(1);filter:brightness(1)}}
+@keyframes v11-shake{0%,100%{translate:0 0}30%{translate:0 -2px}62%{translate:0 1px}}
+@keyframes v11-house-awaken{0%,100%{filter:none}36%{filter:drop-shadow(0 0 22px #b5eed5af) brightness(1.16)}}
+@keyframes v11-rewrite{0%,100%{box-shadow:inset 0 0 34px #b6ecd05e}40%{box-shadow:inset 0 0 62px #b0ffe8c7}}
+/* At low height keep the actual rooms visible instead of consuming screen space. */
+@media(min-width:980px) and (max-height:900px){.v11-dollhouse{padding-top:49px}.v11-roof{height:66px}.v11-house-shell .room-tile{aspect-ratio:2.15!important}.v11-house-shell{padding-top:5px!important;padding-bottom:7px!important}.v10-mission{min-height:54px;padding:8px 14px;margin:6px 0}.v10-context{padding-bottom:5px}}
+@media(max-width:800px){.v11-dollhouse{padding:44px 4px 5px}.v11-roof{height:61px}.v11-house-shell .rooms-grid{border-width:5px}.v11-house-shell .room-footer b{font-size:11px}.v11-house-shell .room-footer small{font-size:7px}.v11-house-shell .room-tile{aspect-ratio:1.5!important}.v11-house-shell .object-tag{font-size:7px;padding:3px}.v11-house-shell .room-index{font-size:11px;min-width:19px;min-height:20px;padding:3px}.v11-house-shell .room-footer{height:28px;min-height:28px;padding:4px}.v11-house-shell .mini-person{width:24px;height:24px}.v11-house-shell .room-characters{bottom:30px;right:3px}.v11-house-shell .exit-sign,.v11-house-shell .plate-sign{bottom:29px;font-size:6px!important}.v11-house-shell .tile-interact,.v11-house-shell .v10-turn-hotspot{bottom:29px;font-size:7px;padding:4px}.v11-house-shell .rooms-grid:before{height:8px;top:calc(50% - 4px)}.v11-house-shell .room-shell:not(:nth-child(3n)):after{width:6px;right:-3px}.v11-house-shell .v10-board-head{font-size:9px;flex-wrap:wrap}}
+@media(max-width:480px){.v11-house-shell{padding:5px 4px 6px!important}.v11-house-shell .v10-board-head>span:nth-of-type(1){display:none}.v11-dollhouse{padding:32px 2px 3px}.v11-roof{height:48px}.v11-attic-window{top:15px;height:21px;width:23px;left:calc(50% - 11px)}.v11-house-shell .room-tile{aspect-ratio:1.13!important}.v11-house-shell .rooms-grid{border-width:4px}.v11-house-shell .room-topline{top:3px;left:3px;right:3px}.v11-house-shell .room-index{font-size:9px;min-height:17px;min-width:16px;padding:2px}.v11-house-shell .object-tag{font-size:6px;max-width:55px}.v11-house-shell .room-footer{height:24px;min-height:24px;padding:3px}.v11-house-shell .room-footer b{font-size:9px}.v11-house-shell .room-footer small{display:none}.v11-house-shell .mini-person{width:19px;height:19px}.v11-house-shell .room-characters{bottom:25px}.v11-house-shell .exit-sign,.v11-house-shell .plate-sign{bottom:24px;max-width:90%;font-size:5px!important}.v11-house-shell .tile-interact,.v11-house-shell .v10-turn-hotspot{bottom:24px;font-size:6px;padding:3px}.v11-plinth{height:14px;font-size:6px}.v10-tools .btn{font-size:10px;padding:4px 7px;min-height:30px}.v10-mission-actions .btn{min-height:30px}.v10-mission{padding:8px}.v10-context .law-indicator{max-width:100%}}
+@media(prefers-reduced-motion:reduce){.v11-scene:before{transition:none!important}.v11-mechanism-turn .room-tile,.v11-mechanism-turn .v11-scene:before,.v11-law-awakens .rooms-grid,.v11-law-awakens .v11-scene:after{animation:none!important}}
