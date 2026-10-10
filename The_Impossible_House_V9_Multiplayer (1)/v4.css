@@ -1,0 +1,125 @@
+/* V4: play-first layout, explicit door controls, practice and optional secrets.
+   All styling stays self-contained, with no remote fonts or image requests. */
+:root{--accent-peach:#e4b985;--accent-mint:#a4d8ab}
+.home-mini-actions{gap:8px;flex-wrap:wrap}.home-proof{flex-wrap:wrap;gap:8px 20px}
+.mission-ribbon{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin:0 0 10px;padding:10px 14px;background:#223d36;border:1px solid #647961;border-radius:9px;color:#f6efd8}
+.mission-ribbon>span{font-size:10px;font-weight:900;letter-spacing:1.4px;color:#e7c992}.mission-ribbon strong{font-size:12px;flex:1;font-weight:600}.mission-ribbon em{font-style:normal;font-size:10px;color:#b6cfba;white-space:nowrap}
+/* Map: every room is a single selectable surface, with independent arrows above it. */
+.room-shell{min-width:0;position:relative;isolation:isolate}
+.room-shell .room-tile{width:100%;height:auto;display:block}
+.room-shell .room-tile:hover{transform:none;filter:brightness(1.045)}
+.room-shell.coach-target .room-tile{box-shadow:0 0 0 5px #f2c774aa,0 0 35px #f2c77455}
+.room-shell.coach-target{z-index:2}
+.next-room-ribbon{position:absolute;pointer-events:none;top:-12px;left:50%;transform:translateX(-50%);background:#f0c678;color:#293d32;font-size:9px;font-weight:950;letter-spacing:1px;border:1px solid #835f39;border-radius:99px;white-space:nowrap;padding:4px 9px;z-index:9;box-shadow:0 3px 10px #122319cc}
+.turn-controls{pointer-events:none;position:absolute;top:31%;right:10px;display:flex;flex-direction:column;gap:3px;align-items:center;z-index:6}
+.turn-arrows{display:flex;gap:5px;pointer-events:auto}
+.turn-arrows button{width:38px;height:38px;display:grid;place-items:center;border:2px solid #f2d49c;background:#24433eea;color:#f8e8cb;border-radius:10px;font-size:27px;font-family:var(--sans);box-shadow:0 2px 10px #10201dbd;line-height:1}
+.turn-arrows button:not(:disabled):hover{background:#e7c88e;color:#244037;transform:translateY(-2px)}
+.turn-arrows button:disabled{opacity:.6}
+.door-facing{background:#1b302cdd;color:#f5e3bb;font-size:9px;font-weight:850;letter-spacing:.3px;padding:4px 7px;border-radius:5px;border:1px solid #8a946a;max-width:100%;text-align:center;white-space:nowrap}
+.tile-interact{position:absolute;bottom:49px;left:50%;transform:translateX(-50%);z-index:8;background:#f5d293;color:#24423b;border:2px solid #5b7358;border-radius:8px;padding:7px 13px;font-weight:900;font-size:11px;white-space:nowrap;box-shadow:0 4px 8px #09201ba8}
+.tile-interact:hover{background:#ffeab7}
+.tile-secret{pointer-events:none;position:absolute;left:7px;top:45px;color:#fff4c4;font-size:9px;font-weight:850;letter-spacing:.3px;text-shadow:0 1px 5px #142420;background:#365d52d7;padding:4px 6px;border-radius:5px}
+.room-shell.room-turnable .room-index{box-shadow:0 0 0 2px #dbb56c}
+.room-shell .room-topline,.room-shell .room-characters{pointer-events:none}
+.room-shell .room-tile.reachable .room-footer small{color:#c0f3b6}
+.room-shell .room-tile.locked .room-footer small{color:#f4d3ba}
+.room-shell .room-tile .door.open{box-shadow:0 0 13px #b7e3ae,0 0 0 2px #3a624f}
+.room-shell .room-tile.my-room{border-color:#efc682}
+.room-shell .room-tile.recommended{border-color:#f9d895}
+.game-grid{grid-template-columns:minmax(0,1fr) 322px;gap:16px}
+.board-frame{border-width:6px;padding:14px}
+.board-title{font-size:10px;letter-spacing:.5px;margin-bottom:16px}
+.guide-box.v4-guided{border-color:#dabc79;background:linear-gradient(110deg,#f7eacb,#f1e9d9);box-shadow:0 4px 0 #766342}
+.guide-box.v4-guided h2{font-size:clamp(23px,2.15vw,31px)}
+.guide-box.v4-guided p{font-size:13px;color:#475b50;line-height:1.48}
+.guide-box .coach-context{font-size:10px;color:#9c7748;margin-top:7px;font-weight:750;letter-spacing:.15px}
+.guide-buttons{min-width:195px}
+.guide-buttons .btn.coach-cta{font-size:12px;white-space:normal;min-height:44px}
+.guide-box.v4-unguided .guide-buttons{min-width:220px}
+.blocked-explainer{display:flex;align-items:center;gap:11px;background:#fff1d4;color:#4e4b39;margin-top:12px;border:2px solid #dda973;border-radius:8px;padding:11px 12px}
+.blocked-explainer>span{font-size:26px}.blocked-explainer>div{flex:1}.blocked-explainer b{font-size:13px}.blocked-explainer p{font-size:11px;color:#755f48;margin:3px 0}
+.actions-tray{margin-top:11px;background:#193c35;border-radius:10px;padding:11px 12px;border:1px solid #719482}
+.actions-tray h3{font-size:22px}
+.actions-list{flex-wrap:wrap}.actions-list .btn{font-size:12px;min-height:39px}
+.all-clear{font-size:11px;color:#b5c8b1}
+.sidebook{min-height:300px}.house-says{padding:11px 15px}.house-says p{font-size:15px}
+.party-strip{background:#2b4d42;border-color:#78916f;border-width:1.5px;gap:11px}
+.party-member{min-width:170px}.party-member.selected{box-shadow:0 0 0 2px #f7d997}
+.party-strip .solo-tip{font-size:11px;max-width:185px;font-weight:800;color:#f9e5ac}
+.board-mini-help{font-size:11px;color:#a7c1ac;line-height:1.5;padding:0 5px}
+.secret-result{border:1px solid #8b9a73;background:#315343;padding:11px;border-radius:8px;font-weight:700;color:#f3ddaa;font-size:13px}
+/* Cards emphasize physical objects over instructions */
+.rulebook-intro p:last-child{font-size:11px}.fragment.found{background:#e5d4ad;box-shadow:0 4px 0 #aa925f;transform:rotate(-2deg)}
+.rule-card:not(:disabled):hover{transform:translateY(-1px);border-color:#9d824e}.rule-card.active{box-shadow:inset 0 0 0 1px #769d67}
+/* Interactive practice */
+.practice-wrapper{display:flex;align-items:center;justify-content:center;padding:34px 16px}
+.practice-page{width:min(890px,100%);padding:30px 0 45px;color:#f8e9cf}
+.practice-page h1{font-size:clamp(40px,5.4vw,70px);margin:8px 0 10px}.practice-page h1 i{color:#f0c581}
+.practice-sub{color:#c1d4c3;font-size:16px;max-width:700px;line-height:1.55}
+.practice-board{display:grid;grid-template-columns:1fr 33px 1fr 33px 1fr;gap:0;align-items:stretch;margin:24px 0 20px;padding:20px;border:7px solid #8d8669;border-radius:14px;background:#192e2e;min-height:240px}
+.practice-room{position:relative;min-width:0;background:repeating-linear-gradient(0deg,#c9b896,#c9b896 19px,#bbaa8b 20px),#ceb99c;border:5px solid #746851;border-radius:9px;display:flex;flex-direction:column;gap:4px;justify-content:center;align-items:center;color:#303c33;text-align:center;padding:12px}
+.practice-room>span:first-child{font-size:53px}.practice-room strong{font:800 18px var(--serif)}.practice-room small{font-size:10px;font-weight:900;letter-spacing:.7px}
+.practice-center{background:repeating-linear-gradient(90deg,#b9ac94,#b9ac94 18px,#a69b87 20px)}
+.practice-rotation{font-size:51px!important;font-weight:800;color:#4b6354}
+.practice-room.open{background:#d9c899;border-color:#d6bb82}
+.practice-gap{font-size:26px;color:#e7ad9a;display:grid;place-items:center;background:#402f2c;border:1px dashed #a98c79}
+.practice-gap.linked{background:#2a6047;color:#c9ffd2}
+.practice-door{background:#6eb78f;border:3px solid #e8f8ce;box-shadow:0 0 8px #1f7448;border-radius:4px;position:absolute}
+.practice-door.east{width:11px;height:49px;right:-10px;top:calc(50% - 25px)}.practice-door.west{width:11px;height:49px;left:-10px;top:calc(50% - 25px)}
+.practice-door.north{width:49px;height:11px;left:calc(50% - 25px);top:-10px}.practice-door.south{width:49px;height:11px;left:calc(50% - 25px);bottom:-10px}
+.practice-note{display:flex;align-items:start;gap:15px;background:#f4ead7;padding:20px;border-radius:11px;border:2px solid #dabd8d;color:#3e5748}
+.practice-number{flex:none;border-radius:50%;width:54px;height:54px;background:#345a49;color:#ffedc1;display:grid;place-items:center;font-weight:900}.practice-note h2{font-size:28px}.practice-note p{font-size:13px;margin-top:6px;color:#657463}
+.practice-actions{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:21px}
+.practice-actions .btn{min-height:48px}
+.v4-help .help-steps{display:grid;gap:8px}.v4-help .help-steps p{background:#eee0c8;padding:11px 13px;border-radius:8px;margin:0;font-size:13px}
+.v4-help .help-steps strong{color:#35694d;white-space:nowrap}.v4-help .help-extra{border-top:1px solid #cabb9e;padding-top:12px;margin-top:14px;font-size:12px}
+@media(max-width:1180px){.game-grid{grid-template-columns:minmax(0,1fr) 285px}.turn-arrows button{width:32px;height:32px;font-size:22px}.door-facing{font-size:8px}.turn-controls{right:6px}}
+@media(max-width:950px){.game-grid{grid-template-columns:1fr}.side-column{display:grid;grid-template-columns:1fr 1fr}.side-column>.sidebook{grid-column:span 2}.side-column>.board-mini-help{grid-column:span 2}}
+@media(max-width:680px){.mission-ribbon{padding:9px 10px;gap:6px}.mission-ribbon strong{flex-basis:100%;font-size:11px}.mission-ribbon em{font-size:9px}
+ .guide-box.v4-guided{gap:8px}.guide-box.v4-guided h2{font-size:22px}.guide-box.v4-guided p{font-size:12px}.guide-box .coach-context{font-size:9px}.guide-buttons{min-width:0}
+ .room-shell .room-tile{aspect-ratio:1.02}.turn-controls{top:30%;right:2px;gap:3px}.turn-arrows{gap:2px}.turn-arrows button{width:27px;height:29px;font-size:21px;padding:0;border-radius:5px}.door-facing{font-size:6px;padding:2px 3px;max-width:75px;overflow:hidden;text-overflow:ellipsis}
+ .tile-interact{padding:4px 5px;font-size:8px;bottom:32px}.tile-secret{font-size:6px;top:27px;left:3px;padding:2px 3px}.next-room-ribbon{top:-9px;font-size:7px;padding:2px 5px}.room-shell .room-footer b{font-size:10px}.room-shell .room-footer small{font-size:7px}
+ .practice-page{padding:0 3px 35px}.practice-sub{font-size:13px}.practice-board{padding:7px;border-width:3px;min-height:145px;grid-template-columns:1fr 16px 1fr 16px 1fr;margin-top:18px}.practice-room{padding:3px;border-width:3px}.practice-room>span:first-child{font-size:25px}.practice-room strong{font-size:10px}.practice-room small{font-size:7px}.practice-rotation{font-size:27px!important}.practice-gap{font-size:15px}.practice-door.east,.practice-door.west{height:25px;width:7px;top:calc(50% - 13px)}.practice-door.east{right:-6px}.practice-door.west{left:-6px}.practice-door.north,.practice-door.south{width:25px;height:7px;left:calc(50% - 12px)}.practice-door.north{top:-6px}.practice-door.south{bottom:-6px}
+ .practice-note{padding:12px;gap:10px}.practice-number{height:38px;width:38px;font-size:10px}.practice-note h2{font-size:20px}.practice-note p{font-size:12px}.practice-actions .btn{flex:1;min-width:140px}
+ .blocked-explainer{flex-wrap:wrap}.blocked-explainer>div{flex:1 1 70%}.blocked-explainer .btn{width:100%}.side-column{display:block}
+}
+/* Public website instructions inside the downloaded experience */
+.publish-wrapper{padding-top:38px;padding-bottom:50px}.publish-page{width:min(950px,100%);margin:auto;color:#f7ecd8}
+.publish-page h1{font-size:clamp(43px,5.1vw,73px);margin:10px 0 14px}.publish-steps{display:grid;gap:13px;margin:30px 0 25px}
+.publish-step{display:flex;align-items:start;gap:18px;border:1px solid #8da1856d;border-radius:12px;background:#244137;padding:19px}
+.publish-step>span{width:48px;height:48px;display:grid;place-items:center;border-radius:12px;background:#ead2a1;color:#344a3b;font-weight:900;flex:none}.publish-step>div{flex:1}
+.publish-step h2{font-size:26px;margin:0 0 5px}.publish-step p{font-size:13px;color:#d3e1ce;line-height:1.6}.publish-step a{color:#ffe2a9;text-decoration:underline}
+.publish-step code{background:#102b27;padding:3px 5px;border-radius:4px;color:#f9deaa}.publish-page .info-banner{color:#eed7ac;background:#31483a;border:1px solid #627d5e;padding:15px;margin-bottom:18px}
+@media(max-width:680px){.publish-wrapper{padding:22px 15px}.publish-page h1{font-size:45px}.publish-step{gap:12px;padding:13px}.publish-step h2{font-size:20px}.publish-step>span{width:35px;height:35px;font-size:11px}.publish-step p{font-size:12px}}
+
+/* V5: small collaborative deduction games, part of the room board rather than a wall of instructions. */
+.thinking-panel{margin-top:16px;border-radius:14px;padding:18px;background:linear-gradient(145deg,#f6ecd8,#e9ddc8);border:2px solid #c39d62;color:#2a4439;box-shadow:0 5px 0 #122921a8}
+.thinking-heading{display:flex;align-items:baseline;justify-content:space-between;gap:10px;border-bottom:2px solid #c5ad81;padding-bottom:10px;flex-wrap:wrap}
+.thinking-heading span{font:800 10px var(--sans);letter-spacing:1.7px;color:#8e704e}.thinking-heading b{font:700 24px var(--serif);color:#365142}
+.thinking-notes{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:13px 0}
+.thinking-note{padding:12px;border-radius:9px;border:1px dashed #cdbb9b;background:#e4decf;min-height:91px}
+.thinking-note.revealed{background:#fff8e8;border:1px solid #a68c63;box-shadow:inset 3px 0 #8e916c}
+.thinking-note span{display:block;font-weight:900;font-size:10px;letter-spacing:.3px;color:#7a5a36}
+.thinking-note p{font-size:13px;color:#515c4d;line-height:1.45;margin:8px 0 0}
+.thinking-question h3{font:700 24px var(--serif);margin:12px 0 5px}.thinking-question p,.thinking-prompt{font-size:13px;line-height:1.5;color:#526455}
+.answer-choices{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:12px}.answer-choices .btn{padding:12px 6px;font-size:15px;min-height:49px}
+.btn.puzzle-choice{background:#fcf5e6;color:#385b45;border:2px solid #bda678;box-shadow:0 2px 0 #8b785c;font-weight:900;border-radius:8px}.btn.puzzle-choice:hover:not(:disabled){border-color:#315b43;background:#e7eddc}
+.rune-track{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:14px 0}.rune-chip{border:1px solid #d0c2a7;border-radius:8px;background:#e0d9c9;display:flex;flex-direction:column;align-items:center;gap:4px;padding:11px 4px;text-align:center;color:#6a756e}.rune-chip.next{background:#fff8e4;border-color:#9e864f;box-shadow:0 0 0 2px #e6c77c}.rune-chip.done{background:#cfdfc7;color:#32654a;border-color:#96b58e}.rune-chip small{font-size:9px;font-weight:900;letter-spacing:.5px}.rune-chip b{font-size:15px;color:#3e5647}.rune-chip span{font-size:10px}
+.thinking-foot{margin-top:13px;padding-top:10px;border-top:1px solid #cec1a7;text-align:right;color:#7e846e;font-size:11px;font-weight:750}
+.thinking-solved{border:1px solid #9bae84;color:#355d44;background:#dcebd0;margin-top:12px;padding:11px;border-radius:8px;font-weight:850;font-size:13px}
+.room-shell .object-tag{white-space:nowrap}
+@media(max-width:600px){.thinking-panel{padding:11px;margin-top:11px}.thinking-heading b{font-size:19px}.thinking-note{padding:9px;min-height:82px}.thinking-note p{font-size:11px}.thinking-question h3{font-size:21px}.thinking-question p{font-size:11px}.answer-choices{gap:4px}.answer-choices .btn{font-size:12px;min-height:42px;padding:8px 3px}.rune-chip{padding:8px 2px}.rune-chip b{font-size:12px}}
+
+.rune-progress-text{font-size:12px;font-weight:850;color:#6f6955;margin-top:9px}
+
+/* V5: easy chapter selection for playtesters and contest judges. */
+.chapter-page{max-width:1060px;margin:25px auto 50px;color:#f7ecdb}.chapter-page h1{font-size:clamp(40px,6vw,78px);line-height:1.0;margin:12px 0 18px}.chapter-page h1 i{color:#e8c88f}.chapter-page>p:not(.eyebrow){max-width:700px;color:#bdcdbd;line-height:1.6}
+.chapter-cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:26px 0}
+.chapter-pick{text-align:left;display:flex;flex-direction:column;gap:11px;padding:23px;min-height:195px;border-radius:12px;border:2px solid #788a69;background:#224237;color:#f7ead1;transition:transform .15s,border-color .15s;cursor:pointer}
+.chapter-pick:hover{transform:translateY(-3px);border-color:#efcc8b;background:#2d4f42}
+.chapter-pick span{font-size:10px;letter-spacing:1.5px;color:#d2b782;font-weight:900}
+.chapter-pick b{font:800 clamp(24px,2.8vw,33px) var(--serif);line-height:1.1}
+.chapter-pick small{color:#cedcca;font-size:13px}.chapter-pick em{font-style:normal;margin-top:auto;font-size:12px;font-weight:900;color:#f4cf94}
+@media(max-width:740px){.chapter-cards{grid-template-columns:repeat(2,minmax(0,1fr))}.chapter-pick{min-height:155px;padding:14px}.chapter-pick b{font-size:24px}}
+@media(max-width:420px){.chapter-cards{gap:7px}.chapter-pick{min-height:160px;padding:11px}.chapter-pick b{font-size:21px}}

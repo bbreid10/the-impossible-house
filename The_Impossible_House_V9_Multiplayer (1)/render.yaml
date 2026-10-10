@@ -1,0 +1,12 @@
+# The Impossible House V8: Render public multiplayer service
+services:
+  - type: web
+    name: impossible-house-coop
+    runtime: node
+    plan: free
+    buildCommand: npm install
+    startCommand: npm start
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_ENV
+        value: production

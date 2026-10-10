@@ -1,0 +1,16 @@
+THE IMPOSSIBLE HOUSE V8 · ARCHIVE EDITION
+
+PLAY SOLO NOW: open PLAY_SOLO_OFFLINE.html
+PLAY ONLINE LOCALLY: npm start (then http://localhost:4173)
+PUBLISH FOR OTHERS: read DEPLOY_ON_RENDER.md
+
+CHAPTER 1: A story guide above the six rooms explains one step at a time.
+ROOM C: This is the sealed exit. Light the two floor seals to unlock it.
+ROTATION: Controls are DIRECTLY BELOW the illustrated six-room map.
+RULEBOOK: Inscribe two fragments, cast a law, and actual pathways change.
+WORD HUNT: No home shortcut. Find a torn page in Chapter 2's Gear Gallery
+or Chapter 6's Last Foyer. Every player shares the same grid and timer.
+
+ONLINE STATUS: Source code has been tested locally. The Render plugin is
+connected, but a GitHub repo containing these files is required before a
+live public URL can be provisioned. A ZIP file is NOT a public website.
