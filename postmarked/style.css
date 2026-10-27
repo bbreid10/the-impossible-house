@@ -1,4 +1,3 @@
-
 /* Postmarked Elsewhere — restrained editorial art direction. Crisp procedural SVG, no blurred backdrops. */
 :root{--night:#0e171b;--deep:#122329;--paper:#ead9b9;--paper2:#dcc59e;--paperLight:#f5e7c9;--ink:#252d2d;--gold:#c49b60;--copper:#ad6a4e;--teal:#6a9c9b;--tealbright:#9dc4bd;--red:#a65551;--muted:#a1a69e;--line:#ffffff23;--ui:system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;--serif:Georgia,'Times New Roman',serif;--radius:12px}
 *{box-sizing:border-box}html,body{margin:0;min-height:100%;background:var(--night);color:var(--paper);font-family:var(--ui);font-size:14px}body{background:radial-gradient(ellipse at 90% -5%,#264044 0%,transparent 38%),linear-gradient(145deg,#101c20,#0a1418 64%,#151d1e)}button,input,select{font:inherit}button{cursor:pointer}button:disabled{cursor:not-allowed;opacity:.48}button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid #d2b77b;outline-offset:3px}h1,h2,h3,p{margin:0}h1,h2,h3{font-family:var(--serif);font-weight:500}a{color:var(--paperLight)}.sr-only{position:absolute!important;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0)}
@@ -85,3 +84,91 @@ header.site-head{background:linear-gradient(110deg,#111b1c,#16272a);border-botto
 @media(max-width:720px){.v2-world-frame{padding:3px}.v3-route-observations{grid-template-columns:1fr 1fr}.v3-route-observations>div{padding:9px}.v3-route-observations b{font-size:12px}.v2-objective strong{font-size:16px}}
 @media(max-width:420px){.v3-route-observations{grid-template-columns:1fr}.v2-machine-row{gap:8px}.v3-addressline{font-size:16px}}
 
+/* VERSION 0.4: THE NAVIGATOR'S DESK. Physical controls are adjacent to the world. */
+.v2-play{max-width:1510px;padding:17px clamp(14px,2vw,30px) 45px}
+.v2-shift-head{margin:0 0 11px;align-items:center}
+.v2-shift-head h1{font-size:clamp(25px,2.4vw,35px)}
+.v2-play-layout{display:block;position:relative}
+.v2-core{width:100%}
+.v2-objective{padding:10px 15px;margin-bottom:9px;border-left-width:2px;gap:10px;background:#1c3034}
+.v2-objective strong{font-size:19px}.v2-objective-icon{font-size:23px}
+.v2-tabs{margin-bottom:9px}.v2-tabs button{padding:10px 15px}
+.v4-top-utility{background:#1b3034;border:1px solid #9c86645e;color:#ebdbbf;padding:8px 11px;font:700 11px system-ui,sans-serif;letter-spacing:.03em;border-radius:3px}
+.v4-top-utility.active{background:#ddc395;border-color:#ebd8b5;color:#213033}
+.v4-atlas-layout{display:grid;grid-template-columns:minmax(0,1fr) 320px;align-items:stretch;gap:12px;min-width:0}
+.v4-world-main{min-width:0;background:linear-gradient(120deg,#15282d,#172b2c);border:1px solid #99815d56;padding:10px;box-shadow:0 15px 34px #0004}
+.v4-world-header{display:flex;justify-content:space-between;align-items:end;gap:12px;margin:0 1px 8px}
+.v4-world-header span{display:block;color:#cab58c;font:800 9px/1.3 system-ui,sans-serif;letter-spacing:.17em}
+.v4-world-header strong{display:block;color:#f0dfbf;font:21px/1.1 Georgia,serif;margin-top:4px}
+.v4-world-header small{color:#a9c1b5;font-size:10px;white-space:nowrap}
+.v4-world-art{border:2px solid #7b674b;background:#1c3034;overflow:hidden}
+.v4-world-art svg{display:block;width:100%;height:auto;aspect-ratio:1024/620;background:#17272c;image-rendering:auto}
+.v4-world-art svg .world-hotspot{cursor:pointer;outline:none;transition:filter .2s}
+.v4-world-art svg .world-hotspot:hover,.v4-world-art svg .world-hotspot:focus-visible{filter:drop-shadow(0 0 6px #ffe0a2)}
+.v4-world-art svg .paper-bridge{transition:transform .4s ease,opacity .4s ease}
+.v4-world-art svg .v4-gate-hand{transition:transform .3s ease}
+.v4-route-caption{display:flex;align-items:center;gap:11px;font-size:13px;color:#efdfc1;padding:10px 4px 8px;border-bottom:1px solid #907a5745}
+.v4-route-caption strong{font:500 15px/1.3 Georgia,serif}
+.v4-route-icon{width:25px;height:25px;flex-shrink:0;display:grid;place-items:center;border-radius:50%;background:#815a44;color:#f5e8cf}
+.v4-route-icon.ok{background:#3f806a}
+.v4-evidence-strip{display:flex;gap:6px;flex-wrap:wrap;margin:11px 0 3px}
+.v4-evidence-strip button{border:1px solid #bea17a57;background:#192e32;color:#e8d1ae;padding:9px 12px;border-radius:3px;font:700 11px system-ui}
+.v4-evidence-strip button:hover,.v4-machine-footer button:hover{background:#284549}
+.v4-machine-dock{background:linear-gradient(165deg,#213539,#101f23);border:1px solid #b39a6a8a;min-width:0;display:flex;flex-direction:column;box-shadow:0 18px 32px #0005}
+.v4-dock-head{background:#dbc199;color:#22302f;padding:13px 16px 12px;border-bottom:1px solid #79694e;flex-shrink:0}
+.v4-dock-overline{display:block;font:800 10px system-ui;letter-spacing:.13em;color:#725843}
+.v4-dock-head h2{font:600 25px Georgia,serif;letter-spacing:-.03em;margin-top:3px}
+.v4-tool-stack{padding:11px;display:flex;flex-direction:column;gap:10px;min-height:0;height:100%}
+.v4-machine-card{border:1px solid #b49a7170;background:#24393b;padding:12px 13px;min-width:0}
+.v4-machine-top{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.v4-machine-num{font:800 10px system-ui;letter-spacing:.13em;color:#dbc291}
+.v4-machine-state{font:800 9px system-ui;letter-spacing:.08em;color:#f4cc9c;background:#513d37;padding:5px 6px;text-align:right}
+.v4-machine-state.ready{color:#d2f5df;background:#2e6555}
+.v4-machine-card h3{font:600 22px/1.15 Georgia,serif;color:#f3e3c4;margin:7px 0 5px}
+.v4-machine-card p{font:12px/1.43 system-ui,sans-serif;color:#d0d4c8;margin-bottom:10px}
+.v4-machine-card small{display:block;font:11px/1.35 system-ui;color:#b3c6b9;margin-top:9px}
+.v4-main-action{width:100%;font:800 12px system-ui!important;padding:10px 11px!important}
+.v4-orientation{display:flex;gap:15px;align-items:center;justify-content:center;color:#cab895;font:700 10px system-ui;margin:-2px 0 10px}
+.v4-compass-dial{position:relative;width:44px;height:44px;border:2px solid #d6bc8b;border-radius:50%;background:#12272c;box-shadow:inset 0 0 0 5px #26383a}
+.v4-compass-dial span{position:absolute;top:50%;left:50%;font-size:29px;color:#ffe5b5;line-height:1;transition:transform .3s}
+.v4-control-pair{display:grid;grid-template-columns:1fr 1fr;gap:7px}
+.v4-control-pair button,.v4-dial-row button{border:1px solid #c3a77972;background:#122b31;color:#ecdcbe;padding:10px 6px;border-radius:3px;font:800 11px system-ui}
+.v4-control-pair button:disabled,.v4-dial-row button:disabled{opacity:.38}
+.v4-control-pair button:not(:disabled):hover,.v4-dial-row button:not(:disabled):hover{background:#315052}
+.v4-dial-row{display:flex;gap:6px;flex-wrap:wrap}
+.v4-dial-row button{flex:1;min-width:70px}
+.v4-dial-row button.selected{background:#e4c99a;color:#25322f;border-color:#efd8ac}
+.v4-machine-footer{margin-top:auto;display:grid;gap:7px}
+.v4-machine-footer button{border:1px solid #baa27365;background:#1a3237;color:#f0e0c2;border-radius:3px;padding:11px;font:800 12px system-ui;min-width:0}
+.v4-machine-footer .v4-next-action{background:#e4c99a;color:#192f30;border-color:#ecd1a8}
+.v4-machine-footer .v4-next-action:hover{background:#f4e0bb}
+.v4-machine-footer small{color:#aec8b9;font-size:11px;text-align:center}
+.v4-evidence-link{margin-top:10px;font-size:12px;padding:0 0 2px;border:0;border-bottom:1px solid #c9b486;color:#f2d3a0;background:transparent}
+.v4-incident{border-color:#cc8779}
+.v2-work-controls:empty{display:none}.v2-work-controls:not(:has(*)){display:none}
+.v2-side.v4-drawer{position:fixed;z-index:24;right:22px;top:118px;width:310px;max-width:calc(100vw - 36px);box-shadow:0 25px 55px #000a;background:#12262a}
+.v2-side.v4-drawer .v2-side-content{max-height:calc(100vh - 230px);overflow:auto;min-height:120px}
+.v2-side.v4-drawer .v2-side-toolbar{background:#243b3e}
+.v4-world .route-markings path{animation:routePulse 3s linear infinite}
+@keyframes routePulse{to{stroke-dashoffset:-100}}
+@media(max-width:1150px){.v4-atlas-layout{grid-template-columns:minmax(0,1fr) 285px;gap:8px}.v4-tool-stack{padding:8px;gap:7px}.v4-machine-card{padding:10px}.v4-machine-card h3{font-size:19px}.v4-machine-card p{font-size:11px}.v4-world-header strong{font-size:18px}}
+@media(max-width:850px){.v4-atlas-layout{grid-template-columns:1fr;gap:10px}.v4-machine-dock{order:-1}.v4-tool-stack{display:grid;grid-template-columns:1fr 1fr;gap:10px}.v4-machine-footer{grid-column:1/-1;display:flex;flex-wrap:wrap}.v4-machine-footer button{flex:1}.v2-shift-head{flex-direction:column;align-items:stretch}.v2-side.v4-drawer{top:100px;right:10px}.v4-machine-card{min-width:0}}
+@media(max-width:600px){.v4-tool-stack{display:flex;flex-direction:column}.v4-machine-footer{display:grid}.v4-dock-head h2{font-size:23px}.v4-world-main{padding:5px}.v4-world-header{padding:5px}.v4-world-header small{display:none}.v4-world-art{border-width:1px}.v4-route-caption{font-size:12px;padding:8px 3px}.v4-route-caption strong{font-size:13px}.v4-top-utility{font-size:10px;padding:8px}.play-meta{gap:5px}.v2-shift-head h1{font-size:29px}.v2-play{padding:11px 9px 46px}.v2-world-frame{padding:2px}.v4-evidence-strip button{flex:1;min-width:110px}.v2-side.v4-drawer{top:82px;right:5px;max-width:calc(100vw - 10px)} }
+@media(prefers-reduced-motion:reduce){.v4-world .route-markings path{animation:none}.v4-world-art svg .paper-bridge,.v4-world-art svg .v4-gate-hand{transition:none}}
+/* Final fit-and-finish: keep the essential controls inside the laptop viewport. */
+@media(min-width:851px){.v4-atlas-layout{max-width:1160px;margin:0 auto;grid-template-columns:minmax(0,1fr) 307px}}
+.v4-dock-head{padding:10px 12px 9px}.v4-dock-head h2{font-size:23px}
+.v4-tool-stack{padding:8px;gap:7px}
+.v4-machine-card{padding:9px 10px}
+.v4-machine-card h3{font-size:19px;margin:4px 0}
+.v4-machine-card p{font-size:11.5px;line-height:1.35;margin-bottom:8px}
+.v4-machine-card small{font-size:10px;line-height:1.2;margin-top:5px}
+.v4-machine-top{gap:5px}.v4-machine-num{font-size:9px}.v4-machine-state{font-size:8px}
+.v4-orientation{margin:0 0 7px;gap:12px}.v4-compass-dial{width:35px;height:35px}.v4-compass-dial span{font-size:24px}
+.v4-control-pair button{padding:7px 4px}.v4-main-action{padding:9px!important}
+.v4-machine-footer{display:flex;gap:6px}.v4-machine-footer button{flex:1;font-size:10px;padding:9px 7px}
+.v4-dispatch-bottom{flex-wrap:wrap}.v4-dispatch-bottom small{width:100%}
+@media(max-width:850px){.v4-machine-footer{display:flex;flex-wrap:wrap}.v4-machine-footer button{flex:1}.v4-atlas-layout{max-width:670px;margin:auto}}
+@media(max-width:600px){.v4-machine-footer{display:flex;flex-wrap:wrap}}
+.v4-tool-stack{height:auto;flex:1 0 auto}
+.v4-machine-footer{margin-top:0}

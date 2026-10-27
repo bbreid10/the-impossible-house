@@ -1,4 +1,3 @@
-
 /* Postmarked Elsewhere — deterministic, shared puzzle rules. No dependencies. */
 (function(root,factory){if(typeof module==='object'&&module.exports)module.exports=factory();else root.PostmarkedEngine=factory()})(typeof globalThis!=='undefined'?globalThis:this,function(){
 'use strict';
@@ -18,16 +17,16 @@ function makeContracts(seed){
  return [{
    id:'blackwater',number:'017',name:'The Blackwater Address',recipient,region:'Blackwater Lane', addressLine:`Blackwater Lane · ${bank} quay`, specialInstruction:`Deliver when ${clock}. The courier must arrive on foot, not by boat.`,
    front:`To ${recipient}, Blackwater Lane, ${bank} quay. Deliver when ${clock}. The courier must arrive on foot, not by boat.`,
-   reverse:'TRANSFER DEPARTMENT: The canal has severed Blackwater Lane. The paper atlas has a hinged promenade. The clocktower has one working gate; it must face the approaching bridge. The compass shows true north.',
-   atlas:'BLACKWATER CIVIC PLAN: The apartment number is engraved above the tower door. EAST QUAY is right of the canal; WEST QUAY is left. The walkway folds over the water but springs back unless held. The clocktower gate rotates separately from the building.',
+   reverse:'ROUTE INSPECTION — BLACKWATER.\nThe road ends at the canal. The Night Post is on the opposite bank from the address.\n1. Unfold the hinged footbridge and hold it across the water.\n2. The clocktower entrance turns, but the tower does not. Point its arrow toward the arriving courier. The compass stays fixed.',
+   atlas:'ATLAS KEY: The marked Night Post is the starting point; the named apartment is the destination. WEST QUAY is LEFT; EAST QUAY is RIGHT. The canal breaks the road. A hinged bridge can span it if held. The tower stays still, but its entrance changes direction when turned.',
    ledger:'NIGHT MAIL REGISTER: “When the clock has no shadow” = MIDNIGHT. “When the first gas lamps are lit” = DUSK. Blackwater night delivery requires a NOCTURNE seal. The bridge is not a boat.',
    requiredAngle:a?3:1, requiredDial:blackout, requiredStamp:'NOCTURNE',dialOptions:CLOCK,dialLabel:'Clock',foldLabel:'FOLD THE PROMENADE',turnLabel:'ROTATE CLOCKTOWER',
    drawing:'blackwater', hint:['Identify the named quay and apartment number. They are printed on the atlas building. The canal cuts the postal road in two.','Fold the hinged promenade across the water. Look at the compass: the tower gate must face the bridge. In co-op, two different workers must operate those mechanisms.','The delivery hour comes from the address. The postage comes from the night-mail register. A connected bridge alone does not dispatch the letter.']
  },{
    id:'conservatory',number:'031',name:'The Folded Conservatory',recipient:'The Glasshouse',region:'Below the Cairn',addressLine:'Beneath Cairn Hill',specialInstruction:b?'Fold back the western ridge. Face the glasshouse gate south. Wait until the valley water is low.':'Fold back the western ridge. Face the glasshouse gate north. Wait until the valley water has retreated.',
    front:b?'To the Glasshouse beneath Cairn Hill. Fold back the western ridge. Its revolving doorway must face south. Dispatch only when the valley water is low.':'To the Glasshouse beneath Cairn Hill. Fold back the western ridge. Its revolving doorway must face north. Dispatch when the valley water has retreated.',
-   reverse:'TRANSFER SLIP: Fold the hinged ridge into a walkway over the flood channel. It springs back unless held. The glasshouse stays fixed, but its revolving brass gate can point toward the newly exposed approach.',
-   atlas:'CAIRN SURVEY: The western ridge folds flat into a footbridge across the flood channel. The brass direction marker shows which way the glasshouse gate faces. The compass remains fixed.',
+   reverse:'ROUTE INSPECTION — CAIRN.\nThe Night Post is on the far side of the flood channel.\n1. Fold the hinged western ridge flat to make a walkway, and hold it there.\n2. The conservatory has a revolving entrance. Turn its brass arrow to the compass direction written on the envelope.',
+   atlas:'ATLAS KEY: The Night Post is the starting point and the glasshouse is the destination. The channel divides them. Fold the western ridge into a walkway, and turn the glasshouse doorway separately. The north arrow stays fixed while the gate moves.',
    ledger:'Postal register: botanical and glass shipments use the FRAGILE stamp. The flood dial controls the valley water level, not the weather.',
    requiredAngle:b?2:0, requiredDial:'LOW', requiredStamp:'FRAGILE',dialOptions:WATER,dialLabel:'Water',foldLabel:'FOLD THE RIDGE',turnLabel:'ROTATE GLASSHOUSE',drawing:'conservatory',
    hint:['The address specifies which direction the gate must face. Compare it with the atlas compass.','The folded ridge must stay braced while a different player rotates the glasshouse gate. The water control is on the dispatch apparatus.','The route needs the low-water setting and FRAGILE postage. Those clues appear in the delivery instructions and postal register.']
@@ -98,4 +97,3 @@ function finalizeDelivery(g){if(!g.pendingDelivery||g.phase!=='playing')return{e
 }
 return{createGame,join,apply,finalizeDelivery,solveStatus,current,checkRoute,limitSeconds,expired,safeName,STAMPS,CLOCK,WATER,DIRECTIONS,makeContracts,clone};
 });
-

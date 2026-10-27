@@ -23,7 +23,7 @@ const STATIC=new Map([['/','index.html'],['/index.html','index.html'],['/style.c
 const srv=http.createServer(async(req,res)=>{
  const u=new URL(req.url,'http://localhost');const pathname=u.pathname;
  res.setHeader('X-Content-Type-Options','nosniff');res.setHeader('Referrer-Policy','same-origin');
- if(req.method==='GET'&&pathname==='/api/health')return json(res,200,{ok:true,game:'Postmarked Elsewhere',build:'0.3.0',mode:'multiplayer',activeRooms:rooms.size});
+ if(req.method==='GET'&&pathname==='/api/health')return json(res,200,{ok:true,game:'Postmarked Elsewhere',build:'0.4.0',mode:'multiplayer',activeRooms:rooms.size});
  if(req.method==='GET'&&pathname==='/api/public'){let list=[...rooms.values()].filter(r=>r.game.visibility==='public'&&r.game.phase==='lobby'&&r.game.players.length<4).map(r=>({code:r.game.code,count:r.game.players.length,difficulty:r.game.difficulty,host:r.game.players[0]?.name||'Explorer'}));return json(res,200,{rooms:list});}
  if(req.method==='GET'&&pathname==='/api/state'){let r=room(u.searchParams.get('code')),playerId=member(r,req.headers.authorization?.replace(/^Bearer\s+/i,''));if(!playerId)return error(res,403,'Invalid session.');return json(res,200,{ok:true,state:r.game,playerId});}
  if(req.method==='GET'&&pathname==='/api/events'){
