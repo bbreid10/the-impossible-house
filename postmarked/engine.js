@@ -1,3 +1,4 @@
+
 /* Postmarked Elsewhere — deterministic, shared puzzle rules. No dependencies. */
 (function(root,factory){if(typeof module==='object'&&module.exports)module.exports=factory();else root.PostmarkedEngine=factory()})(typeof globalThis!=='undefined'?globalThis:this,function(){
 'use strict';
@@ -12,24 +13,24 @@ function makeContracts(seed){
  const a=seed%2===0, b=seed%3===0;
  const recipient=a?'Apartment 4B':'Apartment 6C';
  const bank=a?'eastern':'western';
- const clock=a?'the clock casts no shadow':'the first gas lamps are lit';
+ const clock=a?'the clock has no shadow':'the first gas lamps are lit';
  const blackout=a?'MIDNIGHT':'DUSK';
  return [{
-   id:'blackwater',number:'017',name:'The Blackwater Address',recipient,region:'Blackwater Lane',
-   front:`To ${recipient}, Blackwater Lane. Fourth residence on the ${bank} bank. Deliver when ${clock}. Do not cross by boat.`,
-   reverse:'TRANSFER PRESS / ATLAS NOTE: Directions are mirrored on the receiving card. Read the canal from the opposite bank. The tower gate must face the destination.',
-   atlas:'A canal divides the district. The fourth numbered residence is across the water. A hinged promenade can be held across the gap while the clocktower gate is turned into alignment.',
-   ledger:'Postal register: nocturnal addresses require the moon-and-ink NOCTURNE stamp. The bridge hinge returns unless someone braces it.',
+   id:'blackwater',number:'017',name:'The Blackwater Address',recipient,region:'Blackwater Lane', addressLine:`Blackwater Lane · ${bank} quay`, specialInstruction:`Deliver when ${clock}. The courier must arrive on foot, not by boat.`,
+   front:`To ${recipient}, Blackwater Lane, ${bank} quay. Deliver when ${clock}. The courier must arrive on foot, not by boat.`,
+   reverse:'TRANSFER DEPARTMENT: The canal has severed Blackwater Lane. The paper atlas has a hinged promenade. The clocktower has one working gate; it must face the approaching bridge. The compass shows true north.',
+   atlas:'BLACKWATER CIVIC PLAN: The apartment number is engraved above the tower door. EAST QUAY is right of the canal; WEST QUAY is left. The walkway folds over the water but springs back unless held. The clocktower gate rotates separately from the building.',
+   ledger:'NIGHT MAIL REGISTER: “When the clock has no shadow” = MIDNIGHT. “When the first gas lamps are lit” = DUSK. Blackwater night delivery requires a NOCTURNE seal. The bridge is not a boat.',
    requiredAngle:a?3:1, requiredDial:blackout, requiredStamp:'NOCTURNE',dialOptions:CLOCK,dialLabel:'Clock',foldLabel:'FOLD THE PROMENADE',turnLabel:'ROTATE CLOCKTOWER',
-   drawing:'blackwater', hint:['The transfer press reverses east and west. Compare the address to the back of the envelope.','The destination is across the canal. Two people need to manipulate the bridge and tower at the same time.','The time condition and the NOCTURNE stamp are separate from the route. The fourth house is counted along the street.']
+   drawing:'blackwater', hint:['Identify the named quay and apartment number. They are printed on the atlas building. The canal cuts the postal road in two.','Fold the hinged promenade across the water. Look at the compass: the tower gate must face the bridge. In co-op, two different workers must operate those mechanisms.','The delivery hour comes from the address. The postage comes from the night-mail register. A connected bridge alone does not dispatch the letter.']
  },{
-   id:'conservatory',number:'031',name:'The Folded Conservatory',recipient:'The Glasshouse',region:'Below the Cairn',
-   front:b?'To the Glasshouse beneath Cairn Hill. Fold back the western ridge. The parcel must arrive upside down, and only when the water is low.':'To the Glasshouse beneath Cairn Hill. Fold back the western ridge. Keep the parcel upright. Dispatch when the water has retreated.',
-   reverse:'HANDLE WITH CARE: the crest on the address is the destination marker. The hill is a single hinged piece; someone must brace it while a second person turns the greenhouse to meet the path.',
-   atlas:'Cairn Hill hides a glass conservatory. Folding the ridge uncovers its door, but the approach does not meet the threshold until the greenhouse orientation is corrected.',
+   id:'conservatory',number:'031',name:'The Folded Conservatory',recipient:'The Glasshouse',region:'Below the Cairn',addressLine:'Beneath Cairn Hill',specialInstruction:b?'Fold back the western ridge. Face the glasshouse gate south. Wait until the valley water is low.':'Fold back the western ridge. Face the glasshouse gate north. Wait until the valley water has retreated.',
+   front:b?'To the Glasshouse beneath Cairn Hill. Fold back the western ridge. Its revolving doorway must face south. Dispatch only when the valley water is low.':'To the Glasshouse beneath Cairn Hill. Fold back the western ridge. Its revolving doorway must face north. Dispatch when the valley water has retreated.',
+   reverse:'TRANSFER SLIP: Fold the hinged ridge into a walkway over the flood channel. It springs back unless held. The glasshouse stays fixed, but its revolving brass gate can point toward the newly exposed approach.',
+   atlas:'CAIRN SURVEY: The western ridge folds flat into a footbridge across the flood channel. The brass direction marker shows which way the glasshouse gate faces. The compass remains fixed.',
    ledger:'Postal register: botanical and glass shipments use the FRAGILE stamp. The flood dial controls the valley water level, not the weather.',
    requiredAngle:b?2:0, requiredDial:'LOW', requiredStamp:'FRAGILE',dialOptions:WATER,dialLabel:'Water',foldLabel:'FOLD THE RIDGE',turnLabel:'ROTATE GLASSHOUSE',drawing:'conservatory',
-   hint:['The delivery instruction describes how the greenhouse must be oriented. Compare it to the compass on the folding card.','The ridge must stay folded while the destination is rotated into place. The flood dial is elsewhere on the apparatus.','The route requires the low-water position. Inspect both sides of the envelope to confirm how to handle the parcel.']
+   hint:['The address specifies which direction the gate must face. Compare it with the atlas compass.','The folded ridge must stay braced while a different player rotates the glasshouse gate. The water control is on the dispatch apparatus.','The route needs the low-water setting and FRAGILE postage. Those clues appear in the delivery instructions and postal register.']
  }];
 }
 function createGame({code='SOLO',visibility='private',solo=false,difficulty='standard',seed=1,name='Explorer'}={}){
@@ -66,7 +67,7 @@ function apply(g,playerId,action){if(!action||typeof action!=='object')return{er
   if(!w.foldHolder)return{error:'The folding piece must be held in position first.'};
   if(!g.solo&&w.foldHolder===playerId)return{error:'You are bracing the fold. Ask a teammate to rotate the destination.'};
   if(![1,-1].includes(action.dir))return{error:'Invalid rotation.'};
-  w.angle=(w.angle+action.dir+4)%4;w.aligned=true;record(g,'ROTATE',`${p.name} turned the ${d.id==='blackwater'?'clocktower':'conservatory'} toward ${DIRECTIONS[w.angle].toLowerCase()}.`,playerId);return{ok:true};
+  w.angle=(w.angle+action.dir+4)%4;w.aligned=(w.angle===d.requiredAngle);record(g,'ROTATE',`${p.name} turned the ${d.id==='blackwater'?'clocktower':'conservatory'} toward ${DIRECTIONS[w.angle].toLowerCase()}.`,playerId);return{ok:true};
  }
  if(k==='DIAL'){
   let options=d.dialOptions;let val=String(action.value||'');if(!options.includes(val))return{error:'That setting does not exist.'};w.dial=val;record(g,'DIAL',`${p.name} set the ${d.dialLabel.toLowerCase()} dial to ${val.toLowerCase()}.`,playerId);return{ok:true};
@@ -83,7 +84,7 @@ function apply(g,playerId,action){if(!action||typeof action!=='object')return{er
   if(w.hintTier>=3)return{error:'No additional hints available on this delivery.'};let hint=d.hint[w.hintTier];w.hintTier++;g.hintsUsed++;g.score=Math.max(0,g.score-35);record(g,'HINT',`The postal archive offers a clue: ${hint}`,playerId,{hintTier:w.hintTier});return{ok:true,hint};
  }
  if(k==='DISPATCH'){
-  if(!w.inspected.includes('front'))return{error:'Inspect the address before dispatching.'};
+  if(!w.inspected.includes('front'))return{error:'Open the envelope and read the address before dispatching.'};
   const route=checkRoute(g);const stamp=w.stamp===d.requiredStamp;
   if(!route||!stamp){g.errors++;g.score=Math.max(0,g.score-75);record(g,'MISHAP',route?'The sorting machine rejected the postage. Check the postal register.':'Delivery failed: the world is not yet in a traversable configuration.',playerId);return{error:route?'Postage was rejected. Check the register.':'No continuous route reaches the destination. Recheck the clues, fold, orientation, and dial.'};}
   g.pendingDelivery=true;g.deliveryAt=Date.now();record(g,'DISPATCH',`${p.name} dispatched parcel ${d.number}. The route is holding.`,playerId,{parcel:d.id});return{ok:true,dispatch:true};
@@ -97,3 +98,4 @@ function finalizeDelivery(g){if(!g.pendingDelivery||g.phase!=='playing')return{e
 }
 return{createGame,join,apply,finalizeDelivery,solveStatus,current,checkRoute,limitSeconds,expired,safeName,STAMPS,CLOCK,WATER,DIRECTIONS,makeContracts,clone};
 });
+
