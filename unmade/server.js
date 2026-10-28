@@ -16,7 +16,7 @@ function emit(room){const js=JSON.stringify(view(room));for(const client of [...
 function attach(room,name){let id=crypto.randomUUID(),token=crypto.randomBytes(24).toString('base64url');const r=E.addPlayer(room.g,{id,name});if(r.error)return {error:r.error};room.tokens.set(token,id);emit(room);return {code:room.g.code,token,playerId:id,state:view(room)};}
 const server=http.createServer(async(req,res)=>{
  const url=new URL(req.url,'http://localhost');const route=url.pathname;
- if(req.method==='GET'&&route==='/api/health')return send(res,200,{ok:true,game:'The Unmade Line',build:'0.1.0',multiplayer:true});
+ if(req.method==='GET'&&route==='/api/health')return send(res,200,{ok:true,game:'The Unmade Line',build:'0.2.0',multiplayer:true});
  if(req.method==='GET'&&route==='/api/rooms')return send(res,200,{rooms:[...games.values()].filter(x=>x.g.visibility==='public'&&x.g.phase==='lobby'&&x.g.players.length<4).map(x=>({code:x.g.code,count:x.g.players.length,host:x.g.players[0]?.name||'Traveler',mode:x.g.mode}))});
  if(req.method==='GET'&&route==='/api/state'){
   const room=getRoom(url.searchParams.get('code')),who=member(room,req.headers.authorization?.replace(/^Bearer\s+/i,''));

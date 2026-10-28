@@ -1,7 +1,7 @@
 'use strict';const test=require('node:test'),assert=require('node:assert/strict'),E=require('../engine');
 function solo(){return E.newGame({solo:true});}
 function readyOne(g,id='solo'){while(g.fold<2)assert.equal(E.action(g,id,{type:'FOLD'}).ok,true);while(g.dial!==3)E.action(g,id,{type:'ROTATE',dir:1});assert.equal(E.ready(g),true);}
-function pass(g,id='solo'){assert.equal(E.action(g,id,{type:'SEND'}).ok,true);E.tick(g,6000);assert.equal(g.status,'landed');assert.equal(E.action(g,id,{type:'NEXT'}).ok,true);}
+function pass(g,id='solo'){assert.equal(E.action(g,id,{type:'SEND'}).ok,true);E.tick(g,6000);assert.equal(g.status,'signal');assert.equal(E.action(g,id,{type:'SIGNAL',choice:g.signalSide}).ok,true);E.tick(g,4000);assert.equal(g.status,'landed');assert.equal(E.action(g,id,{type:'NEXT'}).ok,true);}
 test('First stage physically requires bridge and aligned gate',()=>{let g=solo();assert.equal(E.ready(g),false);E.action(g,'solo',{type:'FOLD'});assert.equal(E.ready(g),false);readyOne(g);assert.equal(E.ready(g),true);});
 test('Solo can complete the entire three-crossing service',()=>{let g=solo();readyOne(g);pass(g);assert.equal(g.stageIndex,1);while(g.dial!==1)E.action(g,'solo',{type:'ROTATE'});E.action(g,'solo',{type:'FOCUS'});E.action(g,'solo',{type:'FOCUS'});assert.equal(E.ready(g),true);pass(g);E.action(g,'solo',{type:'FOLD'});while(g.dial!==2)E.action(g,'solo',{type:'ROTATE'});E.action(g,'solo',{type:'BEACON'});assert.equal(E.ready(g),true);pass(g);assert.equal(g.phase,'complete');assert.equal(g.delivered,3);});
 test('An incomplete crossing cannot dispatch the train',()=>{let g=solo();assert.match(E.action(g,'solo',{type:'SEND'}).error,/not connected/);});
@@ -17,10 +17,13 @@ test('Two human co-op crew can finish every crossing with no bot',()=>{
  E.action(g,'b',{type:'READY',ready:true});assert.equal(E.action(g,'a',{type:'START'}).ok,true);assert.equal(g.players.length,2);
  E.action(g,'a',{type:'HOLD'});E.action(g,'b',{type:'FOLD'});E.action(g,'b',{type:'FOLD'});
  E.action(g,'b',{type:'ROTATE'});E.action(g,'b',{type:'ROTATE'});assert.equal(E.ready(g),true);
- E.action(g,'a',{type:'SEND'});E.tick(g,6000);E.action(g,'a',{type:'NEXT'});
- E.action(g,'a',{type:'ROTATE'});E.action(g,'b',{type:'ROTATE'});E.action(g,'b',{type:'FOCUS'});E.action(g,'a',{type:'FOCUS'});assert.equal(E.ready(g),true);
- E.action(g,'a',{type:'SEND'});E.tick(g,6000);E.action(g,'a',{type:'NEXT'});
- E.action(g,'b',{type:'FOLD'});E.action(g,'a',{type:'ROTATE'});E.action(g,'b',{type:'ROTATE'});E.action(g,'a',{type:'BEACON'});assert.equal(E.ready(g),true);
- E.action(g,'a',{type:'SEND'});E.tick(g,6000);E.action(g,'a',{type:'NEXT'});
+ E.action(g,'a',{type:'SEND'});E.tick(g,6000);E.action(g,'b',{type:'SIGNAL',choice:g.signalSide});E.tick(g,4000);E.action(g,'a',{type:'NEXT'});
+ E.action(g,'a',{type:'ROTATE'});E.action(g,'b',{type:'ROTATE'});E.action(g,'a',{type:'HOLD'});E.action(g,'b',{type:'FOCUS'});E.action(g,'b',{type:'FOCUS'});assert.equal(E.ready(g),true);
+ E.action(g,'a',{type:'SEND'});E.tick(g,6000);E.action(g,'b',{type:'SIGNAL',choice:g.signalSide});E.tick(g,4000);E.action(g,'a',{type:'NEXT'});
+ E.action(g,'a',{type:'HOLD'});E.action(g,'b',{type:'FOLD'});E.action(g,'a',{type:'ROTATE'});E.action(g,'b',{type:'ROTATE'});E.action(g,'a',{type:'BEACON'});assert.equal(E.ready(g),true);
+ E.action(g,'a',{type:'SEND'});E.tick(g,6000);E.action(g,'b',{type:'SIGNAL',choice:g.signalSide});E.tick(g,4000);E.action(g,'a',{type:'NEXT'});
  assert.equal(g.phase,'complete');assert.equal(g.delivered,3);
 });
+
+test('Signal junction requires an informed choice while train waits safely',()=>{let g=E.newGame({solo:true,routeSeed:2});readyOne(g);E.action(g,'solo',{type:'SEND'});E.tick(g,3700);assert.equal(g.status,'signal');let stalled=g.progress;E.tick(g,20000);assert.equal(g.progress,stalled);let wrong=g.signalSide==='left'?'right':'left';let r=E.action(g,'solo',{type:'SIGNAL',choice:wrong});assert.equal(r.ok,true);assert.equal(g.status,'signal');assert.equal(g.signalMistakes,1);assert.equal(E.action(g,'solo',{type:'SIGNAL',choice:g.signalSide}).ok,true);E.tick(g,4000);assert.equal(g.status,'landed');assert.equal(g.score,300);});
+test('Co-op must coordinate lens stabilization and cliff anchor, no bots',()=>{const g=E.newGame({solo:false});E.addPlayer(g,{id:'a'});E.addPlayer(g,{id:'b'});E.action(g,'b',{type:'READY',ready:true});E.action(g,'a',{type:'START'});E.action(g,'a',{type:'HOLD'});E.action(g,'b',{type:'FOLD'});E.action(g,'b',{type:'FOLD'});E.action(g,'b',{type:'ROTATE'});E.action(g,'b',{type:'ROTATE'});E.action(g,'a',{type:'SEND'});E.tick(g,5000);E.action(g,'b',{type:'SIGNAL',choice:g.signalSide});E.tick(g,5000);E.action(g,'a',{type:'NEXT'});assert.match(E.action(g,'a',{type:'FOCUS'}).error,/stabilize/);E.action(g,'b',{type:'HOLD'});assert.match(E.action(g,'b',{type:'FOCUS'}).error,/Another traveler/);assert.equal(E.action(g,'a',{type:'FOCUS'}).ok,true);E.action(g,'a',{type:'FOCUS'});E.action(g,'a',{type:'ROTATE'});E.action(g,'a',{type:'ROTATE'});E.action(g,'a',{type:'SEND'});E.tick(g,5000);E.action(g,'b',{type:'SIGNAL',choice:g.signalSide});E.tick(g,5000);E.action(g,'a',{type:'NEXT'});assert.match(E.action(g,'a',{type:'FOLD'}).error,/brace/);E.action(g,'b',{type:'HOLD'});assert.equal(E.action(g,'a',{type:'FOLD'}).ok,true);});

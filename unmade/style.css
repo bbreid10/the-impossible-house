@@ -12,3 +12,33 @@
 /* Portrait: preserve the entire illustrated track rather than cropping its ends. */
 @media(max-width:650px) and (orientation:portrait){.world-scene{position:absolute;left:0;top:20%;width:100%;height:56%!important;display:block}.world-tools{bottom:12px}.stage-hint{bottom:135px}.world{background:radial-gradient(ellipse at 60% 40%,#28495a 0%,#122735 61%,#08141d 100%)}.stage-annotation{background:#0c1b2ba8}}
 .chip.chosen{background:#634b34;color:#ffdfaa;border-color:#e1b98b}
+/* V0.2: readable architectural nightscape and playable junctions */
+:root{--bg:#071424;--bg2:#102b3d;--amber:#e5ba8a;--mint:#b3f2df;--ink:#f8f0df;--soft:#c4d3da}
+#app{background:radial-gradient(ellipse at 68% 11%,#283d50 0%,transparent 65%),#0a1726}
+.world{background:#071928;border-color:#83b8bc55;border-radius:4px;box-shadow:inset 0 0 0 1px #e9c7a21c,0 22px 52px #0008}
+.world:after{content:"";pointer-events:none;position:absolute;inset:0;border:8px solid #0b192c15;box-shadow:inset 0 0 55px #02090f52;z-index:1}
+.stage-annotation{border-left:3px solid #ecc58e;background:linear-gradient(90deg,#061522ef,#0d2735a6);max-width:min(56%,520px);box-shadow:0 10px 26px #030b1350}
+.stage-annotation strong{font-size:clamp(17px,1.7vw,23px);line-height:1.12}
+.stage-hint{color:#f6eddb;background:#081723ef;border:1px solid #c9b48a75;box-shadow:0 6px 26px #0009}
+.stage-hint.good{background:#0b2b32eb;color:#ddfff3;border-color:#b7e8d4}
+.world svg .clickable{touch-action:manipulation}
+.world svg [data-drag-fold]{touch-action:none;cursor:grab}
+.world svg [data-drag-fold]:active{cursor:grabbing}
+.world svg .clickable .hot-spot{transition:stroke .14s,filter .14s}
+.world svg .clickable:hover .hot-spot{stroke:#fff2cc;stroke-width:4;filter:drop-shadow(0 0 9px #ffcc7c)}
+.live-rail{animation:railFlow 1.25s linear infinite}
+@keyframes railFlow{to{stroke-dashoffset:-68}}
+.connected-track{filter:drop-shadow(0 0 7px #b0f0dd)}
+.signal-fork{filter:drop-shadow(0 0 9px #071726)}
+.world-labels text{font-family:ui-sans-serif,system-ui,sans-serif;font-weight:800}
+.signal-tools{justify-content:center;bottom:15px}
+.signal-choice{pointer-events:auto;display:flex;align-items:center;justify-content:center;gap:8px;padding:9px;background:#071521f3;border:1px solid #f0c38b77;box-shadow:0 12px 44px #000b;max-width:calc(100% - 10px);border-radius:7px}
+.signal-title{font-size:11px;font-weight:700;letter-spacing:.12em;color:#e4c399;padding:3px 10px 3px 3px;white-space:nowrap}
+.signal-title b{display:block;color:#e9f8e9;font-size:12px;letter-spacing:.05em;margin-top:4px}
+.hud-btn.switch{background:#1c3b46;border-color:#b2d6d1;color:#f8f1dc;min-width:142px;align-items:center;text-align:center}
+.hud-btn.switch:hover{background:#365569;border-color:#f1d2a7}
+.hud-btn.primary:disabled{opacity:1;color:#a8c0c6;background:#213441;border-color:#57707a}
+.world-tools{z-index:6}
+.btn-primary:focus-visible,.hud-btn:focus-visible{outline:2px solid #d2eede}
+@media(max-width:900px){.signal-choice{flex-wrap:wrap}.signal-title{text-align:center;flex:1 1 100%}.signal-title b{display:inline;padding-left:4px}}
+@media(max-width:650px){.signal-tools{bottom:12px}.signal-choice{gap:5px;padding:6px;flex-direction:row;justify-content:center}.signal-choice .hud-btn{min-width:calc(50% - 5px);flex:1}.signal-title{padding:1px 0;font-size:9px;letter-spacing:.04em}.signal-title b{font-size:10px}.stage-hint{bottom:123px}.world-labels{opacity:.88}}

@@ -25,13 +25,16 @@ Open http://127.0.0.1:4173. `PORT` is honored for Render deployment.
 npm test
 ```
 
-The first build includes 16 automated tests covering all three crossings, solo completion, 2–4-player lobbies, real cooperative manipulation, synchronized server events, chat, and access control. UI smoke checks at 1440×900 and 390×844 included complete playthroughs.
+V0.2 includes 18+ automated checks covering all three crossings, solo completion, 2–4-player lobbies, real cooperative manipulation, synchronized server events, chat, and access control. UI smoke checks at 1440×900 and 390×844 included complete playthroughs.
 
 ## Scope and limitations
+- V0.2 adds **a switch decision at each live junction**: after departure the train pauses at a branching track and the crew must follow a lit route. A wrong choice holds the train and reduces the run score; nobody is suddenly killed or thrown into a reflex test. The train then travels along the selected track.
 - Prototype intentionally has three handcrafted spatial challenges rather than a full campaign or randomized procedural levels.
 - Online rooms use **in-memory state**. A Render restart or free instance spin-down can reset them.
 - This is **procedural vector illustration**, not full 3D. All key rail/bridge pieces are sharp SVG at every resolution.
-- Only one person can hold the hinge, and a different human must fold it in online mode; solo mode doesn't require another person.
+- Online co-op requires two different people for the hinged bridge, moonlens focusing and cliff anchor; solo mode uses built-in clamps so one person can complete all three.
+- Fold a bridge via click or drag, use the in-scene controls, and look for the glowing endpoints before dispatch.
+- Each replay varies the placement of the illuminated safe junction branch.
 - No paid services, purchases, user accounts, external tracking, or bots are used.
 
 ## Four-day completion priorities
