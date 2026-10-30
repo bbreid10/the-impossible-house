@@ -8,3 +8,115 @@
  .topbar{gap:4px}.brand{font-size:11px;letter-spacing:.07em;flex:none}.topbar .right-nav{gap:3px;min-width:0}.topbar .right-nav .micro-button{font-size:10px;padding:6px 5px}.topbar .right-nav .micro-button:nth-child(2){display:none}.topbar .right-nav .micro-button:last-child{display:none}
  .play-footer{justify-content:center;min-width:0}.play-footer .legend{display:none}.play-footer span{white-space:normal;overflow-wrap:anywhere;text-align:center}.status-bar{align-items:flex-start}.mission{gap:7px}.mission .mini{max-width:115px}.action-ribbon .ribbon-button{flex:1 1 auto}.action-ribbon>div:first-child .ribbon-button{flex:1}
 }
+/* Velvet Heist 0.2: cinematic museum layer, live controls, and concise objectives */
+html, body {background:#080c13;color:#f6e5c7}
+#app{min-height:100svh;background:#080c13}
+.topbar{height:62px;background:rgba(6,10,17,.97);padding:0 clamp(14px,3.5vw,56px);border-bottom:1px solid #b88d555c}
+.brand{font-size:16px;letter-spacing:.23em;color:#efc792}.brand-mark{border-color:#d7a866;color:#e5c18b}
+.micro-button{border-color:#a7825279;background:#121823;color:#f2dfbf;border-radius:2px}
+.micro-button:hover{background:#35281d;border-color:#e6bd83}
+.gold-button{background:linear-gradient(135deg,#f3d49b,#cf9355);border:1px solid #e6c394;color:#121721;box-shadow:0 4px 26px #0006;letter-spacing:.06em}
+.dark-button{background:#080f18d9;border:1px solid #dcad6d;color:#f3dfc4;letter-spacing:.04em}
+.gold-button:hover,.dark-button:hover{filter:brightness(1.12)}
+/* Cinematic landing */
+.velvet-landing{height:calc(100svh - 62px);min-height:600px;position:relative;overflow:hidden;isolation:isolate;background:#090f19}
+.landing-art{position:absolute;inset:0 0 0 29%;z-index:-2;overflow:hidden}
+.landing-art img{width:100%;height:100%;object-fit:cover;object-position:56% center;filter:contrast(1.1) saturate(1.08) brightness(.85)}
+.landing-shade{position:absolute;inset:0;z-index:-1;background:linear-gradient(90deg,#050910 0%,#070d16 24%,#080d15db 35%,#070d1560 53%,#0710190d 86%),linear-gradient(0deg,#060b12d6,transparent 34%,#060b1230 95%)}
+.landing-story{height:100%;width:min(630px,48%);padding:8vh 3vw 9vh 5.2vw;display:flex;flex-direction:column;align-items:flex-start;justify-content:center;position:relative;z-index:2}
+.landing-story .mini,.eyebrow{font-size:10px;letter-spacing:.22em;color:#dfb879;font-weight:700}
+.landing-seal{font-size:11px;letter-spacing:.3em;margin-top:35px;color:#cfa56e;border-left:2px solid #cfa56e;padding-left:12px}
+.landing-story h1{margin:20px 0 26px;font:700 clamp(66px,7.5vw,118px)/.88 Georgia,serif;letter-spacing:-.07em;text-shadow:0 4px 25px #000d}
+.landing-story h1 em{font-style:italic;color:#e6b77d}
+.landing-story p{font:17px/1.6 Georgia,serif;color:#e4d6c3;max-width:435px;margin:0 0 26px}
+.landing-story .hero-actions{flex-wrap:wrap;gap:10px}
+.landing-story .gold-button,.landing-story .dark-button{padding:14px 22px;min-height:52px;font-size:12px;display:flex;gap:14px;align-items:center;justify-content:space-between}
+.quiet-link{border:0;background:transparent;color:#ebc797;padding:18px 0 8px;cursor:pointer;letter-spacing:.2em;font-size:11px}
+.quiet-link:hover{text-decoration:underline}
+.landing-meta{position:absolute;bottom:20px;left:5.2vw;display:flex;align-items:center;gap:14px;font-size:10px;letter-spacing:.11em;color:#bdbaa9;white-space:nowrap}
+.landing-meta i{color:#d6a971;font-style:normal}
+.landing-aside{position:absolute;bottom:29px;right:25px;text-align:right;padding:14px 16px;background:#061018ce;border:1px solid #cca56b7b;font:italic 16px/1.3 Georgia;color:#f7dbad;letter-spacing:.02em}
+.landing-aside span{font:9px/1.6 sans-serif;letter-spacing:.18em;color:#9fafb4}
+/* All-important heist stage. The art is the primary play area. */
+.heist-game{height:calc(100svh - 62px);min-height:615px;display:flex;flex-direction:column;padding:9px clamp(11px,1.6vw,28px) 12px;gap:7px;overflow:hidden;background:radial-gradient(ellipse at 60% 25%,#1a1d20,#070d15 74%)}
+.heist-head{min-height:44px;display:flex;align-items:center;justify-content:space-between;gap:10px;flex:none}
+.heist-heading{display:flex;align-items:baseline;gap:12px;min-width:0;white-space:nowrap}
+.heist-heading strong{font:24px Georgia,serif;color:#f4ddba;letter-spacing:-.02em}
+.heist-heading .eyebrow{font-size:9px;white-space:nowrap}
+.heist-head-metrics{display:flex;gap:5px;align-items:center}
+.metric{font:11px/1.4 ui-sans-serif,system-ui,sans-serif;color:#e6decf;border:1px solid #bd9a664c;background:#07131cbd;padding:7px 10px;white-space:nowrap;letter-spacing:.07em}
+.metric.warning{color:#ffb1a3;border-color:#e4826a}
+.heist-columns{flex:1;min-height:0;display:grid;grid-template-columns:clamp(230px,22vw,315px) minmax(0,1fr);gap:12px}
+.heist-mission{border:1px solid #b48b595e;background:linear-gradient(155deg,#111a20f0,#071119eb);box-shadow:0 20px 65px #0009;min-height:0;overflow:auto;padding:18px 15px 12px}
+.heist-mission h2{font:29px/1.1 Georgia,serif;color:#f7e6ce;margin:12px 0 10px;letter-spacing:-.03em}
+.heist-mission h2 em{color:#e4bc83;font-style:normal}
+.heist-mission>p{font:13px/1.5 Georgia,serif;color:#c9c4bb;margin-bottom:18px}
+.objective-now{padding:12px 10px;background:linear-gradient(120deg,#392e20aa,#182029e2);border:1px solid #cfa46b8c;border-left:3px solid #e6be84;margin-bottom:13px}
+.objective-now h3{font:20px/1.15 Georgia,serif;color:#ffe3b4;margin:8px 0}
+.objective-now p{font-size:12px;line-height:1.4;color:#e0d2c3;margin:0}
+.mission-steps{display:grid;gap:4px}
+.mission-step{display:flex;gap:12px;align-items:center;padding:8px 6px;font-size:11px;color:#aeb3ae;border-bottom:1px solid #e6bc7f1c;letter-spacing:.03em}
+.mission-step span{font:13px Georgia,serif;display:grid;place-items:center;border:1px solid #ab8b5f5c;border-radius:50%;width:27px;height:27px;flex:none}
+.mission-step.current{color:#ffe4ba;background:#a2773830}
+.mission-step.current span{background:#d6ad74;color:#101c23}
+.mission-step.done{color:#a5cdbc}.mission-step.done span{border-color:#a5cdbc;color:#a5cdbc}
+.side-quest{margin-top:14px;padding:10px 0 0;border-top:1px solid #bd9d6863;color:#b5bcac;font-size:11px;line-height:1.8}
+.side-quest .eyebrow{font-size:9px;margin-bottom:6px}
+.heist-scene-column{min-width:0;min-height:0;display:flex;flex-direction:column;gap:5px;overflow:hidden}
+.heist-scene{min-height:0;flex:1;display:flex;flex-direction:column;justify-content:center;border:1px solid #e1af6d69;background:#070e17;overflow:hidden;position:relative;box-shadow:0 18px 60px #000c}
+.world-caption{position:absolute;top:10px;left:13px;z-index:5;pointer-events:none;background:#080d15bd;padding:7px 11px;border-left:2px solid #e6b577;color:#f6d7a7;font:10px/1.3 system-ui,sans-serif;letter-spacing:.19em}
+.museum-image-stage{width:100%;aspect-ratio:1025/635;max-height:100%;position:relative;flex:none;overflow:hidden;background:#080c13}
+.museum-image{width:100%;height:100%;object-fit:fill;display:block;user-select:none;pointer-events:none}
+.museum-image-shade{position:absolute;inset:0;pointer-events:none;background:linear-gradient(0deg,#050b14d4,transparent 19%,transparent 78%,#050b149e),linear-gradient(90deg,#03081045,transparent 28%,transparent 75%,#03081024)}
+.route-overlay{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;filter:drop-shadow(0 0 3px #f8c777b3)}
+.line-track{stroke-width:3;stroke-dasharray:8 5;transition:all .5s ease}
+.line-track.connected{stroke:#f7d597;opacity:.85;stroke-dasharray:5 9;animation:route-glide 5s linear infinite}
+.line-track.closed{stroke:#a94f44;opacity:.2;stroke-dasharray:3 13}
+@keyframes route-glide{to{stroke-dashoffset:-140}}
+.museum-spot{position:absolute;left:var(--x);top:var(--y);transform:translate(-50%,-50%);display:flex;align-items:center;gap:5px;border:1px solid #cea268d9;background:#030b12db;padding:5px 8px;min-height:33px;z-index:3;color:#f5deba;box-shadow:0 4px 16px #000b;font:700 clamp(8px,.79vw,11px)/1.1 system-ui,sans-serif;letter-spacing:.085em;cursor:pointer;white-space:nowrap;transition:transform .15s,background .15s,box-shadow .15s}
+.museum-spot .spot-icon{border:1px solid #e4bd86;border-radius:50%;height:18px;width:18px;display:grid;place-items:center;color:#e7ba80;font-size:11px;flex:none}
+.museum-spot small{font-size:7px;color:#a0dfbb;letter-spacing:0;position:absolute;top:100%;left:0;background:#081c21;padding:3px}
+.museum-spot.reachable{border-color:#dff1d3;box-shadow:0 0 16px #e7db995c,0 4px 16px #000b}
+.museum-spot.reachable .spot-icon{background:#e3bc80;color:#12212b}
+.museum-spot.here{background:#d6a86c;color:#141922;border-color:#ffdfac;box-shadow:0 0 20px #ffd698ab}
+.museum-spot.here .spot-icon{color:#15202c;border-color:#15202c}
+.museum-spot.danger:not(.here){border-color:#ff6f62;box-shadow:0 0 18px #eb584d7a}
+.museum-spot:hover,.museum-spot:focus-visible{transform:translate(-50%,-50%) scale(1.08);z-index:6;background:#382716;color:#fff4dd;outline:2px solid #efc28b}
+.atrium-motion{pointer-events:none;position:absolute;left:52%;top:48%;width:16%;aspect-ratio:1;transform:translate(-50%,-50%) rotate(var(--turn));transition:transform .6s cubic-bezier(.1,.85,.2,1);border:2px dotted #e9c18c84;border-radius:50%;z-index:1}
+.atrium-motion span{position:absolute;left:50%;top:0;width:3px;height:50%;background:linear-gradient(#fff7c3b0,#fff7c300);transform-origin:bottom}
+.atrium-motion span:nth-child(2){transform:rotate(120deg)}.atrium-motion span:nth-child(3){transform:rotate(240deg)}
+.vault-warning{pointer-events:none;position:absolute;inset:0;z-index:1}
+.vault-warning i{position:absolute;left:79%;top:33%;width:19%;height:1px;transform-origin:center;background:#ff4646;box-shadow:0 0 5px #ff1616,0 0 14px #e13a3a}
+.vault-warning i:nth-child(1){transform:rotate(24deg)}.vault-warning i:nth-child(2){transform:rotate(-24deg)}.vault-warning i:nth-child(3){transform:rotate(0deg)}
+.vault-safe{position:absolute;z-index:2;left:74%;top:23%;border:1px solid #9bd8ba;background:#09241ccc;color:#c7f4da;font:10px system-ui;padding:5px}
+.security-sweep{position:absolute;right:1%;bottom:13%;width:23%;height:35%;z-index:2;pointer-events:none;background:conic-gradient(from 210deg at 85% 100%,transparent 0deg,#f0474d48 26deg,transparent 56deg);animation:sweep 3s ease-in-out infinite alternate}
+@keyframes sweep{to{transform:rotate(17deg)}}
+.guard-beacon{position:absolute;z-index:4;left:var(--x);top:calc(var(--y) + 4%);transform:translate(-50%,-50%);pointer-events:none;display:flex;align-items:center;gap:3px;font-size:9px;color:#ff9680;background:#19080abc;padding:2px 5px;border:1px solid #b34c4c}
+.guard-beacon span{color:#fff2e0;background:#a53b34;border-radius:50%;width:13px;height:13px;display:grid;place-items:center}
+.stage-corner{position:absolute;bottom:10px;right:12px;background:#06121cd9;border:1px solid #d7ae7070;display:grid;padding:6px 11px;font-size:9px;letter-spacing:.11em;text-align:right;color:#ebc087}
+.stage-corner small{color:#c7c7b4;margin-top:4px}
+.museum-image-stage.blackout .museum-image{filter:brightness(.68)}
+.scene-feedback{display:flex;justify-content:space-between;gap:6px;background:#08101ac9;border-top:1px solid #d4a66c4d;color:#d9c7aa;padding:9px 13px;font-size:10px;letter-spacing:.04em;flex:none}
+.scene-feedback span:first-child{color:#ffe1b7}.scene-feedback .current-room{color:#a9d8bb}
+.heist-dock{display:flex;align-items:center;gap:10px;min-height:80px;border:1px solid #be9a6761;background:#0b141bdc;padding:8px 9px;flex:none}
+.dock-primary,.dock-moves{display:flex;align-items:center;gap:6px;min-width:0;flex-wrap:wrap}
+.dock-primary{flex:1;border-right:1px solid #ad956340;padding-right:9px}
+.dock-moves{flex:0 0 auto;max-width:37%;overflow:auto;max-height:100%}
+.dock-label{font-size:9px;color:#bba77d;letter-spacing:.16em;margin-right:5px;white-space:nowrap}
+.heist-action{font:700 10px/1.15 system-ui,sans-serif;letter-spacing:.03em;min-height:40px;white-space:nowrap;border:1px solid #b8996c70;background:#14232a;color:#f1dab5;padding:9px 11px;cursor:pointer;border-radius:2px;transition:background .15s,border-color .15s}
+.heist-action:hover:not(:disabled){background:#443325;border-color:#f4d29a}.heist-action.primary{background:#deb57c;color:#14191d;border-color:#ffdfab}
+.heist-action.highlight{border-color:#dbb074;background:#243036}
+.heist-action.move{background:#121d23;border-color:#a4b19a74;color:#bce7d2;font-size:9px}
+.heist-action:disabled{opacity:.37;cursor:not-allowed}
+.dock-hint{font:11px system-ui;color:#b1b7b2}
+.co-op-strip{flex:none;display:flex;justify-content:space-between;padding:0 7px;color:#aab19f;font-size:10px;min-height:19px;align-items:center}
+.co-op-strip button{border:0;background:none;color:#e6c18a;text-decoration:underline;cursor:pointer;font:inherit;letter-spacing:.1em}
+/* Modernized brief, while retaining lobby and responsive behavior */
+.brief{background:linear-gradient(145deg,#f1e1c0,#e2c9a0);border:4px solid #c89f62;outline:1px solid #f7dda6;top:50%;padding:28px 33px;max-height:90svh;overflow:auto}
+.brief h2{font:37px/1.13 Georgia,serif;color:#1b2729}
+.brief p{color:#384341;line-height:1.55}
+#toast.show{background:#0b1b20f0;border-left:3px solid #d8ac75;color:#f8dfb8}
+@media(max-width:1050px){.heist-heading strong{font-size:20px}.heist-columns{grid-template-columns:220px minmax(0,1fr);gap:7px}.heist-mission{padding:10px}.heist-mission h2{font-size:24px}.mission-step{padding:5px 3px;font-size:10px}.heist-dock{min-height:85px}.museum-spot{font-size:8px;padding:3px 5px;min-height:29px}.museum-spot .spot-icon{width:13px;height:13px}.dock-moves{max-width:40%}.heist-action{font-size:9px;min-height:36px;padding:7px}.heist-head-metrics .metric:nth-child(3){display:none}}
+@media(max-width:750px){.landing-story{padding:50px 22px 90px;width:100%}.landing-art{inset:0;opacity:.7}.landing-shade{background:linear-gradient(90deg,#060b11ee,#050910b3 65%,#05091072),linear-gradient(0deg,#060b11aa,transparent 60%)}.landing-story h1{font-size:clamp(57px,12vw,90px)}.landing-story p{font-size:15px;max-width:430px}.landing-aside{display:none}.landing-meta{left:22px;font-size:9px;flex-wrap:wrap;white-space:normal}.landing-seal{margin-top:20px}.heist-game{height:auto;min-height:calc(100svh - 62px);overflow:visible}.heist-head{flex-wrap:wrap}.heist-columns{display:flex;flex-direction:column;gap:7px;flex:initial;overflow:visible}.heist-mission{overflow:visible;padding:12px}.heist-mission>p,.mission-steps,.side-quest{display:none}.heist-mission h2{margin:6px 0;font-size:23px}.objective-now{padding:8px;margin:6px 0 0}.objective-now h3{font-size:18px;margin:4px 0}.objective-now p{font-size:11px}.heist-scene{height:auto;overflow:visible;flex:initial}.museum-image-stage{max-height:none}.heist-dock{display:grid;grid-template-columns:1fr;max-height:none;min-height:0;gap:8px}.dock-primary{padding:0 0 8px;border-right:0;border-bottom:1px solid #9d8a6840}.dock-moves{max-width:none;flex-wrap:wrap}.heist-action{flex:1}.co-op-strip{margin-bottom:10px}}
+@media(max-width:480px){.topbar{height:55px}.brand{font-size:10px;letter-spacing:.12em}.micro-button{font-size:9px;padding:8px 5px}.right-nav{gap:3px}.heist-game{padding:6px;min-height:calc(100svh - 55px)}.heist-head{gap:5px}.heist-heading{flex-wrap:wrap;gap:3px}.heist-heading strong{font-size:19px}.heist-head-metrics .metric{font-size:9px;padding:4px 6px}.museum-spot{font-size:0;min-height:25px;border-radius:20px;padding:3px}.museum-spot .spot-icon{width:17px;height:17px;font-size:11px}.museum-spot small{display:none}.world-caption{font-size:8px;top:4px;left:4px;padding:3px 5px}.stage-corner{font-size:6px;bottom:3px;right:3px;padding:3px}.stage-corner small{font-size:6px}.scene-feedback{font-size:8px;padding:5px}.dock-label{font-size:9px}.heist-action{font-size:10px;min-height:36px}.landing-meta{gap:6px}.landing-story .hero-actions{gap:5px}.landing-story .gold-button,.landing-story .dark-button{font-size:11px;padding:10px 9px;min-height:45px}}
+@media(prefers-reduced-motion:reduce){.line-track.connected,.security-sweep{animation:none}}

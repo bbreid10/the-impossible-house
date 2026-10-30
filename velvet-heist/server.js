@@ -2,8 +2,8 @@
 const http=require('http'),fs=require('fs'),path=require('path'),crypto=require('crypto');
 const E=require('./engine');const ROOT=__dirname;
 const PORT=Number(process.env.PORT||4422);const HOST='0.0.0.0';
-const rooms=new Map();const ipLog=new Map();const files={'/':'index.html','/index.html':'index.html','/style.css':'style.css','/app.js':'app.js','/engine.js':'engine.js'};
-const types={html:'text/html; charset=utf-8',css:'text/css; charset=utf-8',js:'text/javascript; charset=utf-8'};
+const rooms=new Map();const ipLog=new Map();const files={'/':'index.html','/index.html':'index.html','/style.css':'style.css','/app.js':'app.js','/engine.js':'engine.js','/assets/hero-museum.webp':'assets/hero-museum.webp','/assets/museum-stage.webp':'assets/museum-stage.webp','/assets/museum-night.webp':'assets/museum-night.webp'};
+const types={html:'text/html; charset=utf-8',css:'text/css; charset=utf-8',js:'text/javascript; charset=utf-8',webp:'image/webp'};
 function send(res,code,data){let text=JSON.stringify(data);res.writeHead(code,{'content-type':'application/json; charset=utf-8','cache-control':'no-store','x-content-type-options':'nosniff'});res.end(text);}
 function fail(res,status,reason){send(res,status,{error:reason});}
 function rate(req,name,max){let key=(req.socket.remoteAddress||'')+':'+name;let now=Date.now(),arr=(ipLog.get(key)||[]).filter(t=>now-t<60000);if(arr.length>=max)return false;arr.push(now);ipLog.set(key,arr);return true;}
@@ -17,7 +17,7 @@ function broadcast(r){let s=E.publicState(r.state);for(const c of r.clients){try
 setInterval(()=>{for(const [key,r] of rooms){if(Date.now()-r.updated>1000*60*60*4){for(const c of r.clients)try{c.res.end()}catch{}rooms.delete(key);continue;}if(E.pulse(r.state))broadcast(r);}},2500).unref();
 const server=http.createServer(async(req,res)=>{
  const u=new URL(req.url,'http://localhost');let pathname=u.pathname;
- if(req.method==='GET'&&pathname==='/api/health')return send(res,200,{ok:true,name:'The Velvet Heist',build:'0.1.0',online:true});
+ if(req.method==='GET'&&pathname==='/api/health')return send(res,200,{ok:true,name:'The Velvet Heist',build:'0.2.0',online:true});
  if(req.method==='GET'&&pathname==='/api/public'){return send(res,200,{rooms:[...rooms.values()].filter(r=>r.state.phase==='lobby'&&r.state.visibility==='public'&&r.state.players.length<4).map(r=>({code:r.state.code,count:r.state.players.length,host:r.state.players[0]?.name||'Guest',difficulty:r.state.difficulty}))});}
  if(req.method==='GET'&&pathname==='/api/state'){
   const r=roomBy(u.searchParams.get('code'));const id=membership(r,req.headers.authorization?.replace(/^Bearer\s+/i,''));if(!id)return fail(res,403,'Room closed or session expired.');return send(res,200,{playerId:id,state:E.publicState(r.state)});

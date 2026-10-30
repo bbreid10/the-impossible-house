@@ -8,7 +8,7 @@ function create({code='SOLO',visibility='private',solo=false,seed=3,difficulty='
  seed=Number.isFinite(Number(seed))?Math.abs(Math.floor(Number(seed))):3;
  return {code,visibility,solo,seed,difficulty,phase:solo?'playing':'lobby',players:[],host:null,
   tick:0,guardOffset:seed%GUARD_ROUTE.length,rotation:0,folded:false,bracedBy:null,braceUntil:0,
-  lens:0,targetLens:seed%3,intel:false,blackoutUntil:0,distractionUntil:0,distractionAt:null,distractions:2,
+  lens:0,targetLens:seed%3,intel:false,blackoutUntil:0,distractionUntil:0,distractionAt:null,distractions:2,bonus:false,camerasJammedUntil:0,
   artifact:ART[seed%ART.length],loot:false,lootCarrier:null,alarm:0,actions:0,seconds:0,
   events:[{id:1,by:'MUSEUM',kind:'system',text:'The gala has ended. Security is still inside.'}],chat:[],version:1};
 }
@@ -29,9 +29,10 @@ function patrol(s){
 }
 function guardsVisible(s){return s.blackoutUntil<=s.tick;}
 function laserEnabled(s){return (!s.intel||s.lens!==s.targetLens)&&s.blackoutUntil<=s.tick;}
+function cameraSweep(s){return s.loot&&s.camerasJammedUntil<=s.tick&&s.blackoutUntil<=s.tick&&((s.tick+s.guardOffset)%4<2);}
 function connections(s){return [['F','W'],['W','A'],...(s.rotation===1?[['A','V']]:[]),...(s.rotation===2?[['A','R']]:[]),...(s.folded?[['V','E']]:[])];}
 function adjacent(s,a,b){return connections(s).some(([x,y])=>x===a&&y===b||x===b&&y===a)}
-function overview(s){return {guard:patrol(s),connections:connections(s),laser:laserEnabled(s),lights:guardsVisible(s),lensTarget:LENS[s.targetLens]};}
+function overview(s){return {guard:patrol(s),connections:connections(s),laser:laserEnabled(s),lights:guardsVisible(s),lensTarget:LENS[s.targetLens],cameraActive:cameraSweep(s)};}
 function penalize(s,reason){s.alarm++;addEvent(s,reason,'alarm');if(s.alarm>=3){s.phase='lost';addEvent(s,'LOCKDOWN. All exits are sealed.','lost');}return {ok:false,error:reason,stateChanged:true};}
 function action(s,playerId,a={},now=Date.now()){
  const p=s.players.find(p=>p.id===playerId);if(!p)return {error:'Operative not found.'};
@@ -51,6 +52,7 @@ function action(s,playerId,a={},now=Date.now()){
   let to=String(a.to||'');if(!(to in NAMES))return {error:'Unknown room.'};
   if(!adjacent(s,p.at,to))return {error:'There is no open passage between these rooms. Reconfigure the museum.'};
   if(p.at!=='F'&&guardsVisible(s)&&patrol(s)===to){return penalize(s,'A guard caught movement in '+NAMES[to]+'. Security is tightening.');}
+  if(to==='E'&&s.loot&&s.lootCarrier===p.id&&cameraSweep(s))return penalize(s,'The service exit camera spotted the stolen artifact. Wait for its sweep or disable the cameras in Records.');
   if(to==='V'&&laserEnabled(s))return penalize(s,'The vault lasers are still live. Divert the light or cut power.');
   p.at=to;count();addEvent(s,`${p.name} entered ${NAMES[to]}.`,'move',p.name);
   if(to==='E'&&s.loot&&s.lootCarrier===p.id){s.phase='won';addEvent(s,`${p.name} extracted ${s.artifact}. The crew escaped!`,'won',p.name);}
@@ -69,6 +71,18 @@ function action(s,playerId,a={},now=Date.now()){
   if(!s.intel)return {error:'The reflector has three settings. Find its blueprint in Records first.'};
   s.lens=(s.lens+(a.dir===-1?2:1))%3;count();addEvent(s,`${p.name} redirected the vault reflector ${LENS[s.lens]}.`,'lens',p.name);return {ok:true};
  }
+ if(a.type==='BONUS'){
+  if(p.at!=='W')return {error:'The special exhibit is in the Portrait Gallery.'};
+  if(s.bonus)return {error:'You already recovered the curator’s secret.'};
+  if(laserEnabled(s))return {error:'The framed case is wired to the vault beam. First read the blueprint and divert the beam.'};
+  s.bonus=true;count();addEvent(s,`${p.name} lifted the curator’s midnight cameo. Optional prize secured.`,'bonus',p.name);return {ok:true};
+ }
+ if(a.type==='JAM_CAM'){
+  if(p.at!=='R')return {error:'The surveillance circuit is in Records.'};
+  if(!s.intel)return {error:'Read the security blueprint first.'};
+  s.camerasJammedUntil=s.tick+10;count();addEvent(s,`${p.name} disabled the service corridor cameras for a short window.`,'camera',p.name);return {ok:true};
+ }
+ if(a.type==='WAIT'){s.tick++;count();addEvent(s,`${p.name} watched the patrol cycle.`,'wait',p.name);return {ok:true};}
  if(a.type==='BLACKOUT'){
   if(p.at!=='A'&&p.at!=='R')return {error:'The power controls are near the Atrium.'};
   if(s.blackoutUntil>s.tick)return {error:'Power is already interrupted.'};
@@ -99,7 +113,7 @@ function action(s,playerId,a={},now=Date.now()){
  return {error:'Unknown action.'};
 }
 function pulse(s){if(s.phase!=='playing')return false;s.tick++;s.seconds+=2.5;if(s.braceUntil&&s.tick>=s.braceUntil){s.bracedBy=null;s.braceUntil=0;addEvent(s,'The folding brace slipped.','system');}if(s.difficulty==='night'&&s.seconds>=480){s.phase='lost';addEvent(s,'The eight-minute security cycle completed. Lockdown.','lost');}s.version++;return true;}
-function publicState(s){return {...s,host:s.host,guard:patrol(s),connections:connections(s),lasersOn:laserEnabled(s),lightsOn:guardsVisible(s),targetLensLabel:s.intel?LENS[s.targetLens]:null};}
+function publicState(s){return {...s,host:s.host,guard:patrol(s),connections:connections(s),lasersOn:laserEnabled(s),cameraActive:cameraSweep(s),lightsOn:guardsVisible(s),targetLensLabel:s.intel?LENS[s.targetLens]:null};}
 const HEIST_API={create,addPlayer,action,pulse,publicState,patrol,adjacent,NAMES,LENS};
 if(typeof module!=='undefined')module.exports=HEIST_API;
 if(typeof window!=='undefined')window.HEIST_ENGINE=HEIST_API;
