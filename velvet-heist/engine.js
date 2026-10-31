@@ -76,6 +76,7 @@ function action(s,playerId,a={},now=Date.now()){
  if(a.type==='LENS'){
   if(p.at!=='A')return {error:'The mirror controls are in the Atrium.'};
   if(!s.intel)return {error:'The reflector has three settings. Find its blueprint in Records first.'};
+  if(s.level>=2&&!s.solo&&!s.players.some(q=>q.id!==p.id&&q.at==='R'))return {error:'CHAPTER 2 CO-OP: A teammate must remain in Records to relay security calibration while you adjust the Atrium mirror.'};
   s.lens=(s.lens+(a.dir===-1?2:1))%3;count();addEvent(s,`${p.name} redirected the vault reflector ${LENS[s.lens]}.`,'lens',p.name);return {ok:true};
  }
  if(a.type==='BONUS'){
@@ -103,6 +104,7 @@ function action(s,playerId,a={},now=Date.now()){
   if(p.at!=='V')return {error:'Reach the central vault first.'};
   if(s.loot)return {error:'The artifact has already been lifted.'};
   if(laserEnabled(s))return penalize(s,'A beam crossed the plinth. Security saw the attempt.');
+  if(s.level>=3&&!s.solo&&!s.players.some(q=>q.id!==p.id&&q.at==='R'))return {error:'CHAPTER 3 CO-OP: Keep a second operative in Records monitoring security while the carrier takes the artifact.'};
   if(guardsVisible(s)&&patrol(s)==='V')return penalize(s,'A guard saw the vault display open.');
   s.loot=true;s.lootCarrier=p.id;count();addEvent(s,`${p.name} secured ${s.artifact}. Extract through the service exit.`,'loot',p.name);return {ok:true};
  }
