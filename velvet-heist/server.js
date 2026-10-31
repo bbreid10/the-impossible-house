@@ -2,6 +2,9 @@
 const http=require('http'),fs=require('fs'),path=require('path'),crypto=require('crypto');
 const E=require('./engine');const ROOT=__dirname;
 const PORT=Number(process.env.PORT||4422);const HOST='0.0.0.0';
+const BANNED=/\b(?:fuck(?:ing|er|ed|s)?|shit(?:ty|s)?|bitch(?:es)?|asshole|bastard|cunt|dick|cock|pussy|boob(?:s|ies)?|tits?|slut|whore|motherfucker|nigg(?:a|er|ers|as)|fagg?ot(?:s)?|retard(?:ed|s)?|kike(?:s)?|spic(?:s)?|chink(?:s)?|wetback(?:s)?|trann(?:y|ies)|rape(?:d|s|ist)?|kill\s+yourself)\b/i;
+function cleanChat(text){const raw=String(text||'').normalize('NFKC');const compact=raw.toLowerCase().replace(/[@4]/g,'a').replace(/[0!1|]/g,'i').replace(/[3]/g,'e').replace(/[$5]/g,'s').replace(/[^a-z\s]/g,'');const collapsed=compact.replace(/([a-z])\1{2,}/g,'$1');return BANNED.test(raw)||BANNED.test(compact)||BANNED.test(collapsed)}
+const chatTimes=new Map();
 const rooms=new Map();const ipLog=new Map();const files={'/':'index.html','/index.html':'index.html','/style.css':'style.css','/app.js':'app.js','/engine.js':'engine.js','/assets/hero-museum.webp':'assets/hero-museum.webp','/assets/museum-stage.webp':'assets/museum-stage.webp','/assets/museum-night.webp':'assets/museum-night.webp'};
 const types={html:'text/html; charset=utf-8',css:'text/css; charset=utf-8',js:'text/javascript; charset=utf-8',webp:'image/webp'};
 function send(res,code,data){let text=JSON.stringify(data);res.writeHead(code,{'content-type':'application/json; charset=utf-8','cache-control':'no-store','x-content-type-options':'nosniff'});res.end(text);}
@@ -39,7 +42,7 @@ const server=http.createServer(async(req,res)=>{
    const r=roomBy(v.code),id=membership(r,v.token);if(!id)return fail(res,403,'Invalid session.');let ans=E.action(r.state,id,v.action);if(ans.ok||ans.stateChanged){r.updated=Date.now();broadcast(r);}return send(res,ans.error?400:200,{...ans,state:E.publicState(r.state)});
   }
   if(pathname==='/api/chat'){
-   const r=roomBy(v.code),id=membership(r,v.token);if(!id)return fail(res,403,'Invalid session.');let msg=String(v.text||'').trim();if(!msg||msg.length>280)return fail(res,400,'Message must be 1–280 characters.');const p=r.state.players.find(p=>p.id===id);r.state.chat.push({id:crypto.randomUUID(),name:p.name,text:msg.slice(0,280),at:Date.now()});r.state.chat=r.state.chat.slice(-40);r.state.version++;r.updated=Date.now();broadcast(r);return send(res,200,{ok:true});
+   const r=roomBy(v.code),id=membership(r,v.token);if(!id)return fail(res,403,'Invalid session.');let msg=String(v.text||'').trim();if(!msg||msg.length>280)return fail(res,400,'Message must be 1–280 characters.');if(cleanChat(msg))return fail(res,400,'Message blocked by the family-friendly chat filter.');const key=r.state.code+':'+id,now=Date.now(),recent=(chatTimes.get(key)||[]).filter(t=>now-t<10000);if(recent.length>=5)return fail(res,429,'Slow down: maximum five messages per ten seconds.');recent.push(now);chatTimes.set(key,recent);const p=r.state.players.find(p=>p.id===id);r.state.chat.push({id:crypto.randomUUID(),name:p.name,text:msg.slice(0,280),at:Date.now()});r.state.chat=r.state.chat.slice(-40);r.state.version++;r.updated=Date.now();broadcast(r);return send(res,200,{ok:true});
   }
   return fail(res,404,'Unknown endpoint.');
  }
