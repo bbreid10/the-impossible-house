@@ -3,10 +3,11 @@ const GUARD_ROUTE=['A','A','V','A','W','W','A','R'];
 const NAMES={F:'Entrance',W:'Portrait Gallery',A:'Rotating Atrium',R:'Records Room',V:'Central Vault',E:'Service Exit'};
 const LENS=['NORTH','EAST','WEST'];
 const ART=['The Aster Prism','The Mourning Star','The Velvet Opal','The Midnight Reliquary'];
+const CHAPTERS=['THE MIDNIGHT GALLERY','THE SCULPTURE WING','THE CURATOR’S VAULT'];
 const escapeText=(x)=>String(x||'').replace(/[<>\u0000-\u001f]/g,'').trim().slice(0,24)||'Guest';
 function create({code='SOLO',visibility='private',solo=false,seed=3,difficulty='calm'}={}) {
  seed=Number.isFinite(Number(seed))?Math.abs(Math.floor(Number(seed))):3;
- return {code,visibility,solo,seed,difficulty,phase:solo?'playing':'lobby',players:[],host:null,
+ return {code,visibility,solo,seed,difficulty,level:1,phase:solo?'playing':'lobby',players:[],host:null,
   tick:0,guardOffset:seed%GUARD_ROUTE.length,rotation:0,folded:false,bracedBy:null,braceUntil:0,
   lens:0,targetLens:seed%3,intel:false,blackoutUntil:0,distractionUntil:0,distractionAt:null,distractions:2,bonus:false,camerasJammedUntil:0,
   artifact:ART[seed%ART.length],loot:false,lootCarrier:null,alarm:0,actions:0,seconds:0,
@@ -43,6 +44,12 @@ function action(s,playerId,a={},now=Date.now()){
   return {error:'Wait for the host.'};
  }
  if(s.phase!=='playing'){
+  if(a.type==='NEXT_LEVEL'&&s.phase==='won'&&s.level<3&&(s.solo||s.host===p.id)){
+   const level=s.level+1,oldPlayers=s.players.map(x=>({...x,at:'F',ready:true}));
+   const next=create({code:s.code,visibility:s.visibility,solo:s.solo,seed:s.seed+level*17,difficulty:s.difficulty});
+   Object.assign(s,next);s.level=level;s.players=oldPlayers;s.host=oldPlayers[0]?.id;s.phase='playing';
+   addEvent(s,'CHAPTER '+level+': '+CHAPTERS[level-1]+'. New security pattern. The crew must coordinate again.','chapter');return {ok:true};
+  }
   if(a.type==='RESTART'&&s.host===p.id){let n=create({code:s.code,visibility:s.visibility,solo:s.solo,seed:s.seed+7,difficulty:s.difficulty});const old=s.players.map(x=>({...x,at:'F',ready:true}));Object.assign(s,n);s.players=old;s.host=p.id;s.phase='playing';addEvent(s,'New heist. New patrol pattern.','system');return {ok:true};}
   return {error:'The heist has ended.'};
  }
@@ -113,7 +120,7 @@ function action(s,playerId,a={},now=Date.now()){
  return {error:'Unknown action.'};
 }
 function pulse(s){if(s.phase!=='playing')return false;s.tick++;s.seconds+=2.5;if(s.braceUntil&&s.tick>=s.braceUntil){s.bracedBy=null;s.braceUntil=0;addEvent(s,'The folding brace slipped.','system');}if(s.difficulty==='night'&&s.seconds>=480){s.phase='lost';addEvent(s,'The eight-minute security cycle completed. Lockdown.','lost');}s.version++;return true;}
-function publicState(s){return {...s,host:s.host,guard:patrol(s),connections:connections(s),lasersOn:laserEnabled(s),cameraActive:cameraSweep(s),lightsOn:guardsVisible(s),targetLensLabel:s.intel?LENS[s.targetLens]:null};}
+function publicState(s){return {...s,chapterTitle:CHAPTERS[(s.level||1)-1],host:s.host,guard:patrol(s),connections:connections(s),lasersOn:laserEnabled(s),cameraActive:cameraSweep(s),lightsOn:guardsVisible(s),targetLensLabel:s.intel?LENS[s.targetLens]:null};}
 const HEIST_API={create,addPlayer,action,pulse,publicState,patrol,adjacent,NAMES,LENS};
 if(typeof module!=='undefined')module.exports=HEIST_API;
 if(typeof window!=='undefined')window.HEIST_ENGINE=HEIST_API;
